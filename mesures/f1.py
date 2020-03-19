@@ -1,31 +1,16 @@
 import pandas as pd
 from datetime import datetime
 from mesures.headers import F1_HEADER
+from mesures.curves.curve import DummyCurve
 import os
 
 
 class F1(object):
-    def __init__(self, distributor, filepath):
+    def __init__(self, distributor, data):
         self.header = F1_HEADER
-        self.file = self.reader(filepath)
-        self._total = None
-        self._ai = None
-        self._ae = None
-        self._r1 = None
-        self._r2 = None
-        self._r3 = None
-        self._r4 = None
-        self._cups = None
-        self._ncups = None
-        self.total = 0
-        self.ai = 0
-        self.ae = 0
-        self.r1 = 0
-        self.r2 = 0
-        self.r3 = 0
-        self.r4 = 0
-        self.cups = list()
-        self.ncups = 0
+        if isinstance(data, list):
+            data = DummyCurve(data).curve_data
+        self.file = self.reader(data)
         self.distributor = distributor
         self.generation_date = datetime.now()
         self.prefix = 'F1'
@@ -57,85 +42,77 @@ class F1(object):
 
     @property
     def total(self):
-        return self._total
-
-    @total.setter
-    def total(self, value):
-        self._total = self.file['ai'].sum()
+        return self.file['ai'].sum()
 
     @property
     def ai(self):
-        return self._ai
-
-    @ai.setter
-    def ai(self, value):
-        self._ai = self.file['ai'].sum()
+        return self.file['ai'].sum()
 
     @property
     def ae(self):
-        return self._ae
-
-    @ae.setter
-    def ae(self, value):
-        self._ae = self.file['ae'].sum()
+        return self.file['ae'].sum()
 
     @property
     def r1(self):
-        return self._r1
-
-    @r1.setter
-    def r1(self, value):
-        self._r1 = self.file['r1'].sum()
+        return self.file['r1'].sum()
 
     @property
     def r2(self):
-        return self._r2
-
-    @r2.setter
-    def r2(self, value):
-        self._r2 = self.file['r2'].sum()
+        return self.file['r2'].sum()
 
     @property
     def r3(self):
-        return self._r3
-
-    @r3.setter
-    def r3(self, value):
-        self._r3 = self.file['r3'].sum()
+        return self.file['r3'].sum()
 
     @property
     def r4(self):
-        return self._r4
-
-    @r4.setter
-    def r4(self, value):
-        self._r4 = self.file['r4'].sum()
+        return self.file['r4'].sum()
 
     @property
     def cups(self):
-        return self._cups
-
-    @cups.setter
-    def cups(self, value):
-        self._cups = list(set(self.file['cups']))
+        return list(set(self.file['cups']))
 
     @property
-    def ncups(self):
-        return self._ncups
-
-    @ncups.setter
-    def ncups(self, value):
-        self._ncups = len(list(set(self.file['cups'])))
+    def number_of_cups(self):
+        return len(list(set(self.file['cups'])))
 
     def reader(self, filepath):
         if isinstance(filepath, str):
             return pd.read_csv(
                 filepath, sep=';', names=self.header
             )
+        if isinstance(filepath, list):
+            df = pd.DataFrame(data=filepath)
+            df['tipo_medida'] = 11
+            df = df.groupby(
+                [
+                    'cups', 'tipo_medida', 'timestamp', 'season'
+                ]
+            ).aggregate(
+                {
+                    'ai': 'sum',
+                    'ae': 'sum',
+                    'r1': 'sum',
+                    'r2': 'sum',
+                    'r3': 'sum',
+                    'r4': 'sum',
+                }
+            ).reset_index()
+            df['method'] = 1
+            df['firmeza'] = 0
+            df['res'] = 0
+            df['res2'] = 0
+            df = df[F1_HEADER]
+            return df
 
     def writer(self):
-        filepath = os.path.join('tmp', self.filename)
+        filepath = os.path.join('/tmp', self.filename)
         self.file.to_csv(
-            filepath, sep=';', header=False, columns=False, index=False, line_terminator=';'
+            filepath, sep=';', header=False, columns=F1_HEADER, index=False, line_terminator=';\n'
         )
         return filepath
+
+    def separe(self):
+        self.file['day'] = self.file['datetime'].apply(lambda x: x[:10])
+        daymin = min(list(set(self.file['day'])))
+        daymax = max(list(set(self.file['day'])))
