@@ -1,7 +1,8 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from mesures.headers import F1_HEADER
 from mesures.curves.curve import DummyCurve
+from mesures.dates.date import last_hour_of_day
 import os
 
 
@@ -99,7 +100,7 @@ class F1(object):
                 }
             ).reset_index()
             df['method'] = 1
-            df['firmeza'] = 0
+            df['firmeza'] = 1
             df['res'] = 0
             df['res2'] = 0
             df = df[F1_HEADER]
@@ -113,6 +114,12 @@ class F1(object):
         return filepath
 
     def separe(self):
-        self.file['day'] = self.file['datetime'].apply(lambda x: x[:10])
+        self.file['day'] = self.file['datetime']
+        # Transform last hour 00:00:00
+        self.file['day'].apply(
+            lambda x: last_hour_of_day(x) if ' 00:00:00' in x else x[:10]
+        )
         daymin = min(list(set(self.file['day'])))
         daymax = max(list(set(self.file['day'])))
+        while daymin < daymax:
+            pass
