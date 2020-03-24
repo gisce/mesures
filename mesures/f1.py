@@ -15,7 +15,7 @@ class F1(object):
         self.distributor = distributor
         self.generation_date = datetime.now()
         self.prefix = 'F1'
-        self.version = 1
+        self.version = 0
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -113,13 +113,29 @@ class F1(object):
         )
         return filepath
 
-    def separe(self):
-        self.file['day'] = self.file['datetime']
-        # Transform last hour 00:00:00
-        self.file['day'].apply(
-            lambda x: last_hour_of_day(x) if ' 00:00:00' in x else x[:10]
-        )
-        daymin = min(list(set(self.file['day'])))
-        daymax = max(list(set(self.file['day'])))
-        while daymin < daymax:
-            pass
+    def writer(self, zipped=False):
+        if zipped:
+            zipped_file = ZipFile('/tmp/test.zip', 'w')
+        else:
+            files = []
+        daymin = self.file['timestamp'].min()
+        daymax = self.file['timestamp'].max()
+        while daymin <= daymax:
+            di = daymin
+            df = daymin + timedelta(days=1)
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            filepath = os.path.join('/tmp', self.filename)
+            filepath = 'F1_{}.csv'.format(randint(0,5000))
+            dataf.to_csv(
+                filepath, sep=';', header=False, columns=F1_HEADER, index=False, line_terminator=';\n'
+            )
+            daymin = df
+            if zipped:
+                zipped_file.write(filepath)
+            else:
+                files.append(filepath)
+        if zipped:
+            zipped_file.close()
+            return zipped_file.filename
+        else:
+            return files

@@ -6,6 +6,8 @@ BASICVALS = {
     'r3': 0,
     'r4': 0
 }
+import pandas as pd
+
 class DummyCurve(object):
     def __init__(self, datas):
         if isinstance(datas, (list, tuple)):
@@ -14,8 +16,10 @@ class DummyCurve(object):
             # Check lowers keys
             for k, v in data.items():
                 data[k.lower()] = data.pop(k)
+            # Adapt datetimes
             if 'datetime' in data:
                 data['timestamp'] = data.pop('datetime')
+            data['timestamp'] = pd.Timestamp(data['timestamp'])
             if 'estacio' in data:
                 data['season'] = data.pop('estacio')
             if 'as' in data:
