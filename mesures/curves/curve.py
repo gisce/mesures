@@ -1,15 +1,11 @@
-BASICVALS = {
-    'ai': 0,
-    'ae': 0,
-    'r1': 0,
-    'r2': 0,
-    'r3': 0,
-    'r4': 0
-}
 import pandas as pd
 
 class DummyCurve(object):
     def __init__(self, datas):
+        """
+        Parse a curvedata
+        :param datas:
+        """
         if isinstance(datas, (list, tuple)):
             pass
         for data in datas:

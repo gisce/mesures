@@ -2,16 +2,21 @@ import pandas as pd
 from datetime import datetime, timedelta
 from mesures.headers import F1_HEADER
 from mesures.curves.curve import DummyCurve
-from mesures.dates.date import last_hour_of_day
 import os
+from zipfile import ZipFile
+from random import randint
+# from mesures.file_structs.headers import HEADERS
 
 
 class F1(object):
-    def __init__(self, distributor, data):
+    def __init__(self, data, distributor=None):
+        # self.header = HEADERS['F1_HEADER']
         self.header = F1_HEADER
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
+        if not distributor:
+            distributor = '9999'
         self.distributor = distributor
         self.generation_date = datetime.now()
         self.prefix = 'F1'
@@ -37,8 +42,15 @@ class F1(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, version=self.version
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+        )
+
+    @property
+    def simple_filename(self):
+        return "{prefix}_{distributor}_{timestamp}.zip".format(
+            prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
     @property
@@ -107,35 +119,23 @@ class F1(object):
             return df
 
     def writer(self):
-        filepath = os.path.join('/tmp', self.filename)
-        self.file.to_csv(
-            filepath, sep=';', header=False, columns=F1_HEADER, index=False, line_terminator=';\n'
-        )
-        return filepath
-
-    def writer(self, zipped=False):
-        if zipped:
-            zipped_file = ZipFile('/tmp/test.zip', 'w')
-        else:
-            files = []
+        """
+        F1 contains a curve files diary on zip
+        :return: file path
+        """
+        zipped_file = ZipFile(os.path.join('/tmp', self.simple_filename), 'w')
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         while daymin <= daymax:
             di = daymin
             df = daymin + timedelta(days=1)
+            self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             filepath = os.path.join('/tmp', self.filename)
-            filepath = 'F1_{}.csv'.format(randint(0,5000))
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=F1_HEADER, index=False, line_terminator=';\n'
             )
             daymin = df
-            if zipped:
-                zipped_file.write(filepath)
-            else:
-                files.append(filepath)
-        if zipped:
-            zipped_file.close()
-            return zipped_file.filename
-        else:
-            return files
+            zipped_file.write(filepath)
+        zipped_file.close()
+        return zipped_file.filename

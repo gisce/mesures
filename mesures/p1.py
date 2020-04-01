@@ -1,19 +1,22 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from mesures.headers import P1_HEADER
+from mesures.curves.curve import DummyCurve
 import os
-
+from zipfile import ZipFile
 
 class P1(object):
-    def __init__(self, distributor, data):
+    def __init__(self, data, distributor=None):
         self.header = P1_HEADER
         if isinstance(data, list):
-            basic_curve = ''
+            data = DummyCurve(data).curve_data
         self.file = self.reader(data)
+        if not distributor:
+            distributor = '9999'
         self.distributor = distributor
         self.generation_date = datetime.now()
         self.prefix = 'P1'
-        self.version = 1
+        self.version = 0
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -35,8 +38,15 @@ class P1(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, version=self.version
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+        )
+
+    @property
+    def simple_filename(self):
+        return "{prefix}_{distributor}_{timestamp}.zip".format(
+            prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
     @property
@@ -84,18 +94,39 @@ class P1(object):
             df = pd.DataFrame(data=filepath)
             df['tipo_medida'] = 11
             df.groupby(['cups', 'tipo_medida', 'timestamp', 'season']).aggregate({'ai': 'sum'})
+            df['method'] = 1
+            df['firmeza'] = 1
+            df['res'] = 0
+            df['res2'] = 0
+            df = df[P1_HEADER]
+            return df
 
     def writer(self):
-        filepath = os.path.join('tmp', self.filename)
-        self.file.to_csv(
-            filepath, sep=';', header=False, columns=False, index=False, line_terminator=';'
-        )
-        return filepath
+        """
+        P1 contains a curve files diary on zip
+        :return: file path
+        """
+        zipped_file = ZipFile(os.path.join('/tmp', self.simple_filename), 'w')
+        daymin = self.file['timestamp'].min()
+        daymax = self.file['timestamp'].max()
+        while daymin <= daymax:
+            di = daymin
+            df = daymin + timedelta(days=1)
+            self.measures_date = di
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            filepath = os.path.join('/tmp', self.filename)
+            dataf.to_csv(
+                filepath, sep=';', header=False, columns=P1_HEADER, index=False, line_terminator=';\n'
+            )
+            daymin = df
+            zipped_file.write(filepath)
+        zipped_file.close()
+        return zipped_file.filename
 
 
 class P1D(P1):
-    def __init__(self, distributor, filepath):
-        super(P1D, self).__init__(distributor, filepath)
+    def __init__(self, data, distributor=None):
+        super(P1D, self).__init__(data, distributor=distributor)
         self.prefix = 'P1D'
 
     def writer(self):
