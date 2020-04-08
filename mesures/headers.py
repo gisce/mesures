@@ -64,3 +64,20 @@ CUPSCAU_HEADER = [
     'data_baixa',
     'comentari'
 ]
+
+CILCAU_HEADER = [
+    'cau',
+    'cil',
+    'data_alta',
+    'data_baixa',
+    'comentari'
+]
+
+ALMACENACAU_HEADER = [
+    'cau',
+    'potencia_nominal',
+    'energia_emmagatzemable',
+    'data_alta',
+    'data_baixa',
+    'comentari'
+]
