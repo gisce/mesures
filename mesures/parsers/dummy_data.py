@@ -1,10 +1,11 @@
 import pandas as pd
+import numpy as np
 
 class DummyCurve(object):
     def __init__(self, datas):
         """
-        Parse a curvedata
-        :param datas:
+        Parse a curvedata format
+        :param datas: list of dicts
         """
         if isinstance(datas, (list, tuple)):
             pass
@@ -32,3 +33,30 @@ class DummyCurve(object):
                 if k not in data:
                     data[k] = 0
         self.curve_data = datas
+
+class DummyKeys(object):
+    def __init__(self, datas):
+        """
+        Parse fields
+        Set dict names as basic key names
+        Set dict lower keys
+        :param datas: list of dicts
+        """
+        for data in datas:
+            # Lower keys
+            # Split separators in keys dict
+            for k, v in data.items():
+                data[k.lower()] = data.pop(k)
+                data[k.split('.')[-1]] = data.pop(k)
+                data[k.split('agree_')[-1]] = data.pop(k)
+            if 'data_inici' in data:
+                data['data_alta'] = data.pop('data_inici')
+            if 'data_final' in data:
+                data['data_baixa'] = data.pop('data_final')
+            if 'data_alta' in data:
+                data['data_alta'] = pd.Timestamp(data['data_alta'])
+            if 'data_baixa' in data and data['data_baixa']:
+                data['data_baixa'] = pd.Timestamp(data['data_alta'])
+            else:
+                data['data_baixa'] = np.nan
+        self.data = datas

@@ -1,23 +1,24 @@
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from mesures.headers import AUTOCONSUMO_HEADER
-from mesures.curves.curve import DummyCurve
+from datetime import datetime
+from mesures.headers import AUTOCONSUMO_HEADER as columns
+from mesures.dates.date import REE_END_DATE
+from mesures.parsers.dummy_data import DummyKeys
 import os
-from zipfile import ZipFile
-
+import bz2
 
 class AUTOCONSUMO(object):
     def __init__(self, data, distributor='9999'):
-        self.header = AUTOCONSUMO_HEADER
+        data = DummyKeys(data).data
         self.file = self.reader(data)
         self.distributor = str(distributor)
         self.generation_date = datetime.now()
         self.prefix = 'AUTOCONSUMO'
         self.version = 0
+        self.default_compression = 'bz2'
 
     def __repr__(self):
-        return "AUTOCONSUMO: {}".format(self.filename)
+        return "{}: {}".format(self.prefix, self.filename)
 
     def __eq__(self, other):
         return self.file.equals(other.file)
@@ -40,39 +41,35 @@ class AUTOCONSUMO(object):
         return list(set(self.file['cau']))
 
     @property
-    def number_of_cups(self):
-        return len(list(set(self.file['cups'])))
+    def number_of_caus(self):
+        return len(list(set(self.file['cau'])))
 
-    def reader(self, filepath):
-        if isinstance(filepath, str):
+    def reader(self, file_path):
+        if isinstance(file_path, str):
             return pd.read_csv(
-                filepath, sep=';', names=self.header
+                file_path, sep=';', names=columns
             )
-        if isinstance(filepath, list):
-            df = pd.DataFrame(data=filepath)
+        if isinstance(file_path, list):
+            df = pd.DataFrame(data=file_path)
             for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
                 df[key] = ''
-            df['data_baixa'].fillna('30000101')
+            df['nom'] = df['cau']
+            df['cil'] = True
+            df['data_baixa'].fillna(REE_END_DATE, inplace=True)
+            df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
             df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
-            df['codi_postal'] = ''
-            df['potencia_nominal'] = ''
-            try:
-                df = df[AUTOCONSUMO_HEADER]
-            except:
-                pass
+            df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
+            df['subgrup'] = df['subgrup'].apply(lambda x: '.'.join(x.replace('.', '')))
+            df = df[columns]
             return df
 
     def writer(self):
         """
-        F1 contains a curve files diary on zip
-        :return: file path
+        :return: file path of generated AUTOCONSUMO File
         """
-        import bz2
-        #dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-        filepath = os.path.join('/tmp', self.filename)
+        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
         self.file.to_csv(
-            filepath, sep=';', header=False, columns=AUTOCONSUMO_HEADER, index=False, line_terminator=';\n'
+            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+            compression=self.default_compression
         )
-        with open(filepath, 'rb') as data:
-            f_ = bz2.compress(data.read())
-        return filepath
+        return file_path

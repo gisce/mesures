@@ -1,13 +1,12 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from mesures.headers import P1_HEADER
-from mesures.curves.curve import DummyCurve
+from mesures.headers import P1_HEADER as columns
+from mesures.parsers.dummy_data import DummyCurve
 import os
 from zipfile import ZipFile
 
 class P1(object):
     def __init__(self, data, distributor=None):
-        self.header = P1_HEADER
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
@@ -88,7 +87,7 @@ class P1(object):
     def reader(self, filepath):
         if isinstance(filepath, str):
             return pd.read_csv(
-                filepath, sep=';', names=self.header
+                filepath, sep=';', names=columns
             )
         if isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
@@ -98,7 +97,7 @@ class P1(object):
             df['firmeza'] = 1
             df['res'] = 0
             df['res2'] = 0
-            df = df[P1_HEADER]
+            df = df[columns]
             return df
 
     def writer(self):
@@ -116,18 +115,9 @@ class P1(object):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             filepath = os.path.join('/tmp', self.filename)
             dataf.to_csv(
-                filepath, sep=';', header=False, columns=P1_HEADER, index=False, line_terminator=';\n'
+                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
             )
             daymin = df
             zipped_file.write(filepath)
         zipped_file.close()
         return zipped_file.filename
-
-
-class P1D(P1):
-    def __init__(self, data, distributor=None):
-        super(P1D, self).__init__(data, distributor=distributor)
-        self.prefix = 'P1D'
-
-    def writer(self):
-        pass

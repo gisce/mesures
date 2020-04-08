@@ -45,14 +45,22 @@ AUTOCONSUMO_HEADER = [
     'miteco',
     'reg_auto_prov',
     'reg_auto_def',
-    'agree_tipus_autoconsum',
-    'agree_tipus_antiabocament',
+    'tipus_autoconsum',
+    'tipus_antiabocament',
     'nom',
-    'agree_configuracio_mesura',
+    'configuracio_mesura',
     'potencia_nominal',
     'codi_postal',
     'subgrup',
     'emmagatzematge',
     'data_alta',
     'data_baixa'
+]
+
+CUPSCAU_HEADER = [
+    'cau',
+    'cups',
+    'data_alta',
+    'data_baixa',
+    'comentari'
 ]

@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from mesures.headers import F1_HEADER
-from mesures.curves.curve import DummyCurve
+from mesures.headers import F1_HEADER as columns
+from mesures.parsers.dummy_data import DummyCurve
 import os
 from zipfile import ZipFile
 from random import randint
@@ -9,15 +9,11 @@ from random import randint
 
 
 class F1(object):
-    def __init__(self, data, distributor=None):
-        # self.header = HEADERS['F1_HEADER']
-        self.header = F1_HEADER
+    def __init__(self, data, distributor='9999'):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
-        if not distributor:
-            distributor = '9999'
-        self.distributor = distributor
+        self.distributor = str(distributor)
         self.generation_date = datetime.now()
         self.prefix = 'F1'
         self.version = 0
@@ -92,7 +88,7 @@ class F1(object):
     def reader(self, filepath):
         if isinstance(filepath, str):
             return pd.read_csv(
-                filepath, sep=';', names=self.header
+                filepath, sep=';', names=columns
             )
         if isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
@@ -115,7 +111,7 @@ class F1(object):
             df['firmeza'] = 1
             df['res'] = 0
             df['res2'] = 0
-            df = df[F1_HEADER]
+            df = df[columns]
             return df
 
     def writer(self):
@@ -133,7 +129,7 @@ class F1(object):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             filepath = os.path.join('/tmp', self.filename)
             dataf.to_csv(
-                filepath, sep=';', header=False, columns=F1_HEADER, index=False, line_terminator=';\n'
+                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
             )
             daymin = df
             zipped_file.write(filepath)
