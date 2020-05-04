@@ -36,7 +36,7 @@ class F1(object):
     @property
     def distributor(self):
         settings = ConfigParser()
-        settings.read('settings.cfg')
+        settings.read('../settings.cfg')
         return str(settings['generic']['distributor'].zfill(4))
 
     @property
