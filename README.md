@@ -16,7 +16,7 @@
 
 - Consulta les capçaleres del fitxer:
 ```python
-  from mesures.p2d import P2D
+  mesures.p2d.columns
 ```
 
 - Writer/reader unificats
