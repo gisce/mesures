@@ -60,7 +60,10 @@ class CUPSCAU(object):
             df = pd.DataFrame(data=file_path)
             df['data_baixa'].fillna(REE_END_DATE, inplace=True)
             df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
-            df['comentari'] = np.where(df['comentari'], df['comentari'], '')
+            try:
+                df['comentari'] = np.where(df['comentari'], df['comentari'], '')
+            except KeyError:
+                df['comentari'] = ''
             return df[columns]
 
     def writer(self):

@@ -47,8 +47,12 @@ class DummyKeys(object):
             # Split separators in keys dict
             for k, v in data.items():
                 data[k.lower()] = data.pop(k)
-                data[k.split('.')[-1]] = data.pop(k)
-                data[k.split('agree_')[-1]] = data.pop(k)
+                try:
+                    # Try to fix keynames with dots and agrees
+                    data[k.split('.')[-1]] = data.pop(k)
+                    data[k.split('agree_')[-1]] = data.pop(k)
+                except:
+                    continue
             if 'data_inici' in data:
                 data['data_alta'] = data.pop('data_inici')
             if 'data_final' in data:

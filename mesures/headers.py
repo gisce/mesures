@@ -60,6 +60,7 @@ AUTOCONSUMO_HEADER = [
 CUPSCAU_HEADER = [
     'cau',
     'cups',
+    'tipus_consum',
     'data_alta',
     'data_baixa',
     'comentari'
