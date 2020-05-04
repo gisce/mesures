@@ -1,17 +1,16 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from configparser import ConfigParser
 from mesures.headers import AUTOCONSUMO_HEADER as columns
 from mesures.dates.date import REE_END_DATE
 from mesures.parsers.dummy_data import DummyKeys
-import os
-import bz2
 
 class AUTOCONSUMO(object):
-    def __init__(self, data, distributor='9999'):
+    def __init__(self, data):
         data = DummyKeys(data).data
         self.file = self.reader(data)
-        self.distributor = str(distributor)
         self.generation_date = datetime.now()
         self.prefix = 'AUTOCONSUMO'
         self.version = 0
@@ -28,6 +27,12 @@ class AUTOCONSUMO(object):
 
     def __len__(self):
         return len(self.file)
+
+    @property
+    def distributor(self):
+        settings = ConfigParser()
+        settings.read('settings.cfg')
+        return str(settings['generic']['distributor'].zfill(4))
 
     @property
     def filename(self):

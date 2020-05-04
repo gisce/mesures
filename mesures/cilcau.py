@@ -1,13 +1,13 @@
+import os
 import pandas as pd
 import numpy as np
 from mesures.headers import CILCAU_HEADER as columns
 from mesures.dates.date import REE_END_DATE
 from mesures.cupscau import CUPSCAU
-import os
 
 class CILCAU(CUPSCAU):
-    def __init__(self, data, distributor='9999'):
-        super(CILCAU, self).__init__(data, distributor=distributor)
+    def __init__(self, data):
+        super(CILCAU, self).__init__(data)
         self.prefix = 'CILCAU'
 
     @property

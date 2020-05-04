@@ -1,18 +1,16 @@
+import os
 import pandas as pd
+from zipfile import ZipFile
+from configparser import ConfigParser
 from datetime import datetime, timedelta
 from mesures.headers import P1_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
-import os
-from zipfile import ZipFile
 
 class P1(object):
-    def __init__(self, data, distributor=None):
+    def __init__(self, data):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
-        if not distributor:
-            distributor = '9999'
-        self.distributor = distributor
         self.generation_date = datetime.now()
         self.prefix = 'P1'
         self.version = 0
@@ -34,6 +32,12 @@ class P1(object):
 
     def __len__(self):
         return len(self.file)
+
+    @property
+    def distributor(self):
+        settings = ConfigParser()
+        settings.read('settings.cfg')
+        return str(settings['generic']['distributor'].zfill(4))
 
     @property
     def filename(self):
