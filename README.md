@@ -1,6 +1,6 @@
 # Mesures
 
-### En fase de desenvolupament :octocat:
+### En fase de desenvolupament :octocat: :hammer:
 [![Mesures](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://github.com/gisce/mesures/edit/master/README.md)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants
