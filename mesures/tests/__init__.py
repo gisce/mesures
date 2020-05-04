@@ -1,7 +1,8 @@
 import unittest
 from mesures.f1 import F1
-from mesures.p1 import P1, P1D
-from mesures.sample_data.data import get_sample_data
+from mesures.p1 import P1
+from mesures.p1d import P1D
+from sample_data import get_sample_data
 
 class TestF1(unittest.TestCase):
 
