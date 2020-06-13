@@ -7,14 +7,15 @@ from mesures.headers import ALMACENACAU_HEADER as columns
 from mesures.dates.date import REE_END_DATE
 from mesures.parsers.dummy_data import DummyKeys
 
-class CUPSCAU(object):
-    def __init__(self, data):
+class ALMACENACAU(object):
+    def __init__(self, data, distributor=None):
         data = DummyKeys(data).data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'ALMACENACAU'
         self.version = 0
         self.default_compression = 'bz2'
+        self.distributor = distributor
 
     def __repr__(self):
         return "{}: {}".format(self.prefix, self.filename)
@@ -42,10 +43,14 @@ class CUPSCAU(object):
             )
         if isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
-            df['energia_emmagatzemable'] = ''
             df['data_baixa'].fillna(REE_END_DATE, inplace=True)
             df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
-            df['comentari'] = np.where(df['comentari'], df['comentari'], '')
+            df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].astype(str)
+            df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].apply(lambda x: x.zfill(2))
+            try:
+                df['comentari'] = np.where(df['comentari'], df['comentari'], '')
+            except KeyError:
+                df['comentari'] = ''
             return df[columns]
 
     def writer(self):

@@ -53,13 +53,12 @@ class AUTOCONSUMO(object):
             df = pd.DataFrame(data=file_path)
             for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
                 df[key] = ''
-            df['nom'] = df['cau']
-            df['cil'] = True
             df['data_baixa'].fillna(REE_END_DATE, inplace=True)
             df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
             df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
-            df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
-            df['subgrup'] = df['subgrup'].apply(lambda x: '.'.join(x.replace('.', '')))
+            #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
+            df['subgrup'] = df['subgrup'].apply(lambda x: x.replace('.', '')[:2])
+            df['tipus_antiabocament'] = df['tipus_antiabocament'].apply(lambda x: x.zfill(2))
             df = df[columns]
             return df
 

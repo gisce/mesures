@@ -78,6 +78,7 @@ ALMACENACAU_HEADER = [
     'cau',
     'potencia_nominal',
     'energia_emmagatzemable',
+    'tecnologia_emmagatzematge',
     'data_alta',
     'data_baixa',
     'comentari'
