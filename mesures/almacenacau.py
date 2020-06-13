@@ -29,12 +29,6 @@ class CUPSCAU(object):
         return len(self.file)
 
     @property
-    def distributor(self):
-        settings = ConfigParser()
-        settings.read('../settings.cfg')
-        return str(settings['generic']['distributor'].zfill(4))
-
-    @property
     def filename(self):
         return "{prefix}_{distributor}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor,

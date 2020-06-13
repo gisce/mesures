@@ -6,8 +6,8 @@ from mesures.dates.date import REE_END_DATE
 from mesures.cupscau import CUPSCAU
 
 class CILCAU(CUPSCAU):
-    def __init__(self, data):
-        super(CILCAU, self).__init__(data)
+    def __init__(self, data, distributor=None):
+        super(CILCAU, self).__init__(data, distributor)
         self.prefix = 'CILCAU'
 
     @property

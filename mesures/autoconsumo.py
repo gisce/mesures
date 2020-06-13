@@ -8,13 +8,14 @@ from mesures.dates.date import REE_END_DATE
 from mesures.parsers.dummy_data import DummyKeys
 
 class AUTOCONSUMO(object):
-    def __init__(self, data):
+    def __init__(self, data, distributor=None):
         data = DummyKeys(data).data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'AUTOCONSUMO'
         self.version = 0
         self.default_compression = 'bz2'
+        self.distributor = distributor
 
     def __repr__(self):
         return "{}: {}".format(self.prefix, self.filename)
@@ -27,12 +28,6 @@ class AUTOCONSUMO(object):
 
     def __len__(self):
         return len(self.file)
-
-    @property
-    def distributor(self):
-        settings = ConfigParser()
-        settings.read('../settings.cfg')
-        return str(settings['generic']['distributor'].zfill(4))
 
     @property
     def filename(self):
