@@ -10,11 +10,12 @@ reqs = data.split()
 setup(
     name='mesures',
     version=__version__,
-    description="Eina intercambi fitxers de mesures REE",
+    description="Eina d'intercambi fitxers de mesures REE",
     provides=['mesures'],
     packages=find_packages(),
     install_requires=reqs,
-    license='General Public Licence 3',
-    author=__author__,
+    license='BSD 3-Clause License',
+    author='GISCE-TI S.L.',
     author_email='devel@gisce.net',
+    url = 'https://github.com/gisce/mesures',
 )
