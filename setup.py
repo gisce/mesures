@@ -10,7 +10,7 @@ reqs = data.split()
 setup(
     name='mesures',
     version=__version__,
-    description="Eina d'intercambi fitxers de mesures REE",
+    description="Eina d'intercanvi fitxers de mesures REE",
     provides=['mesures'],
     packages=find_packages(),
     install_requires=reqs,
