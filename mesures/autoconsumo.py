@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from configparser import ConfigParser
 from mesures.headers import AUTOCONSUMO_HEADER as columns
 from mesures.dates.date import REE_END_DATE
 from mesures.parsers.dummy_data import DummyKeys

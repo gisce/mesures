@@ -3,9 +3,7 @@
 from setuptools import setup, find_packages
 from mesures import __version__, __author__
 
-with open('requirements.txt') as f:
-    data = f.read()
-reqs = data.split()
+reqs = ['pandas<=0.23.0']
 
 setup(
     name='mesures',

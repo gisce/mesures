@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 from zipfile import ZipFile
-from configparser import ConfigParser
 from datetime import datetime, timedelta
 from mesures.headers import F1_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
