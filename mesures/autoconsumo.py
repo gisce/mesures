@@ -52,7 +52,8 @@ class AUTOCONSUMO(object):
             df = pd.DataFrame(data=file_path)
             for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
                 df[key] = ''
-            df['data_baixa'].fillna(REE_END_DATE, inplace=True)
+            df['data_baixa'] = df['data_baixa'].apply(
+                lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
             df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
             df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
             #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])

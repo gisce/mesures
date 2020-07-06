@@ -20,7 +20,8 @@ class CILCAU(CUPSCAU):
 
     def reader(self, file_path):
         df = pd.DataFrame(data=file_path)
-        df['data_baixa'].fillna(REE_END_DATE, inplace=True)
+        df['data_baixa'] = df['data_baixa'].apply(
+            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
