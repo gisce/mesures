@@ -58,7 +58,7 @@ class AUTOCONSUMO(object):
             #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
             df['subgrup'] = df['subgrup'].apply(lambda x: x.replace('.', '')[:2])
             df['tipus_antiabocament'] = (
-                df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or x is None or x == '') else x.zfill(2)))
+                df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x.zfill(2)))
             df = df[columns]
             return df
 
