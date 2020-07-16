@@ -3,7 +3,8 @@
 from setuptools import setup, find_packages
 from mesures import __version__, __author__
 
-reqs = ['pandas<=0.23.0']
+with open('requirements.txt', 'r') as f:
+    requirements = f.readlines()
 
 setup(
     name='mesures',
@@ -11,7 +12,7 @@ setup(
     description="Eina d'intercanvi fitxers de mesures REE",
     provides=['mesures'],
     packages=find_packages(),
-    install_requires=reqs,
+    install_requires=requirements,
     license='BSD 3-Clause License',
     author='GISCE-TI S.L.',
     author_email='devel@gisce.net',
