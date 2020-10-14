@@ -50,6 +50,13 @@ class AGRECL(object):
             )
         if isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
+            if 'tipus_operacio' not in df:
+                df['tipus_operacio'] = ''
+            if 'tipus_demanda' not in df:
+                df['tipus_demanda'] = '0'
+            df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y/%m/%d %H'))
+            df['data_baixa'] = df['data_baixa'].apply(
+                lambda x: '' if not isinstance(x, pd.Timestamp) else x.strftime('%Y/%m/%d %H'))
             df = df[columns]
             return df
 

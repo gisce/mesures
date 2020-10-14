@@ -65,6 +65,10 @@ class DummyKeys(object):
                 data['data_alta'] = data.pop('data_inici')
             if 'data_final' in data:
                 data['data_baixa'] = data.pop('data_final')
+            if 'data_inici_ag' in data:
+                data['data_alta'] = data.pop('data_inici_ag')
+            if 'data_final_ag' in data:
+                data['data_baixa'] = data.pop('data_final_ag')
             if 'data_alta' in data:
                 data['data_alta'] = pd.Timestamp(data['data_alta'])
             if 'data_baixa' in data and data['data_baixa']:
