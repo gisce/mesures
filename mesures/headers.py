@@ -83,3 +83,18 @@ ALMACENACAU_HEADER = [
     'data_baixa',
     'comentari'
 ]
+
+AGRECL_HEADER = [
+    'origen',
+    'tipus_operacio',
+    'distribuidora',
+    'comercialitzadora',
+    'tensio',
+    'tarifa',
+    'dh',
+    'tipo',
+    'provincia',
+    'tipus_demanda',
+    'data_alta',
+    'data_baixa'
+]
