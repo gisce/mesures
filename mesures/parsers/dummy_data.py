@@ -16,9 +16,13 @@ class DummyCurve(object):
             # Adapt datetimes
             if 'datetime' in data:
                 data['timestamp'] = data.pop('datetime')
+            if 'local_datetime' in data:
+                data['timestamp'] = data.pop('local_datetime')
             data['timestamp'] = pd.Timestamp(data['timestamp'])
             if 'estacio' in data:
                 data['season'] = data.pop('estacio')
+            if 'season' not in data:
+                data['season'] = int(data['timestamp'].dst().seconds > 0)
             if 'as' in data:
                 # Active input and export
                 data['ae'] = data.pop('as')
@@ -53,14 +57,22 @@ class DummyKeys(object):
                     data[k.split('agree_')[-1]] = data.pop(k)
                 except:
                     continue
+            if 'origin' in data:
+                data['origen'] = data.pop('origin')
+            if 'operation_type' in data:
+                data['tipus_operacio'] = data.pop('operation_type')
             if 'data_inici' in data:
                 data['data_alta'] = data.pop('data_inici')
             if 'data_final' in data:
                 data['data_baixa'] = data.pop('data_final')
+            if 'data_inici_ag' in data:
+                data['data_alta'] = data.pop('data_inici_ag')
+            if 'data_final_ag' in data:
+                data['data_baixa'] = data.pop('data_final_ag')
             if 'data_alta' in data:
                 data['data_alta'] = pd.Timestamp(data['data_alta'])
             if 'data_baixa' in data and data['data_baixa']:
-                data['data_baixa'] = pd.Timestamp(data['data_alta'])
+                data['data_baixa'] = pd.Timestamp(data['data_baixa'])
             else:
                 data['data_baixa'] = np.nan
         self.data = datas
