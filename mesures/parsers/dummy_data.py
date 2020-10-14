@@ -72,7 +72,7 @@ class DummyKeys(object):
             if 'data_alta' in data:
                 data['data_alta'] = pd.Timestamp(data['data_alta'])
             if 'data_baixa' in data and data['data_baixa']:
-                data['data_baixa'] = pd.Timestamp(data['data_alta'])
+                data['data_baixa'] = pd.Timestamp(data['data_baixa'])
             else:
                 data['data_baixa'] = np.nan
         self.data = datas
