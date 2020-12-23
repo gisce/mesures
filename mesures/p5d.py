@@ -4,13 +4,14 @@ from datetime import datetime, timedelta
 from mesures.headers import P5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 
-class P1(object):
+class P5D(object):
     def __init__(self, data, distributor=None, comer=None):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'P5D'
+        self.default_compression = 'bz2'
         self.version = 0
         self.distributor = distributor
         self.comer = comer
@@ -68,6 +69,10 @@ class P1(object):
             df = pd.DataFrame(data=filepath)
             df = df.groupby(['cups', 'timestamp', 'season']).aggregate({'ai': 'sum', 'ae': 'sum'}).reset_index()
             df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+            for key in ['ai', 'ae']:
+                if key not in df:
+                    df[key] = 0
+                df[key] = df[key].astype('int32')
             df = df[columns]
             return df
 
