@@ -36,8 +36,9 @@ class P5D(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, comer=self.comer, timestamp=self.generation_date.strftime('%Y%m%d')
+        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
 
     @property
