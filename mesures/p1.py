@@ -95,6 +95,9 @@ class P1(object):
             df['firmeza'] = 1
             df['res'] = 0
             df['res2'] = 0
+            for key in columns:
+                if 'quality' in key and key not in df:
+                    df[key] = 0
             df = df[columns]
             return df
 

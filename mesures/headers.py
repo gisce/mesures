@@ -1,3 +1,11 @@
+P5D_HEADER = [
+    'cups',
+    'timestamp',
+    'season',
+    'ai',
+    'ae'
+]
+
 P1_HEADER = [
     'cups',
     'tipo_medida',
