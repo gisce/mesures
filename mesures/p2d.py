@@ -1,3 +1,4 @@
+import pandas as pd
 from mesures.p2 import P2
 from mesures.headers import P1_HEADER as columns
 
