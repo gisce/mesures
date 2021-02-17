@@ -30,7 +30,7 @@
 - `ALMACENACAU`
 - `B5D`
 - `CILCAU`
-- `CUPSCAU
+- `CUPSCAU`
 - `F1`
 - `P1`
 - `P1D`
