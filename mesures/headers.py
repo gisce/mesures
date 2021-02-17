@@ -106,3 +106,33 @@ AGRECL_HEADER = [
     'data_alta',
     'data_baixa'
 ]
+
+A5D_HEADER = [
+    'cups',
+    'timestamp',
+    'season',
+    'ai',
+    'ae',
+    'r1',
+    'r2',
+    'r3',
+    'r4',
+    'method',
+    'firmeza',
+    'factura'
+]
+
+B5D_HEADER = [
+    'cups',
+    'timestamp',
+    'season',
+    'ai',
+    'ae',
+    'r1',
+    'r2',
+    'r3',
+    'r4',
+    'method',
+    'firmeza',
+    'factura'
+]
