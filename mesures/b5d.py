@@ -82,9 +82,8 @@ class B5D():
         B5D contains a hourly raw curve
         :return: file path
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
-            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-            compression=self.default_compression
+            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
         )
         return file_path
