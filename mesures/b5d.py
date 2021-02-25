@@ -11,7 +11,6 @@ class B5D():
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'B5D'
-        self.default_compression = 'bz2'
         self.version = 0
         self.distributor = distributor
         self.comer = comer
@@ -43,7 +42,7 @@ class B5D():
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return self.file['ae'].sum()
 
     @property
     def ai(self):
@@ -74,6 +73,7 @@ class B5D():
             df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
             for key in ['r1', 'r2', 'r3', 'r4', 'method', 'firmeza']:
                 df[key] = ''
+            df['ai'] = 0
             df = df[columns]
             return df
 
