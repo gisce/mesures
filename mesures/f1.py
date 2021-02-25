@@ -41,12 +41,6 @@ class F1(object):
         )
 
     @property
-    def simple_filename(self):
-        return "{prefix}_{distributor}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d')
-        )
-
-    @property
     def total(self):
         return self.file['ai'].sum()
 
@@ -116,9 +110,10 @@ class F1(object):
         F1 contains a curve files diary on zip
         :return: file path
         """
-        zipped_file = ZipFile(os.path.join('/tmp', self.simple_filename), 'w')
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
+        self.measures_date = daymin
+        zipped_file = ZipFile(os.path.join('/tmp', self.filename + '.zip'), 'w')
         while daymin <= daymax:
             di = daymin
             df = daymin + timedelta(days=1)
@@ -130,6 +125,6 @@ class F1(object):
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
             )
             daymin = df
-            zipped_file.write(filepath)
+            zipped_file.write(filepath, arcname=self.filename)
         zipped_file.close()
         return zipped_file.filename
