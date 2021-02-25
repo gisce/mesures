@@ -37,6 +37,10 @@ class DummyCurve(object):
                 data['factura'] = data.pop('invoice_number')
             if 'bill' in data:
                 data['factura'] = data.pop('bill')
+            # Transform fact in measure key if only one key passed
+            for k in ('ai_fact', 'ae_fact', 'r1_fact', 'r2_fact', 'r3_fact', 'r4_fact'):
+                if k in data and k[:2] not in data:
+                    data[k[:2]] = data.pop(k)
             for k in ('ai', 'ae', 'r1', 'r2', 'r3', 'r4'):
                 if k not in data:
                     data[k] = 0

@@ -20,6 +20,7 @@ class P1D(P1):
         :return: file path
         """
         file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        self.file['timestamp'] = self.file['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
         self.file.to_csv(
             file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
             compression=self.default_compression
