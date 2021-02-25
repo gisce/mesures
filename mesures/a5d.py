@@ -11,7 +11,6 @@ class A5D():
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'A5D'
-        self.default_compression = 'bz2'
         self.version = 0
         self.distributor = distributor
         self.comer = comer
