@@ -1,7 +1,7 @@
 # Mesures
 
-### En fase de desenvolupament :octocat: :hammer:
-[![Mesures](https://img.shields.io/badge/version-0.2.0-green.svg)](https://github.com/gisce/mesures/edit/master/README.md)
+:octocat: :hammer:
+[![Mesures](https://img.shields.io/badge/version-1.1.0-green.svg)](https://github.com/gisce/mesures/edit/master/README.md)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants
 - Aporta el coneixement i formats necessaris per crear fitxers amb el format unificat i establert per l'Operador del sistema
@@ -24,3 +24,16 @@
   p2d = P2D()
   p2d.writer()
 ```
+## Suporta
+- `A5D`
+- `AUTOCONSUMO`
+- `ALMACENACAU`
+- `B5D`
+- `CILCAU`
+- `CUPSCAU`
+- `F1`
+- `P1`
+- `P1D`
+- `P2`
+- `P2D`
+- `P5D`

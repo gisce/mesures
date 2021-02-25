@@ -27,12 +27,16 @@ class DummyCurve(object):
                 # Active input and export
                 data['ae'] = data.pop('as')
                 data['ai'] = data.pop('ae')
-            if 'season' in data and isinstance(data['season'], str):
+            if 'season' in data and (isinstance(data['season'], str) or isinstance(data['season'], unicode)):
                 try:
                     data['season'] = int(data['season'])
                 except ValueError:
                     # str season
                     data['season'] = 0 if data['season'].lower() == 'w' else 1
+            if 'invoice_number' in data:
+                data['factura'] = data.pop('invoice_number')
+            if 'bill' in data:
+                data['factura'] = data.pop('bill')
             for k in ('ai', 'ae', 'r1', 'r2', 'r3', 'r4'):
                 if k not in data:
                     data[k] = 0
