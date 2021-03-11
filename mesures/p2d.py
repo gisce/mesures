@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from mesures.p2 import P2
 from mesures.headers import P1_HEADER as columns
 
