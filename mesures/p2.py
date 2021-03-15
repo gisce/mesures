@@ -1,6 +1,6 @@
 import pandas as pd
 from mesures.p1 import P1
-from mesures.headers import P1_HEADER as columns
+from mesures.headers import P2_HEADER as columns
 
 class P2(P1):
     def __init__(self, data, distributor=None):
