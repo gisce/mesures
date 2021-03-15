@@ -1,13 +1,14 @@
 import pandas as pd
 import os
 from mesures.p2 import P2
-from mesures.headers import P1_HEADER as columns
+from mesures.headers import P2_HEADER as columns
 
 class P2D(P2):
-    def __init__(self, data, distributor=None):
+    def __init__(self, data, distributor=None, comer=comer):
         super(P2D, self).__init__(data, distributor)
         self.prefix = 'P2D'
         self.default_compression = 'bz2'
+        self.comer = comer
 
     @property
     def filename(self):
