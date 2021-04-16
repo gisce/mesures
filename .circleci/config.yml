@@ -16,11 +16,15 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
           command: |
             cd ~/src/
             virtualenv venv
             . venv/bin/activate
+            cd mesures
             pip install -r requirements.txt
           name: Install dependencies
       - run:
