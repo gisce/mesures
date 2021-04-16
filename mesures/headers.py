@@ -136,3 +136,17 @@ B5D_HEADER = [
     'firmeza',
     'factura'
 ]
+
+PMEST_HEADER = [
+    'pm',
+    'tipo_medida',
+    'timestamp',
+    'season',
+    'method',
+    'ai',
+    'ae',
+    'r1',
+    'r2',
+    'r3',
+    'r4'
+]
