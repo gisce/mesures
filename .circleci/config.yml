@@ -13,12 +13,16 @@ jobs:
     steps:
       - checkout:
           path: ~/src/mesures
+      - run:
+         command: |
+           export ROOT_DIR_SRC=~/src
+           git clone --depth 1 https://github.com/gisce/mesures.git ~/src/mesures
+         name: Install requirements
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
           command: |
-            git clone --depth 1 https://github.com/gisce/mesures.git ~/src/mesures
             cd ~/src/
             virtualenv venv
             . venv/bin/activate
