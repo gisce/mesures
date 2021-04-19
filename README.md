@@ -1,7 +1,7 @@
 # Mesures
 
 :octocat: :hammer:
-[![Mesures](https://img.shields.io/badge/version-1.1.0-green.svg)](https://github.com/gisce/mesures/edit/master/README.md)
+[![Mesures](https://img.shields.io/badge/version-1.3.0-green.svg)](https://github.com/gisce/mesures/edit/master/README.md)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants
 - Aporta el coneixement i formats necessaris per crear fitxers amb el format unificat i establert per l'Operador del sistema
