@@ -16,7 +16,6 @@ jobs:
       - run:
          command: |
            export ROOT_DIR_SRC=~/src
-           git clone --depth 1 https://github.com/gisce/mesures.git ~/src/mesures
          name: Install requirements
       - restore_cache:
           keys:
