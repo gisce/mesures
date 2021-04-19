@@ -16,9 +16,6 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
           command: |
             git clone --depth 1 https://github.com/gisce/mesures.git ~/src/mesures
