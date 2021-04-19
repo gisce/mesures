@@ -13,9 +13,9 @@ jobs:
     steps:
       - checkout:
           path: ~/src/mesures
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
           command: |
             git clone --depth 1 https://github.com/gisce/mesures.git ~/src/mesures
@@ -25,6 +25,10 @@ jobs:
             cd mesures
             pip install -r requirements.txt
           name: Install dependencies
+      - save_cache:
+          paths:
+            - ~/src/venv
+          key: v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
           command: |
             cd ~/src/
