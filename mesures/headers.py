@@ -31,6 +31,30 @@ P1_HEADER = [
     'firmeza'
 ]
 
+P2_HEADER = [
+    'cups',
+    'tipo_medida',
+    'timestamp',
+    'season',
+    'ai',
+    'quality_ai',
+    'ae',
+    'quality_ae',
+    'r1',
+    'quality_r1',
+    'r2',
+    'quality_r2',
+    'r3',
+    'quality_r3',
+    'r4',
+    'quality_r4',
+    'res',
+    'quality_res',
+    'res2',
+    'quality_res2',
+    'method'
+]
+
 F1_HEADER = [
     'cups',
     'tipo_medida',
