@@ -26,6 +26,7 @@ with description('An P1') as self:
         f = P1(data)
         assert isinstance(f, P1)
 
+with description('An P1D') as self:
     with it('instance of P1D Class'):
         data = get_sample_data()
         f = P1D(data)
