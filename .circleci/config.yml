@@ -1,0 +1,52 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  test-template: &test-template
+  test-py37:
+    docker:
+      - image: circleci/python:3.7
+    executor: python/default
+    working_directory: ~/src
+    steps:
+      - checkout:
+          path: ~/src/mesures
+      - run:
+         command: |
+           export ROOT_DIR_SRC=~/src
+         name: Install requirements
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
+      - run:
+          command: |
+            cd ~/src/
+            virtualenv venv
+            . venv/bin/activate
+            cd mesures
+            pip install -r requirements.txt
+          name: Install dependencies
+      - save_cache:
+          paths:
+            - ~/src/venv
+          key: v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
+      - run:
+          command: |
+            cd ~/src/
+            . venv/bin/activate
+            cd mesures
+            mamba --enable-coverage
+            coverage report
+            coverage html
+          name: Test
+      - store_artifacts:
+          path: ~/src/mesures/htmlcov
+          destination: coverage
+          name: store_artifacts
+
+workflows:
+  main:
+    jobs:
+      - test-py37
