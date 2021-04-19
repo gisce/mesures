@@ -3,7 +3,7 @@ from expects import expect, equal
 from mesures.f1 import F1
 from mesures.p1 import P1
 from mesures.p1d import P1D
-from sample_data_spec import get_sample_data
+from spec.sample_data import get_sample_data
 
 
 with description('An F1') as self:
