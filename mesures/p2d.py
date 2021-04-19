@@ -4,7 +4,7 @@ from mesures.p2 import P2
 from mesures.headers import P2_HEADER as columns
 
 class P2D(P2):
-    def __init__(self, data, distributor=None, comer=comer):
+    def __init__(self, data, distributor=None, comer=None):
         super(P2D, self).__init__(data, distributor)
         self.prefix = 'P2D'
         self.default_compression = 'bz2'
