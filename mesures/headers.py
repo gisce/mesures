@@ -1,9 +1,25 @@
+# -*- coding: utf-8 -*-
 P5D_HEADER = [
     'cups',
     'timestamp',
     'season',
     'ai',
     'ae'
+]
+
+F5D_HEADER = [
+    'cups',
+    'timestamp',
+    'season',
+    'ai',
+    'ae',
+    'r1',
+    'r2',
+    'r3',
+    'r4',
+    'method',
+    'firmeza',
+    'factura'
 ]
 
 P1_HEADER = [

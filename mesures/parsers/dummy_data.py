@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 class DummyCurve(object):
     def __init__(self, datas):
@@ -24,15 +25,23 @@ class DummyCurve(object):
             if 'season' not in data:
                 data['season'] = int(data['timestamp'].dst().seconds > 0)
             if 'as' in data:
-                # Active input and export
+                # Active saliente and entrante
                 data['ae'] = data.pop('as')
                 data['ai'] = data.pop('ae')
+            if 'ao' in data:
+                # Active input and output
+                data['ai'] = data.pop('ai')
+                data['ae'] = data.pop('ao')
             if 'season' in data and (isinstance(data['season'], str) or isinstance(data['season'], unicode)):
                 try:
                     data['season'] = int(data['season'])
                 except ValueError:
                     # str season
                     data['season'] = 0 if data['season'].lower() == 'w' else 1
+            if 'kind_fact' in data:
+                data['method'] = data.pop('kind_fact')
+            if 'firm_fact' in data:
+                data['firmeza'] = int(data.pop('firm_fact'))
             if 'invoice_number' in data:
                 data['factura'] = data.pop('invoice_number')
             if 'bill' in data:
@@ -45,6 +54,7 @@ class DummyCurve(object):
                 if k not in data:
                     data[k] = 0
         self.curve_data = datas
+
 
 class DummyKeys(object):
     def __init__(self, datas):
