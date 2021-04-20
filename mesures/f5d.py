@@ -79,6 +79,10 @@ class F5D(object):
     def number_of_cups(self):
         return len(list(set(self.file['cups'])))
 
+    @property
+    def number_of_invoices(self):
+        return len(list(set(self.file['factura'])))
+
     def reader(self, filepath):
         if isinstance(filepath, str):
             return pd.read_csv(
