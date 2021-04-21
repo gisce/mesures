@@ -13,7 +13,7 @@ class P2D(P2):
     @property
     def filename(self):
         return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, self.comer,
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
 
