@@ -114,7 +114,7 @@ class PMEST(object):
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H'))
-            file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+            filepath = os.path.join('/tmp', self.filename) + '.' + self.default_compression
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
                 compression=self.default_compression
