@@ -120,6 +120,6 @@ class PMEST(object):
                 compression=self.default_compression
             )
             daymin = df
-            zipped_file.write(filepath, arcname=self.filename)
+            zipped_file.write(filepath, arcname=os.path.basename(filepath))
         zipped_file.close()
         return zipped_file.filename
