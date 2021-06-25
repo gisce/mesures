@@ -14,6 +14,7 @@ class P1(object):
         self.prefix = 'P1'
         self.version = 0
         self.distributor = distributor
+        self.default_compression = 'bz2'
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -110,11 +111,11 @@ class P1(object):
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
-            filepath = os.path.join('/tmp', self.filename)
+            filepath = os.path.join('/tmp', self.filename) + '.' + self.default_compression
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
             )
             daymin = df
-            zipped_file.write(filepath, arcname=self.filename)
+            zipped_file.write(filepath, arcname=os.path.basename(filepath))
         zipped_file.close()
         return zipped_file.filename
