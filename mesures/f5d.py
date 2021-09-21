@@ -90,6 +90,8 @@ class F5D(object):
             )
         if isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
+            if 'firmeza' not in df:
+                    df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
             df = df[COLUMNS]
             return df
 
