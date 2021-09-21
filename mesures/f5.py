@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-from mesures.headers import F5D_HEADER as COLUMNS
+from datetime import datetime, timedelta
+from zipfile import ZipFile
+from mesures.headers import F5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 import os
 import pandas as pd
@@ -86,13 +87,13 @@ class F5(object):
     def reader(self, filepath):
         if isinstance(filepath, str):
             return pd.read_csv(
-                filepath, sep=';', names=COLUMNS
+                filepath, sep=';', names=columns
             )
         if isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
             if 'firmeza' not in df:
                     df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
-            df = df[COLUMNS]
+            df = df[columns]
             return df
 
     def writer(self):
@@ -113,7 +114,7 @@ class F5(object):
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
             filepath = os.path.join('/tmp', self.filename) + '.' + self.default_compression
             dataf.to_csv(
-                filepath, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n'
+                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
             )
             daymin = df
             zipped_file.write(filepath, arcname=os.path.basename(filepath))
