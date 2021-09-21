@@ -42,6 +42,8 @@ class DummyCurve(object):
                 data['method'] = data.pop('kind_fact')
             if 'firm_fact' in data:
                 data['firmeza'] = int(data.pop('firm_fact'))
+            if 'invoice' in data:
+                data['factura'] = data.pop('invoice')
             if 'invoice_number' in data:
                 data['factura'] = data.pop('invoice_number')
             if 'bill' in data:
