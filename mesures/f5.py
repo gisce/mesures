@@ -39,7 +39,7 @@ class F5(object):
     @property
     def filename(self):
         return "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, comer=self.comer, measures_date=self.measures_date.strftime('%Y%m%d')
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer, measures_date=self.measures_date.strftime('%Y%m%d'),
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
 
