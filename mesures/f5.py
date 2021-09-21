@@ -92,7 +92,13 @@ class F5(object):
         if isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
             if 'firmeza' not in df:
-                    df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+                df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+            if 'factura' not in df:
+                df['factura'] = 'F0000000000'
+            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+                if key not in df:
+                    df[key] = 0
+                df[key] = df[key].astype('int32')
             df = df[columns]
             return df
 
@@ -111,7 +117,7 @@ class F5(object):
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
+            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
             filepath = os.path.join('/tmp', self.filename) + '.' + self.default_compression
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'

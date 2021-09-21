@@ -24,7 +24,7 @@ class F5D(F5):
         F5D contains a hourly invoiced curve
         :return: file path
         """
-        self.file['timestamp'] = self.file['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
+        self.file['timestamp'] = self.file['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
         file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
         self.file.to_csv(
             file_path, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n',
