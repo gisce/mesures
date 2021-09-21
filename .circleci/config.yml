@@ -4,30 +4,28 @@ orbs:
   python: circleci/python@0.2.1
 
 jobs:
-  test-template: &test-template
-  test-py37:
+  test-template: &test-template   
     docker:
       - image: circleci/python:3.7
-    executor: python/default
     working_directory: ~/src
     steps:
       - checkout:
           path: ~/src/mesures
       - run:
-         command: |
-           export ROOT_DIR_SRC=~/src
-         name: Install requirements
+          name: Install requirements
+          command: |
+            export ROOT_DIR_SRC=~/src          
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "~/src/mesures/requirements.txt"}}
       - run:
+          name: Install dependencies
           command: |
             cd ~/src/
             virtualenv venv
             . venv/bin/activate
             cd mesures
-            pip install -r requirements.txt
-          name: Install dependencies
+            pip install -r requirements.txt          
       - save_cache:
           paths:
             - ~/src/venv
@@ -46,7 +44,18 @@ jobs:
           destination: coverage
           name: store_artifacts
 
+  test-py27:
+    <<: *test-template
+    docker:
+      - image: circleci/python:2.7
+
+  test-py37:
+    <<: *test-template
+    docker:
+      - image: circleci/python:3.7
+
 workflows:
-  main:
+  test:
     jobs:
       - test-py37
+      - test-py27
