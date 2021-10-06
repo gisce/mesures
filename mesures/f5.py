@@ -86,21 +86,24 @@ class F5(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 filepath, sep=';', names=columns
             )
-        if isinstance(filepath, list):
+        elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
-            if 'firmeza' not in df:
-                df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
-            if 'factura' not in df:
-                df['factura'] = 'F0000000000'
-            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
-                if key not in df:
-                    df[key] = 0
-                df[key] = df[key].astype('int32')
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        if 'firmeza' not in df:
+            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+        if 'factura' not in df:
+            df['factura'] = 'F0000000000'
+        for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+            if key not in df:
+                df[key] = 0
+            df[key] = df[key].astype('int32')
+        df = df[columns]
+        return df
 
     def writer(self):
         """

@@ -19,7 +19,15 @@ class CILCAU(CUPSCAU):
         return len(list(set(self.file['cil'])))
 
     def reader(self, file_path):
-        df = pd.DataFrame(data=file_path)
+        if isinstance(file_path, str):
+            df = pd.read_csv(
+                file_path, sep=';', names=columns
+            )
+        elif isinstance(file_path, list):
+            df = pd.DataFrame(data=file_path)
+        else:
+            raise Exception("Filepath must be an str or a list")
+
         df['data_baixa'] = df['data_baixa'].apply(
             lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))

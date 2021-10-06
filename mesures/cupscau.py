@@ -53,19 +53,22 @@ class CUPSCAU(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 file_path, sep=';', names=columns
             )
-        if isinstance(file_path, list):
+        elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
-            df['data_baixa'] = df['data_baixa'].apply(
-                lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
-            df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
-            try:
-                df['comentari'] = np.where(df['comentari'], df['comentari'], '')
-            except KeyError:
-                df['comentari'] = ''
-            return df[columns]
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        df['data_baixa'] = df['data_baixa'].apply(
+            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
+        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
+        try:
+            df['comentari'] = np.where(df['comentari'], df['comentari'], '')
+        except KeyError:
+            df['comentari'] = ''
+        return df[columns]
 
     def writer(self):
         """
