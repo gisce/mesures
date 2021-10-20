@@ -71,33 +71,36 @@ class PMEST(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 filepath, sep=';', names=columns
             )
-        if isinstance(filepath, list):
+        elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
-            if 'tipo_medida' not in df:
-                # 8 absoluta
-                # 11 incremental
-                df['tipo_medida'] = 11
-            if 'method' not in df:
-                df['method'] = 7
-            df = df.groupby(
-                [
-                    'pm', 'tipo_medida', 'timestamp', 'season', 'method'
-                ]
-            ).aggregate(
-                {
-                    'ai': 'sum',
-                    'ae': 'sum',
-                    'r1': 'sum',
-                    'r2': 'sum',
-                    'r3': 'sum',
-                    'r4': 'sum',
-                }
-            ).reset_index()
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        if 'tipo_medida' not in df:
+            # 8 absoluta
+            # 11 incremental
+            df['tipo_medida'] = 11
+        if 'method' not in df:
+            df['method'] = 7
+        df = df.groupby(
+            [
+                'pm', 'tipo_medida', 'timestamp', 'season', 'method'
+            ]
+        ).aggregate(
+            {
+                'ai': 'sum',
+                'ae': 'sum',
+                'r1': 'sum',
+                'r2': 'sum',
+                'r3': 'sum',
+                'r4': 'sum',
+            }
+        ).reset_index()
+        df = df[columns]
+        return df
 
     def writer(self):
         """

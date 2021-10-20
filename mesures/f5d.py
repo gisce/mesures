@@ -19,12 +19,29 @@ class F5D(F5):
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
 
+    def cut_by_dates(self, di, df):
+        """
+        Cut File by dates, discard > and <
+        :param di: str datetime LIKE 2021-01-01 01:00
+        :param df: str datetime LIKE 2021-02-01 00:00
+        """
+        self.file = self.file[(self.file.timestamp >= di) & (self.file.timestamp <= df)]
+
+    def reader(self, filepath):
+        df = super(F5D, self).reader(filepath)
+        try:
+            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        except Exception as err:
+            # Timestamp is already well parsed
+            pass
+        finally:
+            return df
+
     def writer(self):
         """
         F5D contains a hourly invoiced curve
         :return: file path
         """
-        self.file['timestamp'] = self.file['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
         file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
         self.file.to_csv(
             file_path, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n',

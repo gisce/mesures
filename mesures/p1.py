@@ -79,22 +79,25 @@ class P1(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 filepath, sep=';', names=columns
             )
-        if isinstance(filepath, list):
+        elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
-            df['tipo_medida'] = 11
-            df.groupby(['cups', 'tipo_medida', 'timestamp', 'season']).aggregate({'ai': 'sum'})
-            df['method'] = 1
-            df['firmeza'] = 1
-            df['res'] = 0
-            df['res2'] = 0
-            for key in columns:
-                if 'quality' in key and key not in df:
-                    df[key] = 0
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        df['tipo_medida'] = 11
+        df.groupby(['cups', 'tipo_medida', 'timestamp', 'season']).aggregate({'ai': 'sum'})
+        df['method'] = 1
+        df['firmeza'] = 1
+        df['res'] = 0
+        df['res2'] = 0
+        for key in columns:
+            if 'quality' in key and key not in df:
+                df[key] = 0
+        df = df[columns]
+        return df
 
     def writer(self):
         """

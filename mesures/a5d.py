@@ -62,19 +62,22 @@ class A5D():
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 filepath, sep=';', names=columns
             )
-        if isinstance(filepath, list):
+        elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
-            df = df.groupby(['cups', 'timestamp', 'season', 'factura']).aggregate(
-                {'ai': 'sum', 'ae': 'sum'}
-            ).reset_index()
-            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
-            for key in ['r1', 'r2', 'r3', 'r4', 'ae', 'method', 'firmeza']:
-                df[key] = ''
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        df = df.groupby(['cups', 'timestamp', 'season', 'factura']).aggregate(
+            {'ai': 'sum', 'ae': 'sum'}
+        ).reset_index()
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        for key in ['r1', 'r2', 'r3', 'r4', 'ae', 'method', 'firmeza']:
+            df[key] = ''
+        df = df[columns]
+        return df
 
     def writer(self):
         """

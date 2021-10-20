@@ -6,6 +6,19 @@ from mesures.parsers.dummy_data import DummyCurve
 import os
 import pandas as pd
 
+DTYPES = {'cups': 'category',
+          'season': 'category',
+          'ai': 'int64',
+          'ae': 'int64',
+          'r1': 'int64',
+          'r2': 'int64',
+          'r3':  'int64',
+          'r4': 'int64',
+          'method': 'category',
+          'firmeza': 'category',
+          'factura': 'category',
+          'res': 'category'}
+
 
 class F5(object):
     def __init__(self, data, distributor=None, comer=None):
@@ -86,21 +99,25 @@ class F5(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            return pd.read_csv(
-                filepath, sep=';', names=columns
+            df = pd.read_csv(
+                filepath, sep=';', names=columns + ['res'],
+                dtype=DTYPES
             )
-        if isinstance(filepath, list):
+        elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
-            if 'firmeza' not in df:
-                df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
-            if 'factura' not in df:
-                df['factura'] = 'F0000000000'
-            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
-                if key not in df:
-                    df[key] = 0
-                df[key] = df[key].astype('int32')
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        if 'firmeza' not in df:
+            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+        if 'factura' not in df:
+            df['factura'] = 'F0000000000'
+        for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+            if key not in df:
+                df[key] = 0
+            df[key] = df[key].astype('int32')
+        df = df[columns]
+        return df
 
     def writer(self):
         """

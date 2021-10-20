@@ -45,23 +45,26 @@ class AUTOCONSUMO(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            return pd.read_csv(
+            df = pd.read_csv(
                 file_path, sep=';', names=columns
             )
-        if isinstance(file_path, list):
+        elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
-            for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
-                df[key] = ''
-            df['data_baixa'] = df['data_baixa'].apply(
-                lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
-            df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
-            df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
-            #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
-            df['subgrup'] = df['subgrup'].apply(lambda x: x.replace('.', '')[:2])
-            df['tipus_antiabocament'] = (
-                df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x.zfill(2)))
-            df = df[columns]
-            return df
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
+            df[key] = ''
+        df['data_baixa'] = df['data_baixa'].apply(
+            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
+        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
+        df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
+        #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
+        df['subgrup'] = df['subgrup'].apply(lambda x: x.replace('.', '')[:2])
+        df['tipus_antiabocament'] = (
+            df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x.zfill(2)))
+        df = df[columns]
+        return df
 
     def writer(self):
         """
