@@ -36,9 +36,10 @@ class A5D():
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+            compression=self.default_compression
         )
 
     @property
@@ -85,7 +86,7 @@ class A5D():
         A5D contains a hourly raw curve
         :return: file path
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
             file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
             compression=self.default_compression
