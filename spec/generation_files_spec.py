@@ -6,6 +6,8 @@ from mesures.f1 import F1
 from mesures.f5d import F5D
 from mesures.p1 import P1
 from mesures.p1d import P1D
+from mesures.a5d import A5D
+from mesures.b5d import B5D
 from random import randint
 try:
     from StringIO import StringIO
@@ -147,14 +149,70 @@ with description('An F1'):
         assert isinstance(f.number_of_cups, int)
 
 
-with description('An P1'):
+with description('A P1'):
     with it('instance of P1 Class'):
         data = SampleData().get_sample_data()
         f = P1(data)
         assert isinstance(f, P1)
+
+    with it('bz2 as a default compression'):
+        # mirar com ho fa a sobre, fer un P1 i provar les funcions:
+        # filename (ha de portar el compression si es marca)
+        # writer() i mirar que no porti bz2
+        data = SampleData().get_sample_data()
+        f = P1(data)
+        f.writer()
+        assert isinstance(f.filename, str)
+        assert '.bz2' in f.filename
+        assert f.filename.endswith('.bz2')
+
+    with it('writes a bz2 compressed file'):
+        data = SampleData().get_sample_data()
+        f = P1(data)
+        f1 = f.writer()
+        assert isinstance(f1, str)
+        assert '.bz2' in f1
 
 with description('An P1D'):
     with it('instance of P1D Class'):
         data = SampleData().get_sample_data()
         f = P1D(data)
         assert isinstance(f, P1D)
+
+        with it('bz2 as a default compression'):
+            data = SampleData().get_sample_data()
+            f = P1D(data)
+            f.writer()
+            assert isinstance((f.filename, str))
+            assert '.bz2'
+
+with description('An A5D'):
+    with it('bz2 as a default compression'):
+        f = A5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression='bz2')
+        assert isinstance(f.filename, str)
+        assert '.bz2' in f.filename
+        assert f.filename.endswith('.bz2')
+
+    with it('a raw file'):
+        f = A5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression=False)
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in f.filename
+        assert f.filename.endswith('.0')
+
+with description('A B5D'):
+    with it('bz2 as a default compression'):
+        f = B5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}],
+                distributor='1234', comer='1235', compression='bz2')
+        assert isinstance(f.filename, str)
+        assert '.bz2' in f.filename
+        assert f.filename.endswith('.bz2')
+        f.writer()
+
+    with it('a raw file'):
+        f = B5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression=False)
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in f.filename
+        assert f.filename.endswith('.0')
+        f1 = f.writer()
+
+        # provar el writer() que passa si el compression es igual a False

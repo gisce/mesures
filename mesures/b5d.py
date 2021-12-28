@@ -101,6 +101,7 @@ class B5D():
         """
         file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
-            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
+            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+            compression=self.default_compression
         )
         return file_path
