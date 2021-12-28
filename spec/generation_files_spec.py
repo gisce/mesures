@@ -9,6 +9,7 @@ from mesures.p1d import P1D
 from mesures.a5d import A5D
 from mesures.b5d import B5D
 from mesures.agrecl import AGRECL
+from mesures.almacenacau import ALMACENACAU
 from random import randint
 try:
     from StringIO import StringIO
@@ -149,7 +150,7 @@ with description('An F1'):
         assert isinstance(f.number_of_cups, int)
 
 
-with description('A AGRECL'):
+with description('An AGRECL'):
     with it('with compression=False must be a raw file'):
         data = [
             {'origen': 'A', 'tipus_operacio': '', 'distribuidora': '12345', 'comercialitzadora': '1111',
@@ -157,6 +158,17 @@ with description('A AGRECL'):
              'data_alta': '2021-01-12'}
         ]
         f = AGRECL(data, compression=False)
+        assert f.filename.endswith('.0')
+        filepath = f.writer()
+        assert 'bz2' not in filepath
+
+with description('An ALMACENACAU'):
+    with fit('with compression=False must be a raw file'):
+        data = [
+            {'cau': 'A', 'potencia_nominal': '1', 'energia_emmagatzemable': '12345', 'tecnologia_emmagatzematge': '1111',
+             'data_alta': '2021-01-12', 'comentari': 'E0'}
+        ]
+        f = ALMACENACAU(data, compression=False)
         assert f.filename.endswith('.0')
         filepath = f.writer()
         assert 'bz2' not in filepath
