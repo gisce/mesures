@@ -16,6 +16,7 @@ except ImportError:
 import base64
 import bz2
 import numpy as np
+import zipfile
 
 
 class SampleData:
@@ -154,31 +155,44 @@ with description('A P1'):
         f = P1(data)
         assert isinstance(f, P1)
 
-    with it('bz2 as a default compression'):
-        # mirar com ho fa a sobre, fer un P1 i provar les funcions:
-        # filename (ha de portar el compression si es marca)
-        # writer() i mirar que no porti bz2
+    with it('is a zip file'):
         data = SampleData().get_sample_data()
-        f = P1(data)
-        f1 = f.writer()
+        f = P1(data, distributor='9999')
+        filepath = f.writer()
+        assert zipfile.is_zipfile(filepath)
+        assert f.zip_filename.endswith('.zip')
+
+    with it('with bz2 activated, must be a daily bz2 file in a zip'):
+        data = SampleData().get_sample_data()
+        f = P1(data, distributor='1234', compression='bz2')
+        filepath = f.writer()
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
-        assert isinstance(f1, str)
-        assert '.bz2' not in f1
+        assert isinstance(filepath, str)
+        assert '.bz2' not in filepath
 
-with description('An P1D'):
+        # Decompress ppal zip file and decompress bz2 files
+        zip_file = zipfile.ZipFile(filepath, "r")
+        for name in zip_file.namelist():
+            assert name.endswith('.bz2')
+            file_bz2 = bz2.decompress(zip_file.read(name))
+
+with description('A P1D'):
     with it('instance of P1D Class'):
         data = SampleData().get_sample_data()
         f = P1D(data)
         assert isinstance(f, P1D)
 
-        with it('bz2 as a default compression'):
-            data = SampleData().get_sample_data()
-            f = P1D(data)
-            f.writer()
-            assert isinstance((f.filename, str))
-            assert '.bz2'
+    with it('bz2 as a default compression'):
+        data = SampleData().get_sample_data()
+        f = P1D(data)
+        assert isinstance(f.filename, str)
+        assert '.bz2' in f.filename
+        assert f.filename.endswith('.bz2')
+        f1 = f.writer()
+        assert isinstance(f1, str)
+        assert '.bz2' in f1
 
 with description('An A5D'):
     with it('bz2 as a default compression'):
@@ -195,6 +209,7 @@ with description('An A5D'):
         assert '.bz2' not in f.filename
         assert f.filename.endswith('.0')
         f1 = f.writer()
+        assert isinstance(f1, str)
         assert 'bz2' not in f1
         assert f1.endswith('.0')
 
@@ -206,6 +221,7 @@ with description('A B5D'):
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
+        assert isinstance(f1, str)
         assert f1.endswith('.bz2')
 
     with it('a raw file'):
@@ -214,6 +230,7 @@ with description('A B5D'):
         assert '.bz2' not in f.filename
         assert f.filename.endswith('.0')
         f1 = f.writer()
+        assert isinstance(f1, str)
         assert 'bz2' not in f1
         assert f1.endswith('.0')
 
