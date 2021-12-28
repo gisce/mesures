@@ -10,6 +10,7 @@ from mesures.a5d import A5D
 from mesures.b5d import B5D
 from mesures.agrecl import AGRECL
 from mesures.almacenacau import ALMACENACAU
+from mesures.autoconsumo import AUTOCONSUMO
 from random import randint
 try:
     from StringIO import StringIO
@@ -163,12 +164,25 @@ with description('An AGRECL'):
         assert 'bz2' not in filepath
 
 with description('An ALMACENACAU'):
-    with fit('with compression=False must be a raw file'):
+    with it('with compression=False must be a raw file'):
         data = [
             {'cau': 'A', 'potencia_nominal': '1', 'energia_emmagatzemable': '12345', 'tecnologia_emmagatzematge': '1111',
              'data_alta': '2021-01-12', 'comentari': 'E0'}
         ]
         f = ALMACENACAU(data, compression=False)
+        assert f.filename.endswith('.0')
+        filepath = f.writer()
+        assert 'bz2' not in filepath
+
+with description('An AUTOCONSUMO'):
+    with it('with compression=False must be a raw file'):
+        data = [
+            {'cau': 'A', 'miteco': '1', 'reg_auto_prov': '12345', 'reg_auto_def': '1111',
+             'tipus_autoconsum': 'A', 'tipus_antiabocament': '1', 'nom': 'test', 'configuracio_mesura': '1111',
+             'potencia_nominal': '2', 'codi_postal': '17007', 'subgrup': '12345', 'emmagatzematge': '1111',
+             'data_alta': '2021-01-12'}
+        ]
+        f = AUTOCONSUMO(data, compression=False)
         assert f.filename.endswith('.0')
         filepath = f.writer()
         assert 'bz2' not in filepath
