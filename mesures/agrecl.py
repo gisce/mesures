@@ -7,13 +7,13 @@ from mesures.parsers.dummy_data import DummyKeys
 
 
 class AGRECL(object):
-    def __init__(self, data, distributor=None):
+    def __init__(self, data, distributor=None, compression='bz2'):
         data = DummyKeys(data).data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'AGRECL'
         self.version = 0
-        self.default_compression = 'bz2'
+        self.default_compression = compression
         self.distributor = distributor
 
     def __repr__(self):
@@ -30,10 +30,16 @@ class AGRECL(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-        )
+        if self.default_compression:
+            return "{prefix}_{distributor}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d'),
+                version=self.version, compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d'),
+                version=self.version
+            )
 
     @property
     def number_of_ups(self):
@@ -68,7 +74,7 @@ class AGRECL(object):
         """
         :return: file path of generated AGRECL File
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
             file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
             compression=self.default_compression
