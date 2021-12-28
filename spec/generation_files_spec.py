@@ -8,6 +8,7 @@ from mesures.p1 import P1
 from mesures.p1d import P1D
 from mesures.a5d import A5D
 from mesures.b5d import B5D
+from mesures.agrecl import AGRECL
 from random import randint
 try:
     from StringIO import StringIO
@@ -136,7 +137,6 @@ with description('An F1'):
         data = SampleData().get_sample_data()
         f = F1(data)
         res = f.writer()
-        import zipfile
         assert zipfile.is_zipfile(res)
 
     with it('has its class methods'):
@@ -148,6 +148,18 @@ with description('An F1'):
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)
 
+
+with description('A AGRECL'):
+    with it('with compression=False must be a raw file'):
+        data = [
+            {'origen': 'A', 'tipus_operacio': '', 'distribuidora': '12345', 'comercialitzadora': '1111',
+             'tensio': 'E0', 'tarifa': '2T', 'dh': 'E3', 'tipo': '5', 'provincia': 'GI', 'tipus_demanda': '0',
+             'data_alta': '2021-01-12'}
+        ]
+        f = AGRECL(data, compression=False)
+        assert f.filename.endswith('.0')
+        filepath = f.writer()
+        assert 'bz2' not in filepath
 
 with description('A P1'):
     with it('instance of P1 Class'):
