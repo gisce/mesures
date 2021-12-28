@@ -206,7 +206,8 @@ with description('A B5D'):
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
-        f.writer()
+        f1 = f.writer()
+        assert f1.endswith('.bz2')
 
     with it('a raw file'):
         f = B5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression=False)
@@ -214,5 +215,5 @@ with description('A B5D'):
         assert '.bz2' not in f.filename
         assert f.filename.endswith('.0')
         f1 = f.writer()
+        assert f1.endswith('.0')
 
-        # provar el writer() que passa si el compression es igual a False
