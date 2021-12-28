@@ -18,7 +18,6 @@ import bz2
 import numpy as np
 
 
-
 class SampleData:
     @staticmethod
     def get_sample_data():
@@ -161,17 +160,12 @@ with description('A P1'):
         # writer() i mirar que no porti bz2
         data = SampleData().get_sample_data()
         f = P1(data)
-        f.writer()
+        f1 = f.writer()
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
-
-    with it('writes a bz2 compressed file'):
-        data = SampleData().get_sample_data()
-        f = P1(data)
-        f1 = f.writer()
         assert isinstance(f1, str)
-        assert '.bz2' in f1
+        assert '.bz2' not in f1
 
 with description('An P1D'):
     with it('instance of P1D Class'):
@@ -192,12 +186,17 @@ with description('An A5D'):
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
+        f1 = f.writer()
+        assert f1.endswith('.bz2')
 
     with it('a raw file'):
         f = A5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression=False)
         assert isinstance(f.filename, str)
         assert '.bz2' not in f.filename
         assert f.filename.endswith('.0')
+        f1 = f.writer()
+        assert 'bz2' not in f1
+        assert f1.endswith('.0')
 
 with description('A B5D'):
     with it('bz2 as a default compression'):
@@ -215,5 +214,6 @@ with description('A B5D'):
         assert '.bz2' not in f.filename
         assert f.filename.endswith('.0')
         f1 = f.writer()
+        assert 'bz2' not in f1
         assert f1.endswith('.0')
 

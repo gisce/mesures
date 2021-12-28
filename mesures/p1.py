@@ -36,7 +36,21 @@ class P1(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+        if self.default_compression:
+            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
+
+    @property
+    def zip_filename(self):
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip'".format(
             prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
@@ -107,7 +121,7 @@ class P1(object):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
-        zipped_file = ZipFile(os.path.join('/tmp', self.filename + '.zip'), 'w')
+        zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
             df = daymin + timedelta(days=1)
