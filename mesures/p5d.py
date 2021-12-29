@@ -5,13 +5,13 @@ from mesures.headers import P5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 
 class P5D(object):
-    def __init__(self, data, distributor=None, comer=None):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'P5D'
-        self.default_compression = 'bz2'
+        self.default_compression = compression
         self.version = 0
         self.distributor = distributor
         self.comer = comer
@@ -36,10 +36,17 @@ class P5D(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-        )
+        if self.default_compression:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
 
     @property
     def total(self):
@@ -85,7 +92,7 @@ class P5D(object):
         P5D contains a hourly raw curve
         :return: file path
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
             file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
             compression=self.default_compression
