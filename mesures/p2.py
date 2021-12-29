@@ -3,8 +3,8 @@ from mesures.p1 import P1
 from mesures.headers import P2_HEADER as columns
 
 class P2(P1):
-    def __init__(self, data, distributor=None):
-        super(P2, self).__init__(data, distributor)
+    def __init__(self, data, distributor=None, compression='bz2'):
+        super(P2, self).__init__(data, distributor, compression)
         self.prefix = 'P2'
 
     def reader(self, filepath):
