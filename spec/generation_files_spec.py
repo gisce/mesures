@@ -12,6 +12,7 @@ from mesures.agrecl import AGRECL
 from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
 from mesures.cupscau import CUPSCAU
+from mesures.cilcau import CILCAU
 from random import randint
 try:
     from StringIO import StringIO
@@ -194,6 +195,16 @@ with description('An CUPSCAU'):
             {'cau': 'A', 'cups': '1', 'tipus_consum': '12345', 'data_alta': '2021-01-12', 'comentari': 'E0'}
         ]
         f = CUPSCAU(data, compression=False)
+        assert f.filename.endswith('.0')
+        filepath = f.writer()
+        assert 'bz2' not in filepath
+
+with description('An CILCAU'):
+    with it('with compression=False must be a raw file'):
+        data = [
+            {'cau': 'A', 'cil': '1', 'data_alta': '2021-01-12', 'comentari': 'E0'}
+        ]
+        f = CILCAU(data, compression=False)
         assert f.filename.endswith('.0')
         filepath = f.writer()
         assert 'bz2' not in filepath
