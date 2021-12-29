@@ -200,7 +200,7 @@ with description('An CUPSCAU'):
         assert 'bz2' not in filepath
 
 with description('An CILCAU'):
-    with it('with compression=False must be a raw file'):
+    with fit('with compression=False must be a raw file'):
         data = [
             {'cau': 'A', 'cil': '1', 'data_alta': '2021-01-12', 'comentari': 'E0'}
         ]
