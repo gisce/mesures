@@ -41,3 +41,8 @@
 - `P2D`
 - `P5D`
 - `PMEST`
+
+## Publicar versió a Pipy
+
+`python setup.py sdist`
+`twine upload -r pypi dist/*`
