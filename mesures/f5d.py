@@ -7,17 +7,24 @@ import pandas as pd
 
 
 class F5D(F5):
-    def __init__(self, data, distributor=None, comer=None):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
         super(F5D, self).__init__(data, distributor, comer)
         self.prefix = 'F5D'
-        self.default_compression = 'bz2'
+        self.default_compression = compression
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-        )
+        if self.default_compression:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
 
     def cut_by_dates(self, di, df):
         """
@@ -42,7 +49,7 @@ class F5D(F5):
         F5D contains a hourly invoiced curve
         :return: file path
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
             file_path, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n',
             compression=self.default_compression
