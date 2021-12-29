@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from six import string_types
 
 
 class DummyCurve(object):
@@ -32,7 +33,7 @@ class DummyCurve(object):
                 # Active input and output
                 data['ai'] = data.pop('ai')
                 data['ae'] = data.pop('ao')
-            if 'season' in data and (isinstance(data['season'], str) or isinstance(data['season'], unicode)):
+            if 'season' in data and isinstance(data['season'], string_types):
                 try:
                     data['season'] = int(data['season'])
                 except ValueError:
