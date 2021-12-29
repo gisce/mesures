@@ -6,8 +6,13 @@ from mesures.dates.date import REE_END_DATE
 from mesures.cupscau import CUPSCAU
 
 class CILCAU(CUPSCAU):
-    def __init__(self, data, distributor=None):
-        super(CILCAU, self).__init__(data, distributor)
+    def __init__(self, data, distributor=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
+        super(CILCAU, self).__init__(data, distributor, compression)
         self.prefix = 'CILCAU'
 
     @property
@@ -41,7 +46,7 @@ class CILCAU(CUPSCAU):
         """
         :return: file path of generated CUPSCAU File
         """
-        file_path = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+        file_path = os.path.join('/tmp', self.filename)
         self.file.to_csv(
             file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
             compression=self.default_compression

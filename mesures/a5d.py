@@ -5,13 +5,19 @@ from mesures.headers import A5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 
 class A5D():
-    def __init__(self, data, distributor=None, comer=None):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param comer: str comer REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'A5D'
-        self.default_compression = 'bz2'
+        self.default_compression = compression
         self.version = 0
         self.distributor = distributor
         self.comer = comer
@@ -36,11 +42,17 @@ class A5D():
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
-            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-            compression=self.default_compression
-        )
+        if self.default_compression:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
 
     @property
     def total(self):
