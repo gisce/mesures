@@ -11,6 +11,7 @@ from mesures.b5d import B5D
 from mesures.agrecl import AGRECL
 from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
+from mesures.cupscau import CUPSCAU
 from random import randint
 try:
     from StringIO import StringIO
@@ -183,6 +184,16 @@ with description('An AUTOCONSUMO'):
              'data_alta': '2021-01-12'}
         ]
         f = AUTOCONSUMO(data, compression=False)
+        assert f.filename.endswith('.0')
+        filepath = f.writer()
+        assert 'bz2' not in filepath
+
+with description('An CUPSCAU'):
+    with it('with compression=False must be a raw file'):
+        data = [
+            {'cau': 'A', 'cups': '1', 'tipus_consum': '12345', 'data_alta': '2021-01-12', 'comentari': 'E0'}
+        ]
+        f = CUPSCAU(data, compression=False)
         assert f.filename.endswith('.0')
         filepath = f.writer()
         assert 'bz2' not in filepath
