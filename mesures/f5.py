@@ -22,6 +22,12 @@ DTYPES = {'cups': 'category',
 
 class F5(object):
     def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param comer: str comer REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)

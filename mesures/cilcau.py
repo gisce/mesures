@@ -7,6 +7,11 @@ from mesures.cupscau import CUPSCAU
 
 class CILCAU(CUPSCAU):
     def __init__(self, data, distributor=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         super(CILCAU, self).__init__(data, distributor, compression)
         self.prefix = 'CILCAU'
 

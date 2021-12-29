@@ -8,6 +8,12 @@ import pandas as pd
 
 class F5D(F5):
     def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param comer: str comer REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         super(F5D, self).__init__(data, distributor, comer)
         self.prefix = 'F5D'
         self.default_compression = compression

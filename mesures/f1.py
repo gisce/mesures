@@ -7,6 +7,11 @@ from mesures.parsers.dummy_data import DummyCurve
 
 class F1(object):
     def __init__(self, data, distributor=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)

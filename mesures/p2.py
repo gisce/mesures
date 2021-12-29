@@ -4,6 +4,11 @@ from mesures.headers import P2_HEADER as columns
 
 class P2(P1):
     def __init__(self, data, distributor=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         super(P2, self).__init__(data, distributor, compression)
         self.prefix = 'P2'
 

@@ -8,6 +8,11 @@ from mesures.parsers.dummy_data import DummyKeys
 
 class ALMACENACAU(object):
     def __init__(self, data, distributor=None, compression='bz2'):
+        """
+        :param data: list of dicts or absolute file_path
+        :param distributor: str distributor REE code
+        :param compression: 'bz2', 'gz'... OR False otherwise
+        """
         data = DummyKeys(data).data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
