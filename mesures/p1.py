@@ -50,9 +50,9 @@ class P1(object):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip".format(
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
             prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
     @property
