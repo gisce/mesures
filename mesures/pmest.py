@@ -6,7 +6,7 @@ from mesures.headers import PMEST_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 
 class PMEST(object):
-    def __init__(self, data, distributor=None):
+    def __init__(self, data, distributor=None, compression='bz2'):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
@@ -14,7 +14,7 @@ class PMEST(object):
         self.prefix = 'PMEST'
         self.version = 0
         self.distributor = distributor
-        self.default_compression = 'bz2'
+        self.default_compression = compression
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -36,11 +36,24 @@ class PMEST(object):
 
     @property
     def filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-        )
+        if self.default_compression:
+            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                compression=self.default_compression
+            )
+        else:
+            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
 
+    @property
+    def zip_filename(self):
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime('%Y%m%d')
+        )
     @property
     def total(self):
         return self.file['ai'].sum()
@@ -110,14 +123,14 @@ class PMEST(object):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
-        zipped_file = ZipFile(os.path.join('/tmp', self.filename + '.zip'), 'w')
+        zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H'))
-            filepath = os.path.join('/tmp', self.filename) + '.' + self.default_compression
+            filepath = os.path.join('/tmp', self.filename)
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
                 compression=self.default_compression
