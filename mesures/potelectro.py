@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import CUMPELECTRO_HEADER as columns
+from mesures.headers import POTELECTRO_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 from zipfile import ZipFile
 import os
 import pandas as pd
 
 
-class CUMPELECTRO(object):
+class POTELECTRO(object):
     def __init__(self, data, distributor=None, compression='bz2'):
         """
         :param data: list of dicts or absolute file_path
@@ -65,13 +65,14 @@ class CUMPELECTRO(object):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
-        # TODO clean "cargos" and "peajes" for new supply points
+        # TODO clean "powers" for new supply points
+        # TODO use "projection" only under REE request ("G" field on CUPSELECTRO)
         df = df[columns]
         return df
 
     def writer(self):
         """
-        CUMPELECTRO contains a curve files diary on zip
+        POTELECTRO contains a curve files diary on zip
         :return: file path
         """
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')

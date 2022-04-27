@@ -14,6 +14,7 @@ from mesures.f3 import F3
 from mesures.f5d import F5D
 from mesures.p1 import P1
 from mesures.p1d import P1D
+from mesures.potelectro import POTELECTRO
 from random import randint
 try:
     from StringIO import StringIO
@@ -200,6 +201,45 @@ class SampleData:
             'peajes_facturados_n3_p4': 100.0,
             'peajes_facturados_n3_p5': 100.0,
             'peajes_facturados_n3_p6': 100.0
+        }]
+
+    @staticmethod
+    def get_sample_potelectro_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'potencia_n-1_p1': 451.0,
+            'potencia_n-1_p2': 451.0,
+            'potencia_n-1_p3': 451.0,
+            'potencia_n-1_p4': 451.0,
+            'potencia_n-1_p5': 451.0,
+            'potencia_n-1_p6': 451.0,
+            'potencia_n-2_p1': 451.0,
+            'potencia_n-2_p2': 451.0,
+            'potencia_n-2_p3': 451.0,
+            'potencia_n-2_p4': 451.0,
+            'potencia_n-2_p5': 451.0,
+            'potencia_n-2_p6': 451.0,
+            'potencia_n-3_p1': 451.0,
+            'potencia_n-3_p2': 451.0,
+            'potencia_n-3_p3': 451.0,
+            'potencia_n-3_p4': 451.0,
+            'potencia_n-3_p5': 451.0,
+            'potencia_n-3_p6': 451.0,
+            'potencia_proyectada_p1': 451.0,
+            'potencia_proyectada_p2': 451.0,
+            'potencia_proyectada_p3': 451.0,
+            'potencia_proyectada_p4': 451.0,
+            'potencia_proyectada_p5': 451.0,
+            'potencia_proyectada_p6': 451.0,
+            'energia_proyectada_p1': 451.0,
+            'energia_proyectada_p2': 451.0,
+            'energia_proyectada_p3': 451.0,
+            'energia_proyectada_p4': 451.0,
+            'energia_proyectada_p5': 451.0,
+            'energia_proyectada_p6': 451.0
         }]
 
 
@@ -421,7 +461,7 @@ with description('A CUMPELECTRO'):
 
 
 with description('A CUMPELECTRO'):
-    with it('is instance of Cumpelectro Class'):
+    with it('is instance of CUMPELECTRO Class'):
         data = SampleData().get_sample_cumpelectro_data()
         f = CUMPELECTRO(data)
         assert isinstance(f, CUMPELECTRO)
@@ -435,6 +475,25 @@ with description('A CUMPELECTRO'):
     with it('has its class methods'):
         data = SampleData().get_sample_cumpelectro_data()
         f = CUMPELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+with description('A POTELECTRO'):
+    with it('is instance of POTELECTRO Class'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
+        assert isinstance(f, POTELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
         res = f.writer()
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)

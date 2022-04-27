@@ -31,6 +31,7 @@
 - `AUTOCONSUMO`
 - `B5D`
 - `CILCAU`
+- `CUMPELECTRO`
 - `CUPSCAU`
 - `F1`
 - `F3`
@@ -42,6 +43,7 @@
 - `P2D`
 - `P5D`
 - `PMEST`
+- `POTELECTRO`
 
 ## Publicar versió a Pipy
 
