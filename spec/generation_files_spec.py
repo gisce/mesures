@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
-from expects import expect, equal
-from mamba import context, description, it
-from mesures.f1 import F1
-from mesures.f5d import F5D
-from mesures.p1 import P1
-from mesures.p1d import P1D
+from mamba import description, it
 from mesures.a5d import A5D
-from mesures.b5d import B5D
 from mesures.agrecl import AGRECL
 from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
-from mesures.cupscau import CUPSCAU
+from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
+from mesures.cupscau import CUPSCAU
+from mesures.dates import *
+from mesures.f1 import F1
+from mesures.f3 import F3
+from mesures.f5d import F5D
+from mesures.p1 import P1
+from mesures.p1d import P1D
 from random import randint
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-import base64
 import bz2
 import numpy as np
 import zipfile
@@ -89,7 +88,6 @@ class SampleData:
 
         ts = "2020-01-01 00:00:00"
         data_f5d = []
-        data_f5d_kwh = []
         for x in range(50):
             datas = basic_f5d.copy()
             ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
@@ -116,6 +114,38 @@ class SampleData:
             data_f5d.append(datas)
 
         return data_f5d
+
+    @staticmethod
+    def get_sample_f3_data():
+        basic_f3 = {
+            "cups": "ES00123400220F",
+            "timestamp": "2020-01-01 00:00:00",
+            "season": 1,
+            "method": 1,
+            "firmeza": 1
+        }
+
+        ts = "2020-01-01 00:00:00"
+        data_f3 = []
+        for x in range(50):
+            datas = basic_f3.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae})
+            data_f3.append(datas)
+
+        cups = "ES00123400230F"
+        ts = "2020-01-01 00:00:00"
+        for x in range(70):
+            datas = basic_f3.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'cups': cups})
+            data_f3.append(datas)
+
+        return data_f3
 
 
 with description('An F5D'):
@@ -294,3 +324,23 @@ with description('A B5D'):
         assert 'bz2' not in f1
         assert f1.endswith('.0')
 
+with description('An F3'):
+    with it('is instance of F3 Class'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        assert isinstance(f, F3)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        import pudb; pu.db
+        res = f.writer()
+        assert isinstance(f.ai, (int, np.int64))
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)

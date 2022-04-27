@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import P1_HEADER as columns
+from mesures.headers import F3_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 from zipfile import ZipFile
 import os
 import pandas as pd
 
 
-class P1(object):
+class F3(object):
     def __init__(self, data, distributor=None, compression='bz2'):
         """
         :param data: list of dicts or absolute file_path
@@ -18,7 +18,7 @@ class P1(object):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
-        self.prefix = 'P1'
+        self.prefix = 'F3'
         self.version = 0
         self.distributor = distributor
         self.default_compression = compression
@@ -45,20 +45,20 @@ class P1(object):
     def filename(self):
         if self.default_compression:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
                 timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
                 compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
                 timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
             )
 
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
             timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
@@ -75,22 +75,6 @@ class P1(object):
         return self.file['ae'].sum()
 
     @property
-    def r1(self):
-        return self.file['r1'].sum()
-
-    @property
-    def r2(self):
-        return self.file['r2'].sum()
-
-    @property
-    def r3(self):
-        return self.file['r3'].sum()
-
-    @property
-    def r4(self):
-        return self.file['r4'].sum()
-
-    @property
     def cups(self):
         return list(set(self.file['cups']))
 
@@ -100,29 +84,29 @@ class P1(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['tipo_medida'] = 11
-        df.groupby(['cups', 'tipo_medida', 'timestamp', 'season']).aggregate({'ai': 'sum'})
+        df = df.groupby(
+            ['cups', 'timestamp', 'season']
+        ).aggregate(
+            {
+                'ai': 'sum',
+                'ae': 'sum'
+            }
+        ).reset_index()
+        # TODO review obtencion and firmeza
         df['method'] = 1
         df['firmeza'] = 1
-        df['res'] = 0
-        df['res2'] = 0
-        for key in columns:
-            if 'quality' in key and key not in df:
-                df[key] = 0
         df = df[columns]
         return df
 
     def writer(self):
         """
-        P1 contains a curve files diary on zip
+        F1 contains a curve files diary on zip
         :return: file path
         """
         daymin = self.file['timestamp'].min()
@@ -134,7 +118,7 @@ class P1(object):
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
+            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(REE_ELECTROINTENSIVO_DATETIME_MASK))
             filepath = os.path.join('/tmp', self.filename)
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',

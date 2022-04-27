@@ -9,12 +9,12 @@ with open('requirements.txt', 'r') as f:
 setup(
     name='mesures',
     version=__version__,
-    description="Eina d'intercanvi fitxers de mesures REE",
+    description="Eina d'intercanvi de fitxers de mesures de REE",
     provides=['mesures'],
     packages=find_packages(),
     install_requires=requirements,
     license='BSD 3-Clause License',
-    author='GISCE-TI S.L.',
+    author=__author__,
     author_email='devel@gisce.net',
-    url = 'https://github.com/gisce/mesures',
+    url='https://github.com/gisce/mesures',
 )

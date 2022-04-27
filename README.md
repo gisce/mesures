@@ -3,9 +3,9 @@
 :octocat: :hammer:
 [![Mesures](https://img.shields.io/badge/version-1.8.1-green.svg?style=flat&logo=python)](https://pypi.org/project/mesures/)
 
-- Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants
-- Aporta el coneixement i formats necessaris per crear fitxers amb el format unificat i establert per l'Operador del sistema
-- Afegeix suport per llegir i tractar de forma més entenedora y esquematitzada fitxers críptics
+- Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
+- Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
+- Afegeix suport per a llegir i tractar de forma més entenedora y esquematitzada fitxers críptics.
 
 ## Exemple de fàcil utilització:
 
@@ -33,6 +33,7 @@
 - `CILCAU`
 - `CUPSCAU`
 - `F1`
+- `F3`
 - `F5`
 - `F5D`
 - `P1`

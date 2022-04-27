@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+from six import string_types
 import numpy as np
 import pandas as pd
-from six import string_types
 
 
 class DummyCurve(object):

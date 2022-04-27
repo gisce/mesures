@@ -311,12 +311,12 @@ ENELECTROAUT_HEADER = [
     'autoconsumida_proyectada_p6'   # int(10)
 ]
 
-F3 = [
-    'cups',                     # str(22)
-    'fecha_hora',               # str(aaaa/mm/dd hh:mm)
-    'bandera_verano_invierno',  # str(1)
-    'activa_entrante',          # int(10)
-    'activa_saliente',          # int(10)
-    'metodo_obtencion',         # int(2)
-    'indicador_firmeza'         # int(1)
+F3_HEADER = [
+    'cups',         # str(22)
+    'timestamp',    # str(aaaa/mm/dd hh:mm)
+    'season',       # str(1)
+    'ai',           # int(10)
+    'ae',           # int(10)
+    'method',       # int(2)
+    'firmeza'       # int(1)
 ]

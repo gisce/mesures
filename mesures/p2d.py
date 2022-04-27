@@ -1,7 +1,8 @@
-import pandas as pd
-import os
-from mesures.p2 import P2
+# -*- coding: utf-8 -*-
 from mesures.headers import P2_HEADER as columns
+from mesures.p2 import P2
+import os
+
 
 class P2D(P2):
     def __init__(self, data, distributor=None, comer=None, compression='bz2'):
