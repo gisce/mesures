@@ -61,7 +61,6 @@ class ALMACENACAU(object):
             lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
         df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].astype(str)
-        df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].apply(lambda x: x.zfill(2))
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
         except KeyError:
