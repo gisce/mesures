@@ -33,6 +33,7 @@
 - `CILCAU`
 - `CUMPELECTRO`
 - `CUPSCAU`
+- `ENELECTROAUT`
 - `F1`
 - `F3`
 - `F5`

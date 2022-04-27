@@ -9,6 +9,7 @@ from mesures.cilcau import CILCAU
 from mesures.cumpelectro import CUMPELECTRO
 from mesures.cupscau import CUPSCAU
 from mesures.dates import *
+from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
 from mesures.f3 import F3
 from mesures.f5d import F5D
@@ -240,6 +241,39 @@ class SampleData:
             'energia_proyectada_p4': 451.0,
             'energia_proyectada_p5': 451.0,
             'energia_proyectada_p6': 451.0
+        }]
+
+    @staticmethod
+    def get_sample_enelectroaut_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'energia_n-1_p1': 10.0,
+            'energia_n-1_p2': 10.0,
+            'energia_n-1_p3': 10.0,
+            'energia_n-1_p4': 10.0,
+            'energia_n-1_p5': 10.0,
+            'energia_n-1_p6': 10.0,
+            'energia_n-2_p1': 10.0,
+            'energia_n-2_p2': 10.0,
+            'energia_n-2_p3': 10.0,
+            'energia_n-2_p4': 10.0,
+            'energia_n-2_p5': 10.0,
+            'energia_n-2_p6': 10.0,
+            'energia_n-3_p1': 10.0,
+            'energia_n-3_p2': 10.0,
+            'energia_n-3_p3': 10.0,
+            'energia_n-3_p4': 10.0,
+            'energia_n-3_p5': 10.0,
+            'energia_n-3_p6': 10.0,
+            'autoconsumida_proyectada_p1': 10.0,
+            'autoconsumida_proyectada_p2': 10.0,
+            'autoconsumida_proyectada_p3': 10.0,
+            'autoconsumida_proyectada_p4': 10.0,
+            'autoconsumida_proyectada_p5': 10.0,
+            'autoconsumida_proyectada_p6': 10.0
         }]
 
 
@@ -494,6 +528,25 @@ with description('A POTELECTRO'):
     with it('has its class methods'):
         data = SampleData().get_sample_potelectro_data()
         f = POTELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+with description('A ENELECTROAUT'):
+    with it('is instance of ENELECTROAUT Class'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
+        assert isinstance(f, ENELECTROAUT)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
         res = f.writer()
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)
