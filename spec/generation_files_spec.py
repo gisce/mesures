@@ -6,6 +6,7 @@ from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
 from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
+from mesures.cumpelectro import CUMPELECTRO
 from mesures.cupscau import CUPSCAU
 from mesures.dates import *
 from mesures.f1 import F1
@@ -146,6 +147,60 @@ class SampleData:
             data_f3.append(datas)
 
         return data_f3
+
+    @staticmethod
+    def get_sample_cumpelectro_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'electrointensivo_n1': 'S',
+            'electrointensivo_n2': 'S',
+            'electrointensivo_n3': 'S',
+            'contrato_vigente_n1': 'S',
+            'contrato_vigente_n2': 'S',
+            'contrato_vigente_n3': 'S',
+            'corriente_pagos_n1': 'N',
+            'corriente_pagos_n2': 'S',
+            'corriente_pagos_n3': 'S',
+            'cargos_facturados_n1_p1': 100.0,
+            'cargos_facturados_n1_p2': 100.0,
+            'cargos_facturados_n1_p3': 100.0,
+            'cargos_facturados_n1_p4': 100.0,
+            'cargos_facturados_n1_p5': 100.0,
+            'cargos_facturados_n1_p6': 100.0,
+            'cargos_facturados_n2_p1': 100.0,
+            'cargos_facturados_n2_p2': 100.0,
+            'cargos_facturados_n2_p3': 100.0,
+            'cargos_facturados_n2_p4': 100.0,
+            'cargos_facturados_n2_p5': 100.0,
+            'cargos_facturados_n2_p6': 100.0,
+            'cargos_facturados_n3_p1': 100.0,
+            'cargos_facturados_n3_p2': 100.0,
+            'cargos_facturados_n3_p3': 100.0,
+            'cargos_facturados_n3_p4': 100.0,
+            'cargos_facturados_n3_p5': 100.0,
+            'cargos_facturados_n3_p6': 100.0,
+            'peajes_facturados_n1_p1': 100.0,
+            'peajes_facturados_n1_p2': 100.0,
+            'peajes_facturados_n1_p3': 100.0,
+            'peajes_facturados_n1_p4': 100.0,
+            'peajes_facturados_n1_p5': 100.0,
+            'peajes_facturados_n1_p6': 100.0,
+            'peajes_facturados_n2_p1': 100.0,
+            'peajes_facturados_n2_p2': 100.0,
+            'peajes_facturados_n2_p3': 100.0,
+            'peajes_facturados_n2_p4': 100.0,
+            'peajes_facturados_n2_p5': 100.0,
+            'peajes_facturados_n2_p6': 100.0,
+            'peajes_facturados_n3_p1': 100.0,
+            'peajes_facturados_n3_p2': 100.0,
+            'peajes_facturados_n3_p3': 100.0,
+            'peajes_facturados_n3_p4': 100.0,
+            'peajes_facturados_n3_p5': 100.0,
+            'peajes_facturados_n3_p6': 100.0
+        }]
 
 
 with description('An F5D'):
@@ -339,8 +394,47 @@ with description('An F3'):
     with it('has its class methods'):
         data = SampleData().get_sample_f3_data()
         f = F3(data)
-        import pudb; pu.db
         res = f.writer()
         assert isinstance(f.ai, (int, np.int64))
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+
+with description('A CUMPELECTRO'):
+    with it('is instance of Cumpelectro Class'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        assert isinstance(f, CUMPELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+
+with description('A CUMPELECTRO'):
+    with it('is instance of Cumpelectro Class'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        assert isinstance(f, CUMPELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)

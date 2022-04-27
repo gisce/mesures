@@ -21,11 +21,13 @@ class DummyCurve(object):
                 data['timestamp'] = data.pop('datetime')
             if 'local_datetime' in data:
                 data['timestamp'] = data.pop('local_datetime')
-            data['timestamp'] = pd.Timestamp(data['timestamp'])
+            if 'timestamp' in data:
+                data['timestamp'] = pd.Timestamp(data['timestamp'])
             if 'estacio' in data:
                 data['season'] = data.pop('estacio')
             if 'season' not in data:
-                data['season'] = int(data['timestamp'].dst().seconds > 0)
+                if 'timestamp' in data:
+                    data['season'] = int(data['timestamp'].dst().seconds > 0)
             if 'as' in data:
                 # Active saliente and entrante
                 data['ae'] = data.pop('as')
