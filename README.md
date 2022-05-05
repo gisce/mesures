@@ -1,7 +1,11 @@
 # Mesures
 
 :octocat: :hammer:
-[![Mesures](https://img.shields.io/badge/version-1.8.1-green.svg?style=flat&logo=python)](https://pypi.org/project/mesures/)
+.. image:: https://github.com/gisce/mesures/actions/workflows/python2-app.yml/badge.svg
+    :target: https://github.com/gisce/mesures/actions/workflows/python2-app.yml
+
+.. image:: https://github.com/gisce/mesures/actions/workflows/python3-app.yml/badge.svg
+    :target: https://github.com/gisce/mesures/actions/workflows/python3-app.yml
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
 - Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
