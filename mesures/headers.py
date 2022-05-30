@@ -243,6 +243,16 @@ CUMPELECTRO_HEADER = [
     'peajes_facturados_n3_p6'   # float(10.2)
 ]
 
+CUPSELECTRO_HEADER = [
+    'cups',                     # str(22)
+    'cif_empresa',              # str(9)
+    'codigo_solicitud',         # str(25)
+    'version_solicitud',        # str(6)
+    'fecha',                    # str(10)
+    'requiere_f3',              # char(1)
+    'nuevo_suministro'          # char(1)
+]
+
 POTELECTRO_HEADER = [
     'cups',                     # str(22)
     'cif_empresa',              # str(9)
