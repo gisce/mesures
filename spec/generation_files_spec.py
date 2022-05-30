@@ -7,6 +7,7 @@ from mesures.autoconsumo import AUTOCONSUMO
 from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
 from mesures.cumpelectro import CUMPELECTRO
+from mesures.cupselectro import CUPSELECTRO
 from mesures.cupscau import CUPSCAU
 from mesures.dates import *
 from mesures.enelectroaut import ENELECTROAUT
@@ -202,6 +203,18 @@ class SampleData:
             'peajes_facturados_n3_p4': 100.0,
             'peajes_facturados_n3_p5': 100.0,
             'peajes_facturados_n3_p6': 100.0
+        }]
+
+    @staticmethod
+    def get_sample_cupselectro_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'fecha': '20220530',
+            'requiere_f3': 'N',
+            'nuevo_suministro': 'N'
         }]
 
     @staticmethod
@@ -494,21 +507,21 @@ with description('A CUMPELECTRO'):
         assert isinstance(f.number_of_cups, int)
 
 
-with description('A CUMPELECTRO'):
-    with it('is instance of CUMPELECTRO Class'):
-        data = SampleData().get_sample_cumpelectro_data()
-        f = CUMPELECTRO(data)
-        assert isinstance(f, CUMPELECTRO)
+with description('A CUPSELECTRO'):
+    with it('is instance of CUPSELECTRO Class'):
+        data = SampleData().get_sample_cupselectro_data()
+        f = CUPSELECTRO(data)
+        assert isinstance(f, CUPSELECTRO)
 
     with it('a zip of raw Files'):
-        data = SampleData().get_sample_cumpelectro_data()
-        f = CUMPELECTRO(data)
+        data = SampleData().get_sample_cupselectro_data()
+        f = CUPSELECTRO(data)
         res = f.writer()
         assert zipfile.is_zipfile(res)
 
     with it('has its class methods'):
-        data = SampleData().get_sample_cumpelectro_data()
-        f = CUMPELECTRO(data)
+        data = SampleData().get_sample_cupselectro_data()
+        f = CUPSELECTRO(data)
         res = f.writer()
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)
