@@ -1,11 +1,10 @@
 # Mesures
 
 :octocat: :hammer:
-.. image:: https://github.com/gisce/mesures/actions/workflows/python2-app.yml/badge.svg
-    :target: https://github.com/gisce/mesures/actions/workflows/python2-app.yml
-
-.. image:: https://github.com/gisce/mesures/actions/workflows/python3-app.yml/badge.svg
-    :target: https://github.com/gisce/mesures/actions/workflows/python3-app.yml
+![](https://github.com/gisce/mesures/actions/workflows/python2-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python2-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3-app.yml)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
 - Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
