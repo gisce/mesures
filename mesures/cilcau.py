@@ -1,9 +1,11 @@
-import os
-import pandas as pd
-import numpy as np
-from mesures.headers import CILCAU_HEADER as columns
-from mesures.dates.date import REE_END_DATE
+# -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.cupscau import CUPSCAU
+from mesures.headers import CILCAU_HEADER as columns
+import os
+import numpy as np
+import pandas as pd
+
 
 class CILCAU(CUPSCAU):
     def __init__(self, data, distributor=None, compression='bz2'):

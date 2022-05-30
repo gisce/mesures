@@ -1,10 +1,11 @@
-import os
-import pandas as pd
-import numpy as np
-from datetime import datetime
+# -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.headers import AUTOCONSUMO_HEADER as columns
-from mesures.dates.date import REE_END_DATE
 from mesures.parsers.dummy_data import DummyKeys
+import os
+import numpy as np
+import pandas as pd
+
 
 class AUTOCONSUMO(object):
     def __init__(self, data, distributor=None, compression='bz2'):

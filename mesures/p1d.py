@@ -1,6 +1,8 @@
-import os
-from mesures.p1 import P1
+# -*- coding: utf-8 -*-
 from mesures.headers import P1_HEADER as columns
+from mesures.p1 import P1
+import os
+
 
 class P1D(P1):
     def __init__(self, data, distributor=None, comer=None, compression='bz2'):

@@ -1,8 +1,10 @@
-import os
-import pandas as pd
-from datetime import datetime, timedelta
+# -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.headers import B5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
+import os
+import pandas as pd
+
 
 class B5D():
     def __init__(self, data, distributor=None, comer=None, compression='bz2'):

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5
 import os
-import pandas as pd
 
 
 class F5D(F5):

@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
-from expects import expect, equal
-from mamba import context, description, it
-from mesures.f1 import F1
-from mesures.f5d import F5D
-from mesures.p1 import P1
-from mesures.p1d import P1D
+from mamba import description, it
 from mesures.a5d import A5D
-from mesures.b5d import B5D
 from mesures.agrecl import AGRECL
 from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
-from mesures.cupscau import CUPSCAU
+from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
+from mesures.cumpelectro import CUMPELECTRO
+from mesures.cupscau import CUPSCAU
+from mesures.dates import *
+from mesures.enelectroaut import ENELECTROAUT
+from mesures.f1 import F1
+from mesures.f3 import F3
+from mesures.f5d import F5D
+from mesures.p1 import P1
+from mesures.p1d import P1D
+from mesures.potelectro import POTELECTRO
 from random import randint
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
-import base64
 import bz2
 import numpy as np
 import zipfile
@@ -89,7 +91,6 @@ class SampleData:
 
         ts = "2020-01-01 00:00:00"
         data_f5d = []
-        data_f5d_kwh = []
         for x in range(50):
             datas = basic_f5d.copy()
             ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
@@ -116,6 +117,164 @@ class SampleData:
             data_f5d.append(datas)
 
         return data_f5d
+
+    @staticmethod
+    def get_sample_f3_data():
+        basic_f3 = {
+            "cups": "ES00123400220F",
+            "timestamp": "2020-01-01 00:00:00",
+            "season": 1,
+            "method": 1,
+            "firmeza": 1
+        }
+
+        ts = "2020-01-01 00:00:00"
+        data_f3 = []
+        for x in range(50):
+            datas = basic_f3.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae})
+            data_f3.append(datas)
+
+        cups = "ES00123400230F"
+        ts = "2020-01-01 00:00:00"
+        for x in range(70):
+            datas = basic_f3.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'cups': cups})
+            data_f3.append(datas)
+
+        return data_f3
+
+    @staticmethod
+    def get_sample_cumpelectro_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'electrointensivo_n1': 'S',
+            'electrointensivo_n2': 'S',
+            'electrointensivo_n3': 'S',
+            'contrato_vigente_n1': 'S',
+            'contrato_vigente_n2': 'S',
+            'contrato_vigente_n3': 'S',
+            'corriente_pagos_n1': 'N',
+            'corriente_pagos_n2': 'S',
+            'corriente_pagos_n3': 'S',
+            'cargos_facturados_n1_p1': 100.0,
+            'cargos_facturados_n1_p2': 100.0,
+            'cargos_facturados_n1_p3': 100.0,
+            'cargos_facturados_n1_p4': 100.0,
+            'cargos_facturados_n1_p5': 100.0,
+            'cargos_facturados_n1_p6': 100.0,
+            'cargos_facturados_n2_p1': 100.0,
+            'cargos_facturados_n2_p2': 100.0,
+            'cargos_facturados_n2_p3': 100.0,
+            'cargos_facturados_n2_p4': 100.0,
+            'cargos_facturados_n2_p5': 100.0,
+            'cargos_facturados_n2_p6': 100.0,
+            'cargos_facturados_n3_p1': 100.0,
+            'cargos_facturados_n3_p2': 100.0,
+            'cargos_facturados_n3_p3': 100.0,
+            'cargos_facturados_n3_p4': 100.0,
+            'cargos_facturados_n3_p5': 100.0,
+            'cargos_facturados_n3_p6': 100.0,
+            'peajes_facturados_n1_p1': 100.0,
+            'peajes_facturados_n1_p2': 100.0,
+            'peajes_facturados_n1_p3': 100.0,
+            'peajes_facturados_n1_p4': 100.0,
+            'peajes_facturados_n1_p5': 100.0,
+            'peajes_facturados_n1_p6': 100.0,
+            'peajes_facturados_n2_p1': 100.0,
+            'peajes_facturados_n2_p2': 100.0,
+            'peajes_facturados_n2_p3': 100.0,
+            'peajes_facturados_n2_p4': 100.0,
+            'peajes_facturados_n2_p5': 100.0,
+            'peajes_facturados_n2_p6': 100.0,
+            'peajes_facturados_n3_p1': 100.0,
+            'peajes_facturados_n3_p2': 100.0,
+            'peajes_facturados_n3_p3': 100.0,
+            'peajes_facturados_n3_p4': 100.0,
+            'peajes_facturados_n3_p5': 100.0,
+            'peajes_facturados_n3_p6': 100.0
+        }]
+
+    @staticmethod
+    def get_sample_potelectro_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'potencia_n-1_p1': 451.0,
+            'potencia_n-1_p2': 451.0,
+            'potencia_n-1_p3': 451.0,
+            'potencia_n-1_p4': 451.0,
+            'potencia_n-1_p5': 451.0,
+            'potencia_n-1_p6': 451.0,
+            'potencia_n-2_p1': 451.0,
+            'potencia_n-2_p2': 451.0,
+            'potencia_n-2_p3': 451.0,
+            'potencia_n-2_p4': 451.0,
+            'potencia_n-2_p5': 451.0,
+            'potencia_n-2_p6': 451.0,
+            'potencia_n-3_p1': 451.0,
+            'potencia_n-3_p2': 451.0,
+            'potencia_n-3_p3': 451.0,
+            'potencia_n-3_p4': 451.0,
+            'potencia_n-3_p5': 451.0,
+            'potencia_n-3_p6': 451.0,
+            'potencia_proyectada_p1': 451.0,
+            'potencia_proyectada_p2': 451.0,
+            'potencia_proyectada_p3': 451.0,
+            'potencia_proyectada_p4': 451.0,
+            'potencia_proyectada_p5': 451.0,
+            'potencia_proyectada_p6': 451.0,
+            'energia_proyectada_p1': 451.0,
+            'energia_proyectada_p2': 451.0,
+            'energia_proyectada_p3': 451.0,
+            'energia_proyectada_p4': 451.0,
+            'energia_proyectada_p5': 451.0,
+            'energia_proyectada_p6': 451.0
+        }]
+
+    @staticmethod
+    def get_sample_enelectroaut_data():
+        return [{
+            'cups': 'ES00123400230F4444440F',
+            'cif_empresa': 'X12345678',
+            'codigo_solicitud': 'ABCDEFGHIJKLMNOPQRSTUVWXY',
+            'version_solicitud': '123456',
+            'energia_n-1_p1': 10.0,
+            'energia_n-1_p2': 10.0,
+            'energia_n-1_p3': 10.0,
+            'energia_n-1_p4': 10.0,
+            'energia_n-1_p5': 10.0,
+            'energia_n-1_p6': 10.0,
+            'energia_n-2_p1': 10.0,
+            'energia_n-2_p2': 10.0,
+            'energia_n-2_p3': 10.0,
+            'energia_n-2_p4': 10.0,
+            'energia_n-2_p5': 10.0,
+            'energia_n-2_p6': 10.0,
+            'energia_n-3_p1': 10.0,
+            'energia_n-3_p2': 10.0,
+            'energia_n-3_p3': 10.0,
+            'energia_n-3_p4': 10.0,
+            'energia_n-3_p5': 10.0,
+            'energia_n-3_p6': 10.0,
+            'autoconsumida_proyectada_p1': 10.0,
+            'autoconsumida_proyectada_p2': 10.0,
+            'autoconsumida_proyectada_p3': 10.0,
+            'autoconsumida_proyectada_p4': 10.0,
+            'autoconsumida_proyectada_p5': 10.0,
+            'autoconsumida_proyectada_p6': 10.0
+        }]
 
 
 with description('An F5D'):
@@ -294,3 +453,100 @@ with description('A B5D'):
         assert 'bz2' not in f1
         assert f1.endswith('.0')
 
+with description('An F3'):
+    with it('is instance of F3 Class'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        assert isinstance(f, F3)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_f3_data()
+        f = F3(data)
+        res = f.writer()
+        assert isinstance(f.ai, (int, np.int64))
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+
+with description('A CUMPELECTRO'):
+    with it('is instance of Cumpelectro Class'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        assert isinstance(f, CUMPELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+
+with description('A CUMPELECTRO'):
+    with it('is instance of CUMPELECTRO Class'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        assert isinstance(f, CUMPELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+with description('A POTELECTRO'):
+    with it('is instance of POTELECTRO Class'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
+        assert isinstance(f, POTELECTRO)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+with description('A ENELECTROAUT'):
+    with it('is instance of ENELECTROAUT Class'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
+        assert isinstance(f, ENELECTROAUT)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)

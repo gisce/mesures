@@ -1,11 +1,15 @@
 # Mesures
 
 :octocat: :hammer:
-[![Mesures](https://img.shields.io/badge/version-1.8.1-green.svg?style=flat&logo=python)](https://pypi.org/project/mesures/)
+.. image:: https://github.com/gisce/mesures/actions/workflows/python2-app.yml/badge.svg
+    :target: https://github.com/gisce/mesures/actions/workflows/python2-app.yml
 
-- Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants
-- Aporta el coneixement i formats necessaris per crear fitxers amb el format unificat i establert per l'Operador del sistema
-- Afegeix suport per llegir i tractar de forma més entenedora y esquematitzada fitxers críptics
+.. image:: https://github.com/gisce/mesures/actions/workflows/python3-app.yml/badge.svg
+    :target: https://github.com/gisce/mesures/actions/workflows/python3-app.yml
+
+- Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
+- Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
+- Afegeix suport per a llegir i tractar de forma més entenedora y esquematitzada fitxers críptics.
 
 ## Exemple de fàcil utilització:
 
@@ -31,8 +35,11 @@
 - `AUTOCONSUMO`
 - `B5D`
 - `CILCAU`
+- `CUMPELECTRO`
 - `CUPSCAU`
+- `ENELECTROAUT`
 - `F1`
+- `F3`
 - `F5`
 - `F5D`
 - `P1`
@@ -41,6 +48,7 @@
 - `P2D`
 - `P5D`
 - `PMEST`
+- `POTELECTRO`
 
 ## Publicar versió a Pipy
 

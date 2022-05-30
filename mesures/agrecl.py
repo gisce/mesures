@@ -1,9 +1,9 @@
-import os
-import pandas as pd
-import numpy as np
-from datetime import datetime
+# -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.headers import AGRECL_HEADER as columns
 from mesures.parsers.dummy_data import DummyKeys
+import os
+import pandas as pd
 
 
 class AGRECL(object):

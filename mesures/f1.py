@@ -1,9 +1,11 @@
-import os
-import pandas as pd
-from zipfile import ZipFile
-from datetime import datetime, timedelta
+# -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.headers import F1_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
+from zipfile import ZipFile
+import os
+import pandas as pd
+
 
 class F1(object):
     def __init__(self, data, distributor=None, compression='bz2'):

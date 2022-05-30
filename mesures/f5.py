@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
-from zipfile import ZipFile
+from mesures.dates import *
 from mesures.headers import F5D_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
+from zipfile import ZipFile
 import os
 import pandas as pd
+
 
 DTYPES = {'cups': 'category',
           'season': 'category',
