@@ -59,12 +59,17 @@ class CUPSELECTRO(object):
         return len(list(set(self.file['cups'])))
 
     def reader(self, filepath):
-        if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=columns)
-        elif isinstance(filepath, list):
-            df = pd.DataFrame(data=filepath)
-        else:
-            raise Exception("Filepath must be an str or a list")
+        try:
+            df = pd.read_csv(filepath, sep=';', names=columns, index_col=False)
+        except:
+            if isinstance(filepath, str):
+                df = pd.read_csv(
+                    filepath, sep=';', names=columns
+                )
+            elif isinstance(filepath, list):
+                df = pd.DataFrame(data=filepath)
+            else:
+                raise Exception("Filepath must be an str or a list")
         df = df[columns]
         return df
 
