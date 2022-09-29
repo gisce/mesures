@@ -64,15 +64,15 @@ class MEDIDAS(object):
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return int(self.file['ae'].sum())
 
     @property
     def r2(self):
-        return self.file['r2'].sum()
+        return int(self.file['r2'].sum())
 
     @property
     def r3(self):
-        return self.file['r3'].sum()
+        return int(self.file['r3'].sum())
 
     @property
     def cils(self):
