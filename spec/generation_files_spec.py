@@ -14,6 +14,7 @@ from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
 from mesures.f3 import F3
 from mesures.f5d import F5D
+from mesures.medidas import MEDIDAS
 from mesures.p1 import P1
 from mesures.p1d import P1D
 from mesures.potelectro import POTELECTRO
@@ -287,6 +288,31 @@ class SampleData:
             'autoconsumida_proyectada_p4': 10.0,
             'autoconsumida_proyectada_p5': 10.0,
             'autoconsumida_proyectada_p6': 10.0
+        }]
+
+    @staticmethod
+    def get_sample_medidas_data():
+        return [{
+            'cil': 'ES0291000000004444QR1F001',
+            'timestamp': '2022-09-01 01:00:00',
+            'season': 1,
+            'ae': 10,
+            'r2': 2,
+            'r3': 3,
+            'power_factor': 0.55,
+            'power_factor_type': 0,
+            'read_type': 'R'
+        },
+            {
+            'cil': 'ES0291000000005555QR1F001',
+            'timestamp': '2022-09-01 01:00:00',
+            'season': 1,
+            'ae': 20,
+            'r2': 2,
+            'r3': 3,
+            'power_factor': 0.55,
+            'power_factor_type': 0,
+            'read_type': 'R'
         }]
 
 
@@ -563,3 +589,19 @@ with description('A ENELECTROAUT'):
         res = f.writer()
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)
+
+with description('A MEDIDAS'):
+    with it('is instance of MEDIDAS Class'):
+        data = SampleData().get_sample_medidas_data()
+        f = MEDIDAS(data)
+        assert isinstance(f, MEDIDAS)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_medidas_data()
+        f = MEDIDAS(data, period=2)
+        res = f.writer()
+        assert isinstance(f.cils, list)
+        assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.ae, int)
+        assert isinstance(f.r2, int)
+        assert isinstance(f.r3, int)
