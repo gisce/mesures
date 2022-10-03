@@ -14,7 +14,7 @@ class DummyCurve(object):
             pass
         for data in datas:
             # Check lowers keys
-            for k, v in data.items():
+            for k in list(data.keys()):
                 data[k.lower()] = data.pop(k)
             # Adapt datetimes
             if 'datetime' in data:
@@ -73,7 +73,7 @@ class DummyKeys(object):
         for data in datas:
             # Lower keys
             # Split separators in keys dict
-            for k, v in data.items():
+            for k in list(data.keys()):
                 data[k.lower()] = data.pop(k)
                 try:
                     # Try to fix keynames with dots and agrees
