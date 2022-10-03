@@ -50,8 +50,3 @@
 - `P5D`
 - `PMEST`
 - `POTELECTRO`
-
-## Publicar versió a Pipy
-
-`python setup.py sdist`
-`twine upload -r pypi dist/*`
