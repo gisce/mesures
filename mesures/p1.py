@@ -134,7 +134,7 @@ class P1(object):
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
+            dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H:%M:%S'), axis=1)
             filepath = os.path.join('/tmp', self.filename)
             dataf.to_csv(
                 filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
