@@ -121,10 +121,15 @@ class F3(object):
             dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime(REE_ELECTROINTENSIVO_DATETIME_MASK),
                                              axis=1)
             filepath = os.path.join('/tmp', self.filename)
-            dataf.to_csv(
-                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-                compression=self.default_compression
-            )
+            if self.default_compression:
+                dataf.to_csv(
+                    filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+                    compression=self.default_compression
+                )
+            else:
+                dataf.to_csv(
+                    filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
+                )
             daymin = df
             zipped_file.write(filepath, arcname=os.path.basename(filepath))
         zipped_file.close()

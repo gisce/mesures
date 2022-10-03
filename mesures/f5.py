@@ -81,31 +81,31 @@ class F5(object):
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ai(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return int(self.file['ae'].sum())
 
     @property
     def r1(self):
-        return self.file['r1'].sum()
+        return int(self.file['r1'].sum())
 
     @property
     def r2(self):
-        return self.file['r2'].sum()
+        return int(self.file['r2'].sum())
 
     @property
     def r3(self):
-        return self.file['r3'].sum()
+        return int(self.file['r3'].sum())
 
     @property
     def r4(self):
-        return self.file['r4'].sum()
+        return int(self.file['r4'].sum())
 
     @property
     def cups(self):
@@ -158,10 +158,15 @@ class F5(object):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
             filepath = os.path.join('/tmp', self.filename)
-            dataf.to_csv(
-                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-                compression=self.default_compression
-            )
+            if self.default_compression:
+                dataf.to_csv(
+                    filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+                    compression=self.default_compression
+                )
+            else:
+                dataf.to_csv(
+                    filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
+                )
             daymin = df
             zipped_file.write(filepath, arcname=os.path.basename(filepath))
         zipped_file.close()

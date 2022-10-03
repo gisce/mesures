@@ -58,15 +58,15 @@ class P5D(object):
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ai(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return int(self.file['ae'].sum())
 
     @property
     def cups(self):
@@ -101,8 +101,13 @@ class P5D(object):
         :return: file path
         """
         file_path = os.path.join('/tmp', self.filename)
-        self.file.to_csv(
-            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-            compression=self.default_compression
-        )
+        if self.default_compression:
+            self.file.to_csv(
+                file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+                compression=self.default_compression
+            )
+        else:
+            self.file.to_csv(
+                file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
+            )
         return file_path

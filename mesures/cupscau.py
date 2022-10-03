@@ -87,8 +87,13 @@ class CUPSCAU(object):
         :return: file path of generated CUPSCAU File
         """
         file_path = os.path.join('/tmp', self.filename)
-        self.file.to_csv(
-            file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-            compression=self.default_compression
-        )
+        if self.default_compression:
+            self.file.to_csv(
+                file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
+                compression=self.default_compression
+            )
+        else:
+            self.file.to_csv(
+                file_path, sep=';', header=False, columns=columns, index=False, line_terminator=';\n'
+            )
         return file_path
