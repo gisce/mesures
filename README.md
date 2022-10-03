@@ -1,10 +1,20 @@
 # Mesures
 
 :octocat: :hammer:
-![](https://github.com/gisce/mesures/actions/workflows/python2-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python2-app.yml)
-![](https://github.com/gisce/mesures/actions/workflows/python3-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.7-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.7-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.8-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.8-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.9-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.9-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.10-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.10-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
 - Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
