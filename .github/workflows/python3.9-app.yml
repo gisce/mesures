@@ -25,6 +25,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install --upgrade setuptools
         pip install -r requirements.txt
+        pip install --upgrade mamba
         pip install coveralls
         pip install -e .
     - name: Test with mamba
