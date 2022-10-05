@@ -54,13 +54,14 @@ class F5D(F5):
         :return: file path
         """
         file_path = os.path.join('/tmp', self.filename)
+        kwargs = {'sep': ';',
+                  'header': False,
+                  'columns': COLUMNS,
+                  'index': False,
+                  'line_terminator': ';\n'
+                  }
         if self.default_compression:
-            self.file.to_csv(
-                file_path, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n',
-                compression=self.default_compression
-            )
-        else:
-            self.file.to_csv(
-                file_path, sep=';', header=False, columns=COLUMNS, index=False, line_terminator=';\n'
-            )
+            kwargs.update({'compression': self.default_compression})
+
+        self.file.to_csv(file_path, **kwargs)
         return file_path
