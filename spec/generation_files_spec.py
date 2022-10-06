@@ -646,4 +646,4 @@ with description('A CILDAT'):
         res = f.writer()
         expected = 'ES0291000000004444QR1F001;NBT44444444;;RA22-0000004444-2022;17005;49.75;' \
                    'CIL DE PRUEBAS GISCE;;b.1.1;4;20221006;30000101;05;20221001;S\n'
-        assert f.file.to_csv(sep=';', header=None, index=False) == expected
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected

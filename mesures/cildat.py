@@ -20,6 +20,7 @@ class CILDAT(object):
         self.version = 0
         self.default_compression = compression
         self.distributor = distributor
+        self.columns = COLUMNS
 
     def __repr__(self):
         return "{}: {}".format(self.prefix, self.filename)
