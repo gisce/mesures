@@ -14,6 +14,7 @@ from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
 from mesures.f3 import F3
 from mesures.f5d import F5D
+from mesures.mcil345 import MCIL345
 from mesures.medidas import MEDIDAS
 from mesures.p1 import P1
 from mesures.p1d import P1D
@@ -289,6 +290,33 @@ class SampleData:
             'autoconsumida_proyectada_p5': 10.0,
             'autoconsumida_proyectada_p6': 10.0
         }]
+
+    @staticmethod
+    def get_sample_mcil345_data():
+        return [{
+            'cil': 'ES0291000000004444QR1F001',
+            'timestamp': '2022-09-01 01:00:00',
+            'season': 1,
+            'ae': 100,
+            'ai': 10,
+            'r1': 1,
+            'r2': 2,
+            'r3': 3,
+            'r4': 4,
+            'read_type': 'R'
+        },
+            {
+            'cil': 'ES0291000000005555QR1F001',
+            'timestamp': '2022-09-01 01:00:00',
+            'season': 1,
+            'ae': 200,
+            'ai': 20,
+            'r1': 11,
+            'r2': 22,
+            'r3': 33,
+            'r4': 44,
+            'read_type': 'R'
+            }]
 
     @staticmethod
     def get_sample_medidas_data():
@@ -605,3 +633,30 @@ with description('A MEDIDAS'):
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
+
+with description('A MCIL345'):
+    with it('is instance of MCIL345 Class'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345(data)
+        assert isinstance(f, MCIL345)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345(data)
+        res = f.writer()
+        assert isinstance(f.cils, list)
+        assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.ae, int)
+        assert isinstance(f.ai, int)
+        assert isinstance(f.r1, int)
+        assert isinstance(f.r2, int)
+        assert isinstance(f.r3, int)
+        assert isinstance(f.r4, int)
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F001;2022/09/01 01:00:00;1;100;10;1;2;3;4;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 01:00:00;1;200;20;11;22;33;44;R\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
