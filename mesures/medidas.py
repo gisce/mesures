@@ -98,7 +98,7 @@ class MEDIDAS(object):
             df = df.groupby(
                 ['cil', 'timestamp', 'season', 'power_factor', 'power_factor_type']
             ).aggregate(
-                {'ae': 'sum', 'r2': 'sum', 'r3': 'sum', 'tipo_lectura': 'min'}
+                {'ae': 'sum', 'r2': 'sum', 'r3': 'sum', 'read_type': 'min'}
             ).reset_index()
             return df
 
