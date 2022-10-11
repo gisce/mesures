@@ -95,6 +95,11 @@ class MEDIDAS(object):
             # Timestamp is already well parsed
             pass
         finally:
+            df = df.groupby(
+                ['cil', 'timestamp', 'season', 'power_factor', 'power_factor_type']
+            ).aggregate(
+                {'ae': 'sum', 'r2': 'sum', 'r3': 'sum', 'tipo_lectura': 'min'}
+            ).reset_index()
             return df
 
     def writer(self):
