@@ -22,6 +22,7 @@ class MEDIDAS(object):
         self.period = period
         self.distributor = distributor
         self.default_compression = compression
+        self.columns = columns
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)

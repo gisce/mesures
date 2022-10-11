@@ -313,7 +313,19 @@ class SampleData:
             'power_factor': 0.55,
             'power_factor_type': 0,
             'read_type': 'R'
-        }]
+        },
+            {
+            'cil': 'ES0291000000005555QR1F001',
+            'timestamp': '2022-09-01 01:00:00',
+            'season': 1,
+            'ae': 20,
+            'r2': 2,
+            'r3': 3,
+            'power_factor': 0.55,
+            'power_factor_type': 0,
+            'read_type': 'E'
+            },
+        ]
 
 
 with description('An F5D'):
@@ -605,3 +617,11 @@ with description('A MEDIDAS'):
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_medidas_data()
+        f = MEDIDAS(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F001;2022/09/01 01:00:00;1;10;2;3;0.55;0;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 01:00:00;1;40;4;6;0.55;0;E\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
