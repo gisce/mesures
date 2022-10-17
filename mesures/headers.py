@@ -343,6 +343,19 @@ MEDIDAS_HEADER = [
     'read_type'             # str(1) in ('E' for estimated, 'R' for real)
 ]
 
+MCIL345_HEADER = [
+    'cil',                  # str(25) CUPS + 3 digits ('001' style)
+    'timestamp',            # str(aaaa/mm/dd hh)
+    'season',               # str(1) in ('0' for winter, '1' for summer)
+    'ae',                   # int(10)
+    'ai',                   # int(10)
+    'r1',                   # int(10)
+    'r2',                   # int(10)
+    'r3',                   # int(10)
+    'r4',                   # int(10)
+    'read_type'             # str(1) in ('E' for estimated, 'R' for real)
+]
+
 CILDAT_HEADER = [
     'cil',                  # str(25)
     'reg_minetad',          # str(25)
