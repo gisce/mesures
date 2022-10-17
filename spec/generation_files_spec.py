@@ -8,7 +8,9 @@ from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
 from mesures.cumpelectro import CUMPELECTRO
 from mesures.cupselectro import CUPSELECTRO
+from mesures.cups45 import CUPS45
 from mesures.cupscau import CUPSCAU
+from mesures.cupsdat import CUPSDAT
 from mesures.dates import *
 from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
@@ -315,6 +317,104 @@ class SampleData:
             'read_type': 'R'
         }]
 
+    @staticmethod
+    def get_sample_cupsdat_data():
+        return [{
+            'cups': 'ES0291000000004444QR1F',
+            'descripcion': 'CUPS de Demo 01',
+            'cif': 'X0004444',
+            'distribuidor': '4444',
+            'comercializador': '5555',
+            'agree_tipo': '2',
+            'agree_tensio': 'E2',
+            'agree_tarifa': '6A',
+            'agree_dh': 'G0',
+            'alta_baja_tension': 'A',
+            'provincia': 'GI',
+            'potencia_p1': 400,
+            'potencia_p2': 400,
+            'potencia_p3': 400,
+            'potencia_p4': 400,
+            'potencia_p5': 400,
+            'potencia_p6': 500,
+            'cnae': '1091',
+            'fecha_hora_inicio_vigencia': '2022-10-01 01',
+            'fecha_hora_final_vigencia': '2022-10-17 00',
+            'cp': '17005',
+            'propiedad_equipo': 'S',
+            'tension': '27'
+        },
+            {
+            'cups': 'ES0291000000005555QR1F',
+            'descripcion': 'CUPS de Demo 02',
+            'cif': 'X0005555',
+            'distribuidor': '4444',
+            'comercializador': '5555',
+            'agree_tipo': '2',
+            'agree_tensio': 'E2',
+            'agree_tarifa': '6A',
+            'agree_dh': 'G0',
+            'alta_baja_tension': 'A',
+            'provincia': 'GI',
+            'potencia_p1': 400,
+            'potencia_p2': 400,
+            'potencia_p3': 400,
+            'potencia_p4': 400,
+            'potencia_p5': 400,
+            'potencia_p6': 500,
+            'cnae': '1091',
+            'fecha_hora_inicio_vigencia': '2022-10-17 01',
+            'fecha_hora_final_vigencia': '',
+            'cp': '17005',
+            'propiedad_equipo': 'S',
+            'tension': '27'
+        }]
+
+    @staticmethod
+    def get_sample_cups45_data():
+        return [{
+            'cups': 'ES0291000000004444QR1F',
+            'distribuidor': '4444',
+            'comercializador': '5555',
+            'agree_tipo': '5',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'provincia': 'GI',
+            'potencia_p1': 4,
+            'potencia_p2': 4,
+            'potencia_p3': 5,
+            'potencia_p4': 0,
+            'potencia_p5': 0,
+            'potencia_p6': 0,
+            'telegestion': 'S',
+            'fecha_hora_inicio_vigencia': '2022-10-01 01',
+            'fecha_hora_final_vigencia': '2022-10-17 00',
+            'cnae': '0968',
+            'cp': '17005',
+        },
+            {
+            'cups': 'ES0291000000005555QR1F',
+            'distribuidor': '4444',
+            'comercializador': '5555',
+            'agree_tipo': '5',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'provincia': 'GI',
+            'potencia_p1': 4,
+            'potencia_p2': 4,
+            'potencia_p3': 4,
+            'potencia_p4': 0,
+            'potencia_p5': 0,
+            'potencia_p6': 0,
+            'telegestion': 'S',
+            'fecha_hora_inicio_vigencia': '2022-10-17 01',
+            'fecha_hora_final_vigencia': '',
+            'cnae': '0968',
+            'cp': '17005',
+        }]
+
 
 with description('An F5D'):
     with it('is instance of F5D Class'):
@@ -605,3 +705,48 @@ with description('A MEDIDAS'):
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
+
+with description('A CUPSDAT'):
+    with it('is instance of CUPSDAT Class'):
+        data = SampleData().get_sample_cupsdat_data()
+        f = CUPSDAT(data)
+        assert isinstance(f, CUPSDAT)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cupsdat_data()
+        f = CUPSDAT(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+        assert f.number_of_cups == 2
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_cupsdat_data()
+        f = CUPSDAT(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F;CUPS de Demo 01;X0004444;4444;5555;2;' \
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022-10-01 01;2022/10/17 00;17005;S;27\n' \
+                   'ES0291000000005555QR1F;CUPS de Demo 02;X0005555;4444;5555;2;' \
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022-10-17 01;3000/01/01 01;17005;S;27\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A CUPS45'):
+    with it('is instance of CUPS45 Class'):
+        data = SampleData().get_sample_cups45_data()
+        f = CUPS45(data)
+        assert isinstance(f, CUPS45)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cups45_data()
+        f = CUPS45(data)
+        res = f.writer()
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_cups45_data()
+        f = CUPS45(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F;4444;5555;5;E0;2T;E3;GI;4;4;5;0;0;0;S;2022-10-01 01;2022/10/17 00;0968;17005\n' \
+                   'ES0291000000005555QR1F;4444;5555;5;E0;2T;E3;GI;4;4;4;0;0;0;S;2022-10-17 01;3000/01/01 01;0968;17005\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected

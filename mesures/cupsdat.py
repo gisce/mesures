@@ -14,13 +14,13 @@ class CUPSDAT(object):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CUPSDAT'
         self.version = 0
         self.default_compression = compression
         self.distributor = distributor
-        self.columns = COLUMNS
 
     def __repr__(self):
         return "{}: {}".format(self.prefix, self.filename)
@@ -60,13 +60,10 @@ class CUPSDAT(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['fecha_hora_inicial_vigencia'] = df.apply(
-            lambda row: row['fecha_hora_inicial_vigencia'].strftime(DATE_MASK), axis=1
-        )
         df['fecha_hora_final_vigencia'] = df.apply(
             lambda row: REE_END_DATE_HOUR
-            if not isinstance(row['fecha_hora_final_vigencia'], pd.Timestamp)
-            else row['fecha_hora_final_vigencia'].strftime(DATE_MASK), axis=1)
+            if row['fecha_hora_final_vigencia'] == ''
+            else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
 
         return df[self.columns]
 
