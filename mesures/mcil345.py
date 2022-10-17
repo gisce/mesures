@@ -118,7 +118,7 @@ class MCIL345(object):
         :return: file path
         """
         daymin = self.file['timestamp'].min()
-        measures_date = datetime.strptime(daymin, '%Y/%m/%d %H:%M:%S')
+        measures_date = datetime.strptime(daymin, DATE_MASK)
         self.measures_date = measures_date
         file_path = os.path.join('/tmp', self.filename)
 
