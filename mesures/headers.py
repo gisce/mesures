@@ -342,3 +342,34 @@ MEDIDAS_HEADER = [
     'power_factor_type',    # str(1) in ('0' for capacitive, '1' for inductive)
     'read_type'             # str(1) in ('E' for estimated, 'R' for real)
 ]
+
+MCIL345_HEADER = [
+    'cil',                  # str(25) CUPS + 3 digits ('001' style)
+    'timestamp',            # str(aaaa/mm/dd hh)
+    'season',               # str(1) in ('0' for winter, '1' for summer)
+    'ae',                   # int(10)
+    'ai',                   # int(10)
+    'r1',                   # int(10)
+    'r2',                   # int(10)
+    'r3',                   # int(10)
+    'r4',                   # int(10)
+    'read_type'             # str(1) in ('E' for estimated, 'R' for real)
+]
+
+CILDAT_HEADER = [
+    'cil',                  # str(25)
+    'reg_minetad',          # str(25)
+    'reg_provisional',      # str(25)
+    'reg_definitivo',       # str(25)
+    'cp',                   # str(5)
+    'potencia',             # float(7*n.3*n) (kW)
+    'nombre',               # str(100)
+    'numero_pss',           # str(5)
+    'subgrupo',             # str(5)
+    'tipo_punto',           # str(1) ('3' / '4' / '5')
+    'fecha_alta',           # str(aaammdd)
+    'fecha_baja',           # str(aaammdd)
+    'tension',              # str(2)
+    'fecha_acta_servicio',  # str(aaammdd)
+    'propiedad_equipo',     # str(1) ('S' / 'N')
+]

@@ -34,6 +34,7 @@
 - `AUTOCONSUMO`
 - `B5D`
 - `CILCAU`
+- `CILDAT`
 - `CUMPELECTRO`
 - `CUPSELECTRO`
 - `CUPSCAU`
@@ -42,6 +43,7 @@
 - `F3`
 - `F5`
 - `F5D`
+- `MCIL345`
 - `MEDIDAS`
 - `P1`
 - `P1D`
