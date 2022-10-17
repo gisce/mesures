@@ -22,6 +22,7 @@ class MEDIDAS(object):
         self.period = period
         self.distributor = distributor
         self.default_compression = compression
+        self.columns = columns
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -95,6 +96,11 @@ class MEDIDAS(object):
             # Timestamp is already well parsed
             pass
         finally:
+            df = df.groupby(
+                ['cil', 'timestamp', 'season', 'power_factor', 'power_factor_type']
+            ).aggregate(
+                {'ae': 'sum', 'r2': 'sum', 'r3': 'sum', 'read_type': 'min'}
+            ).reset_index()
             return df
 
     def writer(self):
