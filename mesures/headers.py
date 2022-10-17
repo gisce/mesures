@@ -342,3 +342,51 @@ MEDIDAS_HEADER = [
     'power_factor_type',    # str(1) in ('0' for capacitive, '1' for inductive)
     'read_type'             # str(1) in ('E' for estimated, 'R' for real)
 ]
+
+CUPSDAT_HEADER = [
+    'cups',                         # str(22)
+    'descripcion',                  # str(60)
+    'cif',                          # str(9)
+    'distribuidor',                 # str(4)
+    'comercializador',              # str(4)
+    'agree_tipo',                   # str(1) in ('1', '2', '3')
+    'agree_tension',                # str(2)
+    'agree_tarifa',                 # str(2)
+    'agree_dh',                     # str(2)
+    'alta_baja_tension',            # str(1) in ('A', 'B')
+    'provincia',                    # str(2)
+    'potencia_p1',                  # int(6) kW
+    'potencia_p2',                  # int(6) kW
+    'potencia_p3',                  # int(6) kW
+    'potencia_p4',                  # int(6) kW
+    'potencia_p5',                  # int(6) kW
+    'potencia_p6',                  # int(6) kW
+    'cnae',                         # str(5)
+    'fecha_hora_inicio_vigencia',   # str(aaaa/mm/dd hh)
+    'fecha_hora_final_vigencia',    # str(aaaa/mm/dd hh)
+    'cp',                           # str(5)
+    'propiedad_equipo',             # str(1) in ('S', 'N')
+    'tension'                       # str(2)
+]
+
+CUPS45_HEADER = [
+    'cups',                         # str(22)
+    'distribuidor',                 # str(4)
+    'comercializador',              # str(4)
+    'agree_tipo',                   # str(1) in ('1', '2', '3')
+    'agree_tension',                # str(2)
+    'agree_tarifa',                 # str(2)
+    'agree_dh',                     # str(2)
+    'provincia',                    # str(2)
+    'potencia_p1',                  # int(6) kW
+    'potencia_p2',                  # int(6) kW
+    'potencia_p3',                  # int(6) kW
+    'potencia_p4',                  # int(6) kW
+    'potencia_p5',                  # int(6) kW
+    'potencia_p6',                  # int(6) kW
+    'telegestion',                  # str(1) in ('S', 'N')
+    'fecha_hora_inicio_vigencia',   # str(aaaa/mm/dd hh)
+    'fecha_hora_final_vigencia',    # str(aaaa/mm/dd hh)
+    'cnae',                         # str(5)
+    'cp',                           # str(5)
+]
