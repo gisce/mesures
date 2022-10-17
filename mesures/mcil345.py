@@ -105,7 +105,7 @@ class MCIL345(object):
         else:
             raise Exception("Filepath must be an str or a list")
         try:
-            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H:%M:%S'), axis=1)
+            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime(DATE_MASK), axis=1)
         except Exception as err:
             # Timestamp is already well parsed
             pass

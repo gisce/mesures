@@ -344,8 +344,8 @@ MEDIDAS_HEADER = [
 ]
 
 MCIL345_HEADER = [
-    'cil',                  # str(25)
-    'timestamp',            # str(aaaa/mm/dd hh:mm)
+    'cil',                  # str(25) CUPS + 3 digits ('001' style)
+    'timestamp',            # str(aaaa/mm/dd hh)
     'season',               # str(1) in ('0' for winter, '1' for summer)
     'ae',                   # int(10)
     'ai',                   # int(10)
