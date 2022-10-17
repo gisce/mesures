@@ -7,14 +7,14 @@ import pandas as pd
 
 
 class CUPSDAT(object):
-    def __init__(self, data, distributor=None, compression='bz2'):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
-        self.columns = COLUMNS
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CUPSDAT'
