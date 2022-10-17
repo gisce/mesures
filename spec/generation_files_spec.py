@@ -6,6 +6,7 @@ from mesures.almacenacau import ALMACENACAU
 from mesures.autoconsumo import AUTOCONSUMO
 from mesures.b5d import B5D
 from mesures.cilcau import CILCAU
+from mesures.cildat import CILDAT
 from mesures.cumpelectro import CUMPELECTRO
 from mesures.cupselectro import CUPSELECTRO
 from mesures.cupscau import CUPSCAU
@@ -315,6 +316,26 @@ class SampleData:
             'read_type': 'R'
         }]
 
+    @staticmethod
+    def get_sample_cildat_data():
+        return [{
+            'cil': 'ES0291000000004444QR1F001',
+            'reg_minetad': 'NBT44444444',
+            'reg_provisional': '',
+            'reg_definitivo': 'RA22-0000004444-2022',
+            'cp': '17005',
+            'potencia': 49.75,
+            'nombre': 'CIL DE PRUEBAS GISCE',
+            'numero_pss': '',
+            'subgrupo': 'b.1.1',
+            'tipo_punto': '4',
+            'fecha_alta': datetime(2022, 10, 6),
+            'fecha_baja': '',
+            'tension': '05',
+            'fecha_acta_servicio': datetime(2022, 10, 1),
+            'propiedad_equipo': 'S'
+            }]
+
 
 with description('An F5D'):
     with it('is instance of F5D Class'):
@@ -605,3 +626,24 @@ with description('A MEDIDAS'):
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
+
+with description('A CILDAT'):
+    with it('is instance of CILDAT Class'):
+        data = SampleData().get_sample_cildat_data()
+        f = CILDAT(data)
+        assert isinstance(f, CILDAT)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_cildat_data()
+        f = CILDAT(data)
+        res = f.writer()
+        assert isinstance(f.cils, list)
+        assert isinstance(f.number_of_cils, int)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_cildat_data()
+        f = CILDAT(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F001;NBT44444444;;RA22-0000004444-2022;17005;49.75;' \
+                   'CIL DE PRUEBAS GISCE;;b.1.1;4;20221006;30000101;05;20221001;S\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
