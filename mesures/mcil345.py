@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import MEDIDAS_HEADER as columns
+from mesures.headers import MCIL345_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 import os
 import pandas as pd
 
 
-class MEDIDAS(object):
-    def __init__(self, data, period=2, distributor=None, compression='bz2'):
+class MCIL345(object):
+    def __init__(self, data, distributor=None, compression='bz2'):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -17,12 +17,12 @@ class MEDIDAS(object):
             data = DummyCurve(data).curve_data
         self.file = self.reader(data)
         self.generation_date = datetime.now()
-        self.prefix = 'medidas'
+        self.prefix = 'MCIL345'
         self.version = 0
-        self.period = period
         self.distributor = distributor
         self.default_compression = compression
-        self.columns = columns
+        self.measures_date = None
+        self.columns = COLUMNS
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -44,28 +44,38 @@ class MEDIDAS(object):
 
     @property
     def filename(self):
+        filename = "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            measures_date=self.measures_date.strftime('%Y%m'),
+            timestamp=self.generation_date.strftime('%Y%m%d'),
+            version=self.version
+            )
         if self.default_compression:
-            return "{prefix}_{distributor}_{measures_date}_{period}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-                period=self.period, timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{measures_date}_{period}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-                period=self.period, timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-            )
+            filename += '.{compression}'.format(compression=self.default_compression)
+
+        return filename
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{period}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-            period=self.period, timestamp=self.generation_date.strftime('%Y%m%d')
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            measures_date=self.measures_date.strftime('%Y%m'),
+            timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
     @property
     def ae(self):
         return int(self.file['ae'].sum())
+
+    @property
+    def ai(self):
+        return int(self.file['ai'].sum())
+
+    @property
+    def r1(self):
+        return int(self.file['r1'].sum())
 
     @property
     def r2(self):
@@ -74,6 +84,10 @@ class MEDIDAS(object):
     @property
     def r3(self):
         return int(self.file['r3'].sum())
+
+    @property
+    def r4(self):
+        return int(self.file['r4'].sum())
 
     @property
     def cils(self):
@@ -85,41 +99,39 @@ class MEDIDAS(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=columns)
+            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
         try:
-            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M:%S'))
+            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime(DATE_MASK), axis=1)
         except Exception as err:
             # Timestamp is already well parsed
             pass
         finally:
-            df = df.groupby(
-                ['cil', 'timestamp', 'season', 'power_factor', 'power_factor_type']
-            ).aggregate(
-                {'ae': 'sum', 'r2': 'sum', 'r3': 'sum', 'read_type': 'min'}
-            ).reset_index()
             return df
 
     def writer(self):
         """
-        MEDIDAS contains hourly generation curves
+        MCIL345 contains hourly generation curves
         :return: file path
         """
         daymin = self.file['timestamp'].min()
-        measures_date = datetime.strptime(daymin, '%Y/%m/%d %H:%M:%S')
+        measures_date = datetime.strptime(daymin, DATE_MASK)
         self.measures_date = measures_date
         file_path = os.path.join('/tmp', self.filename)
+
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': COLUMNS,
                   'index': False,
                   'line_terminator': ';\n'
                   }
+
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
         self.file.to_csv(file_path, **kwargs)
+
         return file_path
