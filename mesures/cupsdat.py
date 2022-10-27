@@ -60,6 +60,10 @@ class CUPSDAT(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
+        df['fecha_hora_inicio_vigencia'] = df.apply(
+            lambda row: datetime.strptime(row['fecha_hora_inicio_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1
+        )
+
         df['fecha_hora_final_vigencia'] = df.apply(
             lambda row: REE_END_DATE_HOUR
             if row['fecha_hora_final_vigencia'] == ''

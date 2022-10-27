@@ -794,9 +794,9 @@ with description('A CUPSDAT'):
         f = CUPSDAT(data)
         res = f.writer()
         expected = 'ES0291000000004444QR1F;CUPS de Demo 01;X0004444;4444;5555;2;' \
-                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022-10-01 01;2022/10/17 00;17005;S;27\n' \
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/01 01;2022/10/17 00;17005;S;27\n' \
                    'ES0291000000005555QR1F;CUPS de Demo 02;X0005555;4444;5555;2;' \
-                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022-10-17 01;3000/01/01 01;17005;S;27\n'
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/17 01;3000/01/01 01;17005;S;27\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A CUPS45'):
@@ -816,8 +816,8 @@ with description('A CUPS45'):
         data = SampleData().get_sample_cups45_data()
         f = CUPS45(data)
         res = f.writer()
-        expected = 'ES0291000000004444QR1F;4444;5555;5;E0;2T;E3;GI;4;4;5;0;0;0;S;2022-10-01 01;2022/10/17 00;0968;17005\n' \
-                   'ES0291000000005555QR1F;4444;5555;5;E0;2T;E3;GI;4;4;4;0;0;0;S;2022-10-17 01;3000/01/01 01;0968;17005\n'
+        expected = 'ES0291000000004444QR1F;4444;5555;5;E0;2T;E3;GI;4;4;5;0;0;0;S;2022/10/01 01;2022/10/17 00;0968;17005\n' \
+                   'ES0291000000005555QR1F;4444;5555;5;E0;2T;E3;GI;4;4;4;0;0;0;S;2022/10/17 01;3000/01/01 01;0968;17005\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A MCIL345'):
