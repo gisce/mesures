@@ -373,7 +373,7 @@ CUPS45_HEADER = [
     'cups',                         # str(22)
     'distribuidor',                 # str(4)
     'comercializador',              # str(4)
-    'tipo',                         # str(1) in ('1', '2', '3')
+    'tipo',                         # str(1) in ('4', '5')
     'tensio',                       # str(2)
     'tarifa',                       # str(2)
     'dh',                           # str(2)
