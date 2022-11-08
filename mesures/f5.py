@@ -81,31 +81,31 @@ class F5(object):
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ai(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return int(self.file['ae'].sum())
 
     @property
     def r1(self):
-        return self.file['r1'].sum()
+        return int(self.file['r1'].sum())
 
     @property
     def r2(self):
-        return self.file['r2'].sum()
+        return int(self.file['r2'].sum())
 
     @property
     def r3(self):
-        return self.file['r3'].sum()
+        return int(self.file['r3'].sum())
 
     @property
     def r4(self):
-        return self.file['r4'].sum()
+        return int(self.file['r4'].sum())
 
     @property
     def cups(self):
@@ -157,12 +157,18 @@ class F5(object):
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
-            filepath = os.path.join('/tmp', self.filename)
-            dataf.to_csv(
-                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-                compression=self.default_compression
-            )
+            file_path = os.path.join('/tmp', self.filename)
+            kwargs = {'sep': ';',
+                      'header': False,
+                      'columns': columns,
+                      'index': False,
+                      'line_terminator': ';\n'
+                      }
+            if self.default_compression:
+                kwargs.update({'compression': self.default_compression})
+
+            dataf.to_csv(file_path, **kwargs)
             daymin = df
-            zipped_file.write(filepath, arcname=os.path.basename(filepath))
+            zipped_file.write(file_path, arcname=os.path.basename(file_path))
         zipped_file.close()
         return zipped_file.filename

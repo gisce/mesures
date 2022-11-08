@@ -118,13 +118,20 @@ class F3(object):
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(REE_ELECTROINTENSIVO_DATETIME_MASK))
-            filepath = os.path.join('/tmp', self.filename)
-            dataf.to_csv(
-                filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-                compression=self.default_compression
-            )
+            dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime(REE_ELECTROINTENSIVO_DATETIME_MASK),
+                                             axis=1)
+            file_path = os.path.join('/tmp', self.filename)
+            kwargs = {'sep': ';',
+                      'header': False,
+                      'columns': columns,
+                      'index': False,
+                      'line_terminator': ';\n'
+                      }
+            if self.default_compression:
+                kwargs.update({'compression': self.default_compression})
+
+            dataf.to_csv(file_path, **kwargs)
             daymin = df
-            zipped_file.write(filepath, arcname=os.path.basename(filepath))
+            zipped_file.write(file_path, arcname=os.path.basename(file_path))
         zipped_file.close()
         return zipped_file.filename

@@ -77,11 +77,17 @@ class POTELECTRO(object):
         :return: file path
         """
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
-        filepath = os.path.join('/tmp', self.filename)
-        self.file.to_csv(
-            filepath, sep=';', header=False, columns=columns, index=False, line_terminator=';\n',
-            compression=self.default_compression
-        )
-        zipped_file.write(filepath, arcname=os.path.basename(filepath))
+        file_path = os.path.join('/tmp', self.filename)
+        kwargs = {'sep': ';',
+                  'header': False,
+                  'columns': columns,
+                  'index': False,
+                  'line_terminator': ';\n'
+                  }
+        if self.default_compression:
+            kwargs.update({'compression': self.default_compression})
+
+        self.file.to_csv(file_path, **kwargs)
+        zipped_file.write(file_path, arcname=os.path.basename(file_path))
         zipped_file.close()
         return zipped_file.filename
