@@ -21,6 +21,7 @@ from mesures.mcil345 import MCIL345
 from mesures.medidas import MEDIDAS
 from mesures.p1 import P1
 from mesures.p1d import P1D
+from mesures.p5d import P5D
 from mesures.potelectro import POTELECTRO
 from random import randint
 try:
@@ -79,10 +80,42 @@ class SampleData:
         return data_f1
 
     @staticmethod
+    def get_sample_p5d_data():
+        basic_p5d = {
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2020-01-01 01:00:00",
+            "season": "W",
+            "ae": 0,
+            "ai": 0
+        }
+        data_p5d = [basic_p5d.copy()]
+
+        ts = "2020-01-01 01:00:00"
+        for x in range(50):
+            datas = basic_p5d.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae})
+            data_p5d.append(datas)
+
+        cups = "ES0012345678923456780F"
+        ts = "2020-01-01 00:00:00"
+        for x in range(70):
+            datas = basic_p5d.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            datas.update({'cups': cups, 'timestamp': ts, 'ai': ai, 'ae': ae})
+            data_p5d.append(datas)
+
+        return data_p5d
+
+    @staticmethod
     def get_sample_f5d_data():
         basic_f5d = {
-            "cups": "ES00123400220F",
-            "timestamp": "2020-01-01 00:00:00",
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2020-01-01 01:00:00",
             "season": "W",
             "magn": 1,
             "ae": 0, "ai": 0,
@@ -94,9 +127,9 @@ class SampleData:
             "firm_fact": False,
             'invoice_number': 'FE20214444'
         }
+        data_f5d = [basic_f5d.copy()]
 
-        ts = "2020-01-01 00:00:00"
-        data_f5d = []
+        ts = "2020-01-01 01:00:00"
         for x in range(50):
             datas = basic_f5d.copy()
             ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
@@ -108,7 +141,7 @@ class SampleData:
                           'r1_fact': r1_fact, 'r2_fact': r2_fact})
             data_f5d.append(datas)
 
-        cups = "ES00123400230F"
+        cups = "ES0012345678923456780F"
         ts = "2020-01-01 00:00:00"
         for x in range(70):
             datas = basic_f5d.copy()
@@ -477,6 +510,29 @@ class SampleData:
         }]
 
 
+with description('A P5D'):
+    with it('is instance of P5D Class'):
+        data = SampleData().get_sample_p5d_data()
+        f = P5D(data)
+        assert isinstance(f, P5D)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_p5d_data()
+        f = P5D(data)
+        res = f.writer()
+        assert isinstance(f.total, (int, np.int64))
+        assert isinstance(f.ai, (int, np.int64))
+        assert isinstance(f.ae, (int, np.int64))
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_p5d_data()
+        f = P5D(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
 with description('An F5D'):
     with it('is instance of F5D Class'):
         data = SampleData().get_sample_f5d_data()
@@ -488,6 +544,17 @@ with description('An F5D'):
         f = F5D(data)
         res = f.writer()
         assert isinstance(f.total, (int, np.int64))
+        assert isinstance(f.ai, (int, np.int64))
+        assert isinstance(f.ae, (int, np.int64))
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
 
 with description('An F1'):

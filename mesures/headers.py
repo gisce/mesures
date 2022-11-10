@@ -1,25 +1,33 @@
 # -*- coding: utf-8 -*-
 P5D_HEADER = [
-    'cups',
-    'timestamp',
-    'season',
-    'ai',
-    'ae'
+    'cups',         # str(22)
+    'timestamp',    # str(aaaa/mm/dd hh:mm)
+    'season',       # str(1) in ('0' for winter, '1' for summer)
+    'ai',           # int (Wh)
+    'ae'            # int (Wh)
 ]
 
-F5D_HEADER = [
-    'cups',
-    'timestamp',
-    'season',
-    'ai',
-    'ae',
-    'r1',
-    'r2',
-    'r3',
-    'r4',
-    'method',
-    'firmeza',
-    'factura'
+F5_HEADER = [
+    'cups',         # str(22)
+    'timestamp',    # str(aaaa/mm/dd hh:mm)
+    'season',       # str(1) in ('0' for winter, '1' for summer)
+    'ai',           # int (Wh)
+    'ae',           # int (Wh)
+    'r1',           # int (Wh)
+    'r2',           # int (Wh)
+    'r3',           # int (Wh)
+    'r4',           # int (Wh)
+    'method',       # str(1) in ('1' for 'Medida real válida',
+                    #            '2' for 'Medida perfilada correspondiente a un cierre real'),
+                    #            '3' for 'Medida real ajustada a un cierre real'),
+                    #            '4' for 'Medida perfilada correspondiente a auto-lectura de cliente'),
+                    #            '5' for 'Estimación por consumo histórico del año anterior perfilado'),
+                    #            '6' for 'Estimación por factor de utilización perfilado'),
+    'firmeza',      # str(1) in ('0' for 'No firme', '1' for 'Firme')
+]
+
+F5D_HEADER = F5_HEADER + [
+    'factura'       # str
 ]
 
 P1_HEADER = [

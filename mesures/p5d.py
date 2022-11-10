@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import P5D_HEADER as columns
+from mesures.headers import P5D_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 import os
 import pandas as pd
@@ -16,6 +16,7 @@ class P5D(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'P5D'
@@ -44,17 +45,13 @@ class P5D(object):
 
     @property
     def filename(self):
+        filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            )
         if self.default_compression:
-            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-            )
+            filename += '.{compression}'.format(compression=self.default_compression)
+        return filename
 
     @property
     def total(self):
@@ -78,9 +75,7 @@ class P5D(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
@@ -92,18 +87,18 @@ class P5D(object):
             if key not in df:
                 df[key] = 0
             df[key] = df[key].astype('int32')
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
         """
-        P5D contains a hourly raw curve
+        P5D contains an hourly raw curve
         :return: file path
         """
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   'line_terminator': ';\n'
                   }
