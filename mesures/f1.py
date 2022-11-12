@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import F1_HEADER as columns
+from mesures.headers import F1_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from zipfile import ZipFile
 import os
@@ -16,6 +16,7 @@ class F1(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'F1'
@@ -43,52 +44,49 @@ class F1(object):
 
     @property
     def filename(self):
-        if self.default_compression:
-            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+        filename = '{prefix}_{distributor}_{measures_date}_{timestamp}.{version}'.format(
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
                 timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
             )
+        if self.default_compression:
+            filename += '.{compression}'.format(compression=self.default_compression)
+
+        return filename
 
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ai(self):
-        return self.file['ai'].sum()
+        return int(self.file['ai'].sum())
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return int(self.file['ae'].sum())
 
     @property
     def r1(self):
-        return self.file['r1'].sum()
+        return int(self.file['r1'].sum())
 
     @property
     def r2(self):
-        return self.file['r2'].sum()
+        return int(self.file['r2'].sum())
 
     @property
     def r3(self):
-        return self.file['r3'].sum()
+        return int(self.file['r3'].sum())
 
     @property
     def r4(self):
-        return self.file['r4'].sum()
+        return int(self.file['r4'].sum())
 
     @property
     def cups(self):
@@ -101,7 +99,7 @@ class F1(object):
     def reader(self, filepath):
         if isinstance(filepath, str):
             df = pd.read_csv(
-                filepath, sep=';', names=columns
+                filepath, sep=';', names=self.columns
             )
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
@@ -109,11 +107,14 @@ class F1(object):
             raise Exception("Filepath must be an str or a list")
 
         df['tipo_medida'] = 11
-        df = df.groupby(
-            [
-                'cups', 'tipo_medida', 'timestamp', 'season'
-            ]
-        ).aggregate(
+
+        if 'firmeza' not in df:
+            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+
+        df = df.groupby(['cups', 'tipo_medida', 'timestamp', 'season', 'method', 'firmeza',
+                         'quality_ai', 'quality_ae',
+                         'quality_r1', 'quality_r2', 'quality_r3', 'quality_r4',
+                         'quality_res', 'quality_res2']).aggregate(
             {
                 'ai': 'sum',
                 'ae': 'sum',
@@ -123,11 +124,12 @@ class F1(object):
                 'r4': 'sum',
             }
         ).reset_index()
-        df['method'] = 1
-        df['firmeza'] = 1
+
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
+
         df['res'] = 0
         df['res2'] = 0
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -141,14 +143,14 @@ class F1(object):
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
-            df = daymin + timedelta(days=1)
+            df = (datetime.strptime(daymin, DATETIME_MASK) + timedelta(days=1)).strftime(DATETIME_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H:%M:%S'), axis=1)
+            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
-                      'columns': columns,
+                      'columns': self.columns,
                       'index': False,
                       'line_terminator': ';\n'
                       }

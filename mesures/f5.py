@@ -61,8 +61,8 @@ class F5(object):
     def filename(self):
         filename = "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.{version}".format(
                 prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-                measures_date=self.measures_date.replace('/', ''), timestamp=self.generation_date.strftime('%Y%m%d'),
-                version=self.version
+                measures_date=self.measures_date[:10].replace('/', ''),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
         if self.default_compression:
             filename += ".{compression}".format(compression=self.default_compression)
@@ -72,7 +72,8 @@ class F5(object):
     def zip_filename(self):
         return "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.zip".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            measures_date=self.measures_date.replace('/', ''), timestamp=self.generation_date.strftime('%Y%m%d')
+            measures_date=self.measures_date[:10].replace('/', ''),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
     @property
@@ -130,7 +131,7 @@ class F5(object):
             {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         ).reset_index()
 
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
 
         for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
             if key not in df:
@@ -154,7 +155,7 @@ class F5(object):
             df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,

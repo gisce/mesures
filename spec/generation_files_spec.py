@@ -37,24 +37,30 @@ class SampleData:
     @staticmethod
     def get_sample_data():
         basic_f1 = {
-            "cups": "ES00123400220F",
-            "name": "50148869",
-            "timestamp": "2020-01-01 00:00:00",
-            "type": "p",
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2022-01-01 01:00:00",
+            "tipo_medida": "p",
             "season": "W",
-            "ae": 28290, "ai": 0,
-            "r1": 0, "r2": 4880, "r3": 0, "r4": 0,
-            "cch_bruta": True, "cch_fact": False,
-            "ai_fact": 0, "ae_fact": 0,
-            "r1_fact": 0, "r2_fact": 0, "r3_fact": 0, "r4_fact": 0,
-            "quality_ai": 0, "quality_ae": 0,
-            "quality_r1": 0, "quality_r2": 0, "quality_r3": 0, "quality_r4": 0,
-            "quality_res": 0, "quality_res2": 0,
-            "firm_fact": False,
+            "ae": 10,
+            "ai": 10,
+            "r1": 10,
+            "r2": 10,
+            "r3": 10,
+            "r4": 10,
+            "quality_ai": 0,
+            "quality_ae": 0,
+            "quality_r1": 0,
+            "quality_r2": 0,
+            "quality_r3": 0,
+            "quality_r4": 0,
+            "quality_res": 0,
+            "quality_res2": 0,
+            "method": 1,
         }
 
-        ts = "2020-01-01 00:00:00"
-        data_f1 = []
+        data_f1 = [basic_f1.copy()]
+
+        ts = "2022-01-01 01:00:00"
         for x in range(50):
             datas = basic_f1.copy()
             ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
@@ -62,11 +68,13 @@ class SampleData:
             ae = randint(0, 2)
             r1 = randint(0, 30)
             r2 = randint(0, 4999)
-            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2})
+            r3 = randint(0, 30)
+            r4 = randint(0, 4999)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4})
             data_f1.append(datas)
 
-        cups = "ES00123400230F"
-        ts = "2020-01-01 00:00:00"
+        cups = "ES0012345678923456780F"
+        ts = "2022-01-01 00:00:00"
         for x in range(70):
             datas = basic_f1.copy()
             ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
@@ -74,7 +82,9 @@ class SampleData:
             ae = randint(0, 2)
             r1 = randint(0, 30)
             r2 = randint(0, 10)
-            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'cups': cups})
+            r3 = randint(0, 30)
+            r4 = randint(0, 10)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4, 'cups': cups})
             data_f1.append(datas)
 
         return data_f1
@@ -578,6 +588,13 @@ with description('An F1'):
         assert isinstance(f.cups, list)
         assert isinstance(f.number_of_cups, int)
 
+    with it('gets expected content'):
+        data = SampleData().get_sample_data()
+        f = F1(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
 
 with description('An AGRECL'):
     with it('with compression=False must be a raw file'):
@@ -636,7 +653,7 @@ with description('An CILCAU'):
         assert 'bz2' not in filepath
 
 with description('A P1'):
-    with it('instance of P1 Class'):
+    with it('is instance of P1 Class'):
         data = SampleData().get_sample_data()
         f = P1(data)
         assert isinstance(f, P1)
@@ -647,6 +664,13 @@ with description('A P1'):
         filepath = f.writer()
         assert zipfile.is_zipfile(filepath)
         assert f.zip_filename.endswith('.zip')
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_data()
+        f = P1(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;0;10;0;10;0;10;0;10;0;10;0;0;0;0;0;1;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
     with it('with bz2 activated, must be a daily bz2 file in a zip'):
         data = SampleData().get_sample_data()
@@ -665,12 +689,12 @@ with description('A P1'):
             file_bz2 = bz2.decompress(zip_file.read(name))
 
 with description('A P1D'):
-    with it('instance of P1D Class'):
+    with it('is instance of P1D Class'):
         data = SampleData().get_sample_data()
         f = P1D(data)
         assert isinstance(f, P1D)
 
-    with it('bz2 as a default compression'):
+    with it('should have bz2 as a default compression'):
         data = SampleData().get_sample_data()
         f = P1D(data)
         assert isinstance(f.filename, str)
@@ -678,7 +702,7 @@ with description('A P1D'):
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
         assert isinstance(f1, str)
-        assert '.bz2' in f1
+        assert '.zip' in f1
 
 with description('An A5D'):
     with it('bz2 as a default compression'):
