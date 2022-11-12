@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import P1_HEADER as columns
+from mesures.headers import P1_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from zipfile import ZipFile
 import os
@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class P1(object):
-    def __init__(self, data, distributor=None, compression='bz2'):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -16,6 +16,7 @@ class P1(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'P1'
@@ -43,52 +44,51 @@ class P1(object):
 
     @property
     def filename(self):
+        filename = "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
+                prefix=self.prefix, distributor=self.distributor,
+                measures_date=self.measures_date[:10].replace('/', ''),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
+            )
         if self.default_compression:
-            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-            )
+            filename += ".{compression}".format(compression=self.default_compression)
+
+        return filename
 
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            prefix=self.prefix, distributor=self.distributor,
+            measures_date=self.measures_date[:10].replace('/', ''),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
     @property
     def total(self):
-        return self.file['ai'].sum()
+        return float(self.file['ai'].sum())
 
     @property
     def ai(self):
-        return self.file['ai'].sum()
+        return float(self.file['ai'].sum())
 
     @property
     def ae(self):
-        return self.file['ae'].sum()
+        return float(self.file['ae'].sum())
 
     @property
     def r1(self):
-        return self.file['r1'].sum()
+        return float(self.file['r1'].sum())
 
     @property
     def r2(self):
-        return self.file['r2'].sum()
+        return float(self.file['r2'].sum())
 
     @property
     def r3(self):
-        return self.file['r3'].sum()
+        return float(self.file['r3'].sum())
 
     @property
     def r4(self):
-        return self.file['r4'].sum()
+        return float(self.file['r4'].sum())
 
     @property
     def cups(self):
@@ -100,24 +100,26 @@ class P1(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
         df['tipo_medida'] = 11
-        df.groupby(['cups', 'tipo_medida', 'timestamp', 'season']).aggregate({'ai': 'sum'})
+        df.groupby(['cups', 'tipo_medida', 'timestamp', 'season', 'method']).aggregate({'ai': 'sum'})
+
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
+
         df['method'] = 1
         df['firmeza'] = 1
         df['res'] = 0
         df['res2'] = 0
-        for key in columns:
+
+        for key in self.columns:
             if 'quality' in key and key not in df:
                 df[key] = 0
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -131,14 +133,14 @@ class P1(object):
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
-            df = daymin + timedelta(days=1)
+            df = (datetime.strptime(daymin, DATETIME_MASK) + timedelta(days=1)).strftime(DATETIME_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H:%M:%S'), axis=1)
+            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
-                      'columns': columns,
+                      'columns': self.columns,
                       'index': False,
                       'line_terminator': ';\n'
                       }

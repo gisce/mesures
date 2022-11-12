@@ -1,8 +1,11 @@
 # Mesures
 
 :octocat: :hammer:
+
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml/badge.svg)
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml)
+
+
 ![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml/badge.svg)
 ![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml)
 ![](https://github.com/gisce/mesures/actions/workflows/python3.7-app.yml/badge.svg)
@@ -47,9 +50,9 @@
 - `CILDAT`
 - `CUMPELECTRO`
 - `CUPS45`
+- `CUPSCAU`
 - `CUPSDAT`
 - `CUPSELECTRO`
-- `CUPSCAU`
 - `ENELECTROAUT`
 - `F1`
 - `F3`

@@ -1,34 +1,23 @@
 # -*- coding: utf-8 -*-
 from mesures.headers import F5D_HEADER as COLUMNS
-from mesures.f5 import F5
-import os
+from mesures.f5 import F5, DTYPES
+import pandas as pd
+
+TYPES = DTYPES.copy()
+TYPES.update({'factura': 'category'})
 
 
 class F5D(F5):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param comer: str comer REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
-        super(F5D, self).__init__(data, distributor, comer)
+        super(F5D, self).__init__(data, distributor=distributor, comer=comer, compression=compression,
+                                  columns=columns, dtypes=dtypes)
         self.prefix = 'F5D'
-        self.default_compression = compression
-
-    @property
-    def filename(self):
-        if self.default_compression:
-            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
-            )
 
     def cut_by_dates(self, di, df):
         """
@@ -39,29 +28,25 @@ class F5D(F5):
         self.file = self.file[(self.file.timestamp >= di) & (self.file.timestamp <= df)]
 
     def reader(self, filepath):
-        df = super(F5D, self).reader(filepath)
-        try:
-            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
-        except Exception as err:
-            # Timestamp is already well parsed
-            pass
-        finally:
-            return df
+        if isinstance(filepath, str):
+            df = pd.read_csv(filepath, sep=';', names=self.columns, dtype=self.dtypes)
+        elif isinstance(filepath, list):
+            df = pd.DataFrame(data=filepath)
+        else:
+            raise Exception("Filepath must be an str or a list")
 
-    def writer(self):
-        """
-        F5D contains a hourly invoiced curve
-        :return: file path
-        """
-        file_path = os.path.join('/tmp', self.filename)
-        kwargs = {'sep': ';',
-                  'header': False,
-                  'columns': COLUMNS,
-                  'index': False,
-                  'line_terminator': ';\n'
-                  }
-        if self.default_compression:
-            kwargs.update({'compression': self.default_compression})
+        if 'firmeza' not in df:
+            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
 
-        self.file.to_csv(file_path, **kwargs)
-        return file_path
+        df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
+            {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
+        ).reset_index()
+
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+
+        for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+            if key not in df:
+                df[key] = 0
+            df[key] = df[key].astype('int32')
+        df = df[self.columns]
+        return df
