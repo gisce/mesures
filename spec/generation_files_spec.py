@@ -934,8 +934,8 @@ with description('A MCIL345'):
         data = SampleData().get_sample_mcil345_data()
         f = MCIL345(data)
         res = f.writer()
-        expected = 'ES0291000000004444QR1F001;2022/09/01 01;1;100;10;1;2;3;4;R\n' \
-                   'ES0291000000005555QR1F001;2022/09/01 01;1;200;20;11;22;33;44;R\n'
+        expected = 'ES0291000000004444QR1F001;2022/09/01 01;1;90;0;1;2;3;4;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 01;1;180;0;11;22;33;44;R\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A CILDAT'):
