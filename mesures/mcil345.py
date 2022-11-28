@@ -129,13 +129,11 @@ class MCIL345(object):
             ai_m = row.get('ai', 0.0)
             ae_m = row.get('ae', 0.0)
             if ai_m >= ae_m:
-                m = ai_m - ae_m
-                df.at[idx, 'ai'] = m
+                df.at[idx, 'ai'] = ai_m - ae_m
                 df.at[idx, 'ae'] = 0.0
             else:
-                m = ae_m - ai_m
                 df.at[idx, 'ai'] = 0.0
-                df.at[idx, 'ae'] = m
+                df.at[idx, 'ae'] = ae_m - ai_m
 
         return df
 
