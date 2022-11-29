@@ -43,7 +43,7 @@ class DummyCurve(object):
                     # str season
                     data['season'] = 0 if data['season'].lower() == 'w' else 1
             if 'kind_fact' in data:
-                data['method'] = int(data.pop('kind_fact'))
+                data['method'] = int(data.pop('kind_fact', '1'))
             if 'firm_fact' in data:
                 data['firmeza'] = int(data.pop('firm_fact'))
             if 'invoice' in data:

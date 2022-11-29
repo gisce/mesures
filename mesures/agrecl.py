@@ -35,16 +35,14 @@ class AGRECL(object):
 
     @property
     def filename(self):
+        filename = "{prefix}_{distributor}_{timestamp}.{version}".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            timestamp=self.generation_date.strftime('%Y%m%d'),
+            version=self.version)
         if self.default_compression:
-            return "{prefix}_{distributor}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d'),
-                version=self.version, compression=self.default_compression
-            )
-        else:
-            return "{prefix}_{distributor}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, timestamp=self.generation_date.strftime('%Y%m%d'),
-                version=self.version
-            )
+            filename += '.{compression}'.format(compression=self.default_compression)
+        return filename
 
     @property
     def number_of_ups(self):
@@ -56,9 +54,7 @@ class AGRECL(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(
-                file_path, sep=';', names=columns
-            )
+            df = pd.read_csv(file_path, sep=';', names=columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:

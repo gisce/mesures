@@ -109,8 +109,33 @@ class MCIL345(object):
         except Exception as err:
             # Timestamp is already well parsed
             pass
-        finally:
-            return df
+
+        # Group by CIL and balance energies
+        df = df.groupby(
+            ['cil',
+             'timestamp',
+             'season']
+        ).agg(
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum',
+             'read_type': 'min'}
+        ).reset_index()
+
+        for idx, row in df.iterrows():
+            ai_m = row.get('ai', 0.0)
+            ae_m = row.get('ae', 0.0)
+            if ai_m >= ae_m:
+                df.at[idx, 'ai'] = ai_m - ae_m
+                df.at[idx, 'ae'] = 0.0
+            else:
+                df.at[idx, 'ai'] = 0.0
+                df.at[idx, 'ae'] = ae_m - ai_m
+
+        return df
 
     def writer(self):
         """
