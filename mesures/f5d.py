@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from mesures.dates import *
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5, DTYPES
+import os
 import pandas as pd
 
 TYPES = DTYPES.copy()
@@ -18,6 +20,23 @@ class F5D(F5):
         super(F5D, self).__init__(data, distributor=distributor, comer=comer, compression=compression,
                                   columns=columns, dtypes=dtypes)
         self.prefix = 'F5D'
+
+    @property
+    def filename(self):
+        filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
+        )
+        if self.default_compression:
+            filename += ".{compression}".format(compression=self.default_compression)
+        return filename
+
+    @property
+    def zip_filename(self):
+        return "{prefix}_{distributor}_{comer}_{timestamp}.zip".format(
+            prefix=self.prefix, distributor=self.distributor, comer=self.comer,
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
+        )
 
     def cut_by_dates(self, di, df):
         """
@@ -53,3 +72,20 @@ class F5D(F5):
             df[key] = df[key].astype('int32')
         df = df[self.columns]
         return df
+
+    def writer(self):
+        """
+        :return: file path of generated F5D File
+        """
+        file_path = os.path.join('/tmp', self.filename)
+        kwargs = {'sep': ';',
+                  'header': False,
+                  'columns': self.columns,
+                  'index': False,
+                  'line_terminator': ';\n'
+                  }
+        if self.default_compression:
+            kwargs.update({'compression': self.default_compression})
+
+        self.file.to_csv(file_path, **kwargs)
+        return file_path
