@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5, DTYPES
+import os
 import pandas as pd
 
 TYPES = DTYPES.copy()
@@ -53,3 +54,20 @@ class F5D(F5):
             df[key] = df[key].astype('int32')
         df = df[self.columns]
         return df
+
+    def writer(self):
+        """
+        :return: file path of generated F5D File
+        """
+        file_path = os.path.join('/tmp', self.filename)
+        kwargs = {'sep': ';',
+                  'header': False,
+                  'columns': self.columns,
+                  'index': False,
+                  'line_terminator': ';\n'
+                  }
+        if self.default_compression:
+            kwargs.update({'compression': self.default_compression})
+
+        self.file.to_csv(file_path, **kwargs)
+        return file_path
