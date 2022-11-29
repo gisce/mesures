@@ -38,6 +38,9 @@ class F5D(F5):
         if 'firmeza' not in df:
             df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
 
+        if 'factura' not in df:
+            df['factura'] = 'F0000000000'
+
         df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
             {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         ).reset_index()
