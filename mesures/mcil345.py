@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import MCIL345_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
+from zipfile import ZipFile
 import os
 import pandas as pd
 
@@ -143,20 +144,27 @@ class MCIL345(object):
         :return: file path
         """
         daymin = self.file['timestamp'].min()
-        measures_date = datetime.strptime(daymin, DATE_MASK)
-        self.measures_date = measures_date
-        file_path = os.path.join('/tmp', self.filename)
+        daymax = self.file['timestamp'].max()
+        self.measures_date = daymin
+        zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+        while daymin <= daymax:
+            di = daymin
+            df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
+            self.measures_date = di
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
+            file_path = os.path.join('/tmp', self.filename)
+            kwargs = {'sep': ';',
+                      'header': False,
+                      'columns': self.columns,
+                      'index': False,
+                      'line_terminator': ';\n'
+                      }
+            if self.default_compression:
+                kwargs.update({'compression': self.default_compression})
 
-        kwargs = {'sep': ';',
-                  'header': False,
-                  'columns': COLUMNS,
-                  'index': False,
-                  'line_terminator': ';\n'
-                  }
-
-        if self.default_compression:
-            kwargs.update({'compression': self.default_compression})
-
-        self.file.to_csv(file_path, **kwargs)
-
-        return file_path
+            dataf.to_csv(file_path, **kwargs)
+            daymin = df
+            zipped_file.write(file_path, arcname=os.path.basename(file_path))
+        zipped_file.close()
+        return zipped_file.filename
