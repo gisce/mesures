@@ -48,7 +48,7 @@ class MCIL345(object):
         filename = "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
             prefix=self.prefix,
             distributor=self.distributor,
-            measures_date=self.measures_date.strftime('%Y%m'),
+            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime('%Y%m%d'),
             version=self.version
             )
@@ -62,7 +62,7 @@ class MCIL345(object):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
             prefix=self.prefix,
             distributor=self.distributor,
-            measures_date=self.measures_date.strftime('%Y%m'),
+            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime('%Y%m%d')
         )
 
@@ -126,6 +126,8 @@ class MCIL345(object):
              'read_type': 'min'}
         ).reset_index()
 
+        df = df.sort_values(['cil', 'timestamp', 'season'])
+
         for idx, row in df.iterrows():
             ai_m = row.get('ai', 0.0)
             ae_m = row.get('ae', 0.0)
@@ -149,7 +151,7 @@ class MCIL345(object):
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
-            df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
+            df = (datetime.strptime(daymin, DATE_MASK) + timedelta(days=1)).strftime(DATE_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
