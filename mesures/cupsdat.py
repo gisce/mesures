@@ -77,8 +77,9 @@ class CUPSDAT(object):
         """
         existing_files = os.listdir('/tmp')
         if existing_files:
-            max_version = max([int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f])
-            self.version = max_version + 1
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+            if versions:
+                self.version = max(versions) + 1
 
         file_path = os.path.join('/tmp', self.filename)
 
