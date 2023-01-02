@@ -75,6 +75,11 @@ class CUPSDAT(object):
         """
         :return: file path of generated CUPSDAT File
         """
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            max_version = max([int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f])
+            self.version = max_version + 1
+
         file_path = os.path.join('/tmp', self.filename)
 
         kwargs = {'sep': ';',
