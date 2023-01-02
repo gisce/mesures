@@ -59,11 +59,12 @@ class MCIL345(object):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip".format(
             prefix=self.prefix,
             distributor=self.distributor,
             measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            timestamp=self.generation_date.strftime('%Y%m%d'),
+            version=self.version
         )
 
     @property
@@ -155,6 +156,12 @@ class MCIL345(object):
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
+
+            existing_files = os.listdir('/tmp')
+            if existing_files:
+                max_version = max([int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f])
+                self.version = max_version + 1
+
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
