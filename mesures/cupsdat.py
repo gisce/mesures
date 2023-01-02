@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class CUPSDAT(object):
-    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -18,7 +18,7 @@ class CUPSDAT(object):
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CUPSDAT'
-        self.version = 0
+        self.version = version
         self.default_compression = compression
         self.distributor = distributor
 

@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class PMEST(object):
-    def __init__(self, data, distributor=None, compression='bz2'):
+    def __init__(self, data, distributor=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -19,7 +19,7 @@ class PMEST(object):
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'PMEST'
-        self.version = 0
+        self.version = version
         self.distributor = distributor
         self.default_compression = compression
 
