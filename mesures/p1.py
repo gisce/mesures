@@ -8,7 +8,7 @@ import pandas as pd
 
 
 class P1(object):
-    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -20,7 +20,7 @@ class P1(object):
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'P1'
-        self.version = 0
+        self.version = version
         self.distributor = distributor
         self.default_compression = compression
 

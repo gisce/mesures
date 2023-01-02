@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class P5D(object):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -21,7 +21,7 @@ class P5D(object):
         self.generation_date = datetime.now()
         self.prefix = 'P5D'
         self.default_compression = compression
-        self.version = 0
+        self.version = version
         self.distributor = distributor
         self.comer = comer
 

@@ -20,7 +20,7 @@ DTYPES = {'cups': 'category',
 
 
 class F5(object):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=DTYPES):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=DTYPES, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -35,7 +35,7 @@ class F5(object):
         self.generation_date = datetime.now()
         self.prefix = 'F5'
         self.default_compression = compression
-        self.version = 0
+        self.version = version
         self.distributor = distributor
         self.comer = comer
 

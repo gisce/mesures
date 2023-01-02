@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class MEDIDAS(object):
-    def __init__(self, data, period=2, distributor=None, compression='bz2'):
+    def __init__(self, data, period=2, distributor=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -18,7 +18,7 @@ class MEDIDAS(object):
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'medidas'
-        self.version = 0
+        self.version = version
         self.period = period
         self.distributor = distributor
         self.default_compression = compression

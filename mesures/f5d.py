@@ -10,7 +10,7 @@ TYPES.update({'factura': 'category'})
 
 
 class F5D(F5):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -18,7 +18,7 @@ class F5D(F5):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         super(F5D, self).__init__(data, distributor=distributor, comer=comer, compression=compression,
-                                  columns=columns, dtypes=dtypes)
+                                  columns=columns, dtypes=dtypes, version=version)
         self.prefix = 'F5D'
 
     @property

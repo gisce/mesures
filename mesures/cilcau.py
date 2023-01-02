@@ -8,13 +8,13 @@ import pandas as pd
 
 
 class CILCAU(CUPSCAU):
-    def __init__(self, data, distributor=None, compression='bz2'):
+    def __init__(self, data, distributor=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
-        super(CILCAU, self).__init__(data, distributor, compression)
+        super(CILCAU, self).__init__(data, distributor, compression, version=version)
         self.prefix = 'CILCAU'
 
     @property

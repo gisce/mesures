@@ -7,7 +7,7 @@ import pandas as pd
 
 
 class B5D():
-    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -20,7 +20,7 @@ class B5D():
         self.generation_date = datetime.now()
         self.prefix = 'B5D'
         self.default_compression = compression
-        self.version = 0
+        self.version = version
         self.distributor = distributor
         self.comer = comer
 

@@ -5,14 +5,14 @@ import os
 
 
 class P2D(P2):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2'):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param comer: str comer REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
-        super(P2D, self).__init__(data, distributor)
+        super(P2D, self).__init__(data, distributor, version=version)
         self.prefix = 'P2D'
         self.default_compression = compression
         self.comer = comer
