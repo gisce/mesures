@@ -48,7 +48,7 @@ class F5D(F5):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=self.columns, dtype=self.dtypes)
+            df = pd.read_csv(filepath, sep=';', names=self.columns + ['res'], dtype=self.dtypes)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
