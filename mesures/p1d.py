@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import P1_HEADER as COLUMNS
 from mesures.p1 import P1
+import os
 
 
 class P1D(P1):
@@ -35,3 +36,20 @@ class P1D(P1):
             comer=self.comer,
             timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
+
+    def writer(self):
+        """
+        :return: file path of generated P1D File
+        """
+        file_path = os.path.join('/tmp', self.filename)
+        kwargs = {'sep': ';',
+                  'header': False,
+                  'columns': self.columns,
+                  'index': False,
+                  'line_terminator': ';\n'
+                  }
+        if self.default_compression:
+            kwargs.update({'compression': self.default_compression})
+
+        self.file.to_csv(file_path, **kwargs)
+        return file_path

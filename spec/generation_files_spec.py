@@ -702,7 +702,6 @@ with description('A P1D'):
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
         assert isinstance(f1, str)
-        assert '.zip' in f1
 
 with description('An A5D'):
     with it('bz2 as a default compression'):
