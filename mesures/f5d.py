@@ -64,7 +64,8 @@ class F5D(F5):
             {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         ).reset_index()
 
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        if isinstance(filepath, list):
+            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
 
         for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
             if key not in df:
