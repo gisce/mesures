@@ -66,8 +66,6 @@ class AUTOCONSUMO(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        for key in ('reg_auto_prov', 'reg_auto_def', 'miteco'):
-            df[key] = ''
         df['data_baixa'] = df['data_baixa'].apply(
             lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
