@@ -97,6 +97,10 @@ class MEDIDAS(object):
         return list(set(self.file['cil']))
 
     @property
+    def hours_per_cil(self):
+        return self.file['cil'].value_counts().reset_index().to_dict('records')
+
+    @property
     def number_of_cils(self):
         return len(list(set(self.file['cil'])))
 
