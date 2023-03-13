@@ -853,6 +853,7 @@ with description('A MEDIDAS'):
         res = f.writer()
         assert isinstance(f.cils, list)
         assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.hours_per_cil, list)
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
