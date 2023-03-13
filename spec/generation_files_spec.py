@@ -853,6 +853,7 @@ with description('A MEDIDAS'):
         res = f.writer()
         assert isinstance(f.cils, list)
         assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.hours_per_cil, list)
         assert isinstance(f.ae, int)
         assert isinstance(f.r2, int)
         assert isinstance(f.r3, int)
@@ -861,8 +862,8 @@ with description('A MEDIDAS'):
         data = SampleData().get_sample_medidas_data()
         f = MEDIDAS(data)
         res = f.writer()
-        expected = 'ES0291000000004444QR1F001;2022/09/01 01:00:00;1;10;2;3;0.55;0;R\n' \
-                   'ES0291000000005555QR1F001;2022/09/01 01:00:00;1;40;4;6;0.55;0;E\n'
+        expected = 'ES0291000000004444QR1F001;2022/09/01 01:00:00;1;10;2;3;;;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 01:00:00;1;40;4;6;;;E\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A CUPSDAT'):
