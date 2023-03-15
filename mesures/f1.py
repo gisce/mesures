@@ -111,10 +111,9 @@ class F1(object):
         if 'firmeza' not in df:
             df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
 
-        df = df.groupby(['cups', 'tipo_medida', 'timestamp', 'season', 'method', 'firmeza',
-                         'quality_ai', 'quality_ae',
-                         'quality_r1', 'quality_r2', 'quality_r3', 'quality_r4',
-                         'quality_res', 'quality_res2']).aggregate(
+        df = df.groupby(
+            ['cups', 'tipo_medida', 'timestamp', 'season', 'method', 'firmeza']
+            ).aggregate(
             {
                 'ai': 'sum',
                 'ae': 'sum',
