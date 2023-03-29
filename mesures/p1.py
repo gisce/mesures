@@ -56,10 +56,11 @@ class P1(object):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
+        return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor,
             measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
+            version=self.version
         )
 
     @property
@@ -158,4 +159,7 @@ class P1(object):
 
             daymin = df
         zipped_file.close()
+        new_zip_filename = os.path.join('/tmp', self.zip_filename)
+        os.rename(zipped_file.filename, new_zip_filename)
+        zipped_file.filename = new_zip_filename
         return zipped_file.filename
