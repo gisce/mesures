@@ -6,6 +6,8 @@ def check_line_terminator_param():
         params = inspect.getargspec(pd.DataFrame.to_csv).args
     except ValueError:
         params = inspect.getfullargspec(pd.DataFrame.to_csv).args
+    except AttributeError:
+        params = inspect.getfullargspec(pd.DataFrame.to_csv).args
     if 'line_terminator' in params:
         return 'line_terminator'
     else:
