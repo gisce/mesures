@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5, DTYPES
+from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
 
@@ -83,7 +84,7 @@ class F5D(F5):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})

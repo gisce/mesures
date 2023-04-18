@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import MEDIDAS_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
+from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -199,7 +200,7 @@ class MEDIDAS(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
 
         if self.file_type == 'medidas_cnmc':

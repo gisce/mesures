@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import P1_HEADER as COLUMNS
 from mesures.p1 import P1
+from mesures.utils import check_line_terminator_param
 import os
 
 
@@ -52,7 +53,7 @@ class P1D(P1):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})

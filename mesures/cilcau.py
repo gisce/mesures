@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.cupscau import CUPSCAU
 from mesures.headers import CILCAU_HEADER as columns
+from mesures.utils import check_line_terminator_param
 import os
 import numpy as np
 import pandas as pd
@@ -53,7 +54,7 @@ class CILCAU(CUPSCAU):
                   'header': False,
                   'columns': columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
