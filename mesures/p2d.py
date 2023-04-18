@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from mesures.headers import P2_HEADER as columns
 from mesures.p2 import P2
+from mesures.utils import check_line_terminator_param
 import os
 
 
@@ -42,7 +43,7 @@ class P2D(P2):
                   'header': False,
                   'columns': columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})

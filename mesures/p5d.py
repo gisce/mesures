@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import P5D_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
+from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
 
@@ -100,7 +101,7 @@ class P5D(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})

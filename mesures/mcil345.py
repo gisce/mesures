@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import MCIL345_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
+from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -169,7 +170,7 @@ class MCIL345(object):
                           'header': False,
                           'columns': self.columns,
                           'index': False,
-                          'line_terminator': ';\n'
+                          check_line_terminator_param(): ';\n'
                           }
                 if self.default_compression:
                     kwargs.update({'compression': self.default_compression})

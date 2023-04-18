@@ -2,22 +2,26 @@
 from mesures.dates import *
 from mesures.headers import MEDIDAS_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
+from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
 
 
 class MEDIDAS(object):
-    def __init__(self, data, period=2, distributor=None, file_type='medidas_cnmc', compression='bz2', version=0):
+    def __init__(self, data, period=2, distributor=None, file_type='medidas_cnmc', compression='bz2', by_upr=False,
+                 version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param file_type: str in ('medidas_cnmc', 'medidas_ree')
         :param compression: 'bz2', 'gz'... OR False otherwise
+        :param by_upr: boolean
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file_type = file_type
+        self.by_upr = by_upr
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'medidas'
@@ -60,12 +64,39 @@ class MEDIDAS(object):
 
         return filename
 
+    def filename_by_upr(self, upr):
+        filename = "{prefix}_{distributor}_{upr}_{measures_date}_{period}_{timestamp}.{version}".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            upr=upr,
+            measures_date=self.measures_date,
+            period=self.period,
+            timestamp=self.generation_date.strftime('%Y%m%d'),
+            version=self.version
+        )
+        if self.default_compression:
+            filename += '.{compression}'.format(compression=self.default_compression)
+
+        return filename
+
     @property
     def cnmc_filename(self):
         filename = "{prefix}_{distributor}_{cil}_{measures_date}_{period}_{timestamp}.txt".format(
             prefix=self.prefix,
             distributor=self.distributor,
             cil=self.cil,
+            measures_date=self.measures_date,
+            period=self.period,
+            timestamp=self.generation_date.strftime('%Y%m%d')
+        )
+
+        return filename
+
+    def cnmc_filename_by_upr(self, upr):
+        filename = "{prefix}_{distributor}_{upr}_{measures_date}_{period}_{timestamp}.txt".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            upr=upr,
             measures_date=self.measures_date,
             period=self.period,
             timestamp=self.generation_date.strftime('%Y%m%d')
@@ -118,10 +149,13 @@ class MEDIDAS(object):
             pass
 
         # Group by CIL and balance energies
+        group_fields = ['cil', 'timestamp', 'season']
+
+        if self.by_upr:
+            group_fields.append('uprs')
+
         df = df.groupby(
-            ['cil',
-             'timestamp',
-             'season']
+            group_fields
         ).agg(
             {'ai': 'sum',
              'ae': 'sum',
@@ -166,18 +200,40 @@ class MEDIDAS(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
 
         if self.file_type == 'medidas_cnmc':
-            file_path = os.path.join('/tmp', self.cnmc_filename)
-            self.file.to_csv(file_path, **kwargs)
-            zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
-            zipped_file.write(file_path, arcname=os.path.basename(file_path))
-            zipped_file.close()
-            file_path = zipped_file.filename
+            if self.by_upr:
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                uprs = list(self.file['uprs'].unique())
+                for upr in uprs:
+                    df = self.file[self.file['uprs'] == upr]
+                    file_path = os.path.join('/tmp', self.cnmc_filename_by_upr(upr))
+                    df.to_csv(file_path, **kwargs)
+                    zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
+            else:
+                file_path = os.path.join('/tmp', self.cnmc_filename)
+                self.file.to_csv(file_path, **kwargs)
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
         else:
-            file_path = os.path.join('/tmp', self.filename)
-            kwargs.update({'compression': self.default_compression})
-            self.file.to_csv(file_path, **kwargs)
+            if self.by_upr:
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                uprs = list(self.file['uprs'].unique())
+                for upr in uprs:
+                    df = self.file[self.file['uprs'] == upr]
+                    file_path = os.path.join('/tmp', self.filename_by_upr(upr))
+                    df.to_csv(file_path, **kwargs)
+                    zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
+            else:
+                file_path = os.path.join('/tmp', self.filename)
+                kwargs.update({'compression': self.default_compression})
+                self.file.to_csv(file_path, **kwargs)
         return file_path

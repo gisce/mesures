@@ -2,6 +2,7 @@
 from mesures.dates import *
 from mesures.headers import CILDAT_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyKeys
+from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
 
@@ -81,7 +82,7 @@ class CILDAT(object):
                   'header': False,
                   'columns': COLUMNS,
                   'index': False,
-                  'line_terminator': ';\n'
+                  check_line_terminator_param(): ';\n'
                   }
 
         if self.default_compression:
