@@ -8,12 +8,14 @@ import pandas as pd
 
 
 class MEDIDAS(object):
-    def __init__(self, data, period=2, distributor=None, file_type='medidas_cnmc', compression='bz2', version=0):
+    def __init__(self, data, period=2, distributor=None, file_type='medidas_cnmc', compression='bz2', by_upr=False,
+                 version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param file_type: str in ('medidas_cnmc', 'medidas_ree')
         :param compression: 'bz2', 'gz'... OR False otherwise
+        :param by_upr: boolean
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
@@ -26,6 +28,7 @@ class MEDIDAS(object):
         self.distributor = distributor
         self.default_compression = compression
         self.columns = columns
+        self.by_upr = by_upr
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -118,10 +121,13 @@ class MEDIDAS(object):
             pass
 
         # Group by CIL and balance energies
+        group_fields = ['cil', 'timestamp', 'season']
+
+        if self.by_upr:
+            group_fields.append('uprs')
+
         df = df.groupby(
-            ['cil',
-             'timestamp',
-             'season']
+            group_fields
         ).agg(
             {'ai': 'sum',
              'ae': 'sum',
