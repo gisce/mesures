@@ -76,6 +76,18 @@ class MEDIDAS(object):
 
         return filename
 
+    def cnmc_filename_by_upr(self, upr):
+        filename = "{prefix}_{distributor}_{upr}_{measures_date}_{period}_{timestamp}.txt".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            upr=upr,
+            measures_date=self.measures_date,
+            period=self.period,
+            timestamp=self.generation_date.strftime('%Y%m%d')
+        )
+
+        return filename
+
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{period}_{timestamp}.zip".format(
@@ -176,14 +188,29 @@ class MEDIDAS(object):
                   }
 
         if self.file_type == 'medidas_cnmc':
-            file_path = os.path.join('/tmp', self.cnmc_filename)
-            self.file.to_csv(file_path, **kwargs)
-            zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
-            zipped_file.write(file_path, arcname=os.path.basename(file_path))
-            zipped_file.close()
-            file_path = zipped_file.filename
+            if self.by_upr:
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                uprs = self.file['uprs'].unique()
+                for upr in uprs:
+                    df = self.file[self.file['uprs'] == upr]
+                    file_path = os.path.join('/tmp', self.cnmc_filename_by_upr(upr))
+                    df.to_csv(file_path, **kwargs)
+                    zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
+            else:
+                file_path = os.path.join('/tmp', self.cnmc_filename)
+                self.file.to_csv(file_path, **kwargs)
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
         else:
-            file_path = os.path.join('/tmp', self.filename)
-            kwargs.update({'compression': self.default_compression})
-            self.file.to_csv(file_path, **kwargs)
+            if self.by_upr:
+                # TODO create zip
+                pass
+            else:
+                file_path = os.path.join('/tmp', self.filename)
+                kwargs.update({'compression': self.default_compression})
+                self.file.to_csv(file_path, **kwargs)
         return file_path
