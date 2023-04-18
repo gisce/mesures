@@ -63,6 +63,21 @@ class MEDIDAS(object):
 
         return filename
 
+    def filename_by_upr(self, upr):
+        filename = "{prefix}_{distributor}_{upr}_{measures_date}_{period}_{timestamp}.{version}".format(
+            prefix=self.prefix,
+            distributor=self.distributor,
+            upr=upr,
+            measures_date=self.measures_date,
+            period=self.period,
+            timestamp=self.generation_date.strftime('%Y%m%d'),
+            version=self.version
+        )
+        if self.default_compression:
+            filename += '.{compression}'.format(compression=self.default_compression)
+
+        return filename
+
     @property
     def cnmc_filename(self):
         filename = "{prefix}_{distributor}_{cil}_{measures_date}_{period}_{timestamp}.txt".format(
@@ -190,7 +205,7 @@ class MEDIDAS(object):
         if self.file_type == 'medidas_cnmc':
             if self.by_upr:
                 zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
-                uprs = self.file['uprs'].unique()
+                uprs = list(self.file['uprs'].unique())
                 for upr in uprs:
                     df = self.file[self.file['uprs'] == upr]
                     file_path = os.path.join('/tmp', self.cnmc_filename_by_upr(upr))
@@ -207,8 +222,15 @@ class MEDIDAS(object):
                 file_path = zipped_file.filename
         else:
             if self.by_upr:
-                # TODO create zip
-                pass
+                zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+                uprs = list(self.file['uprs'].unique())
+                for upr in uprs:
+                    df = self.file[self.file['uprs'] == upr]
+                    file_path = os.path.join('/tmp', self.filename_by_upr(upr))
+                    df.to_csv(file_path, **kwargs)
+                    zipped_file.write(file_path, arcname=os.path.basename(file_path))
+                zipped_file.close()
+                file_path = zipped_file.filename
             else:
                 file_path = os.path.join('/tmp', self.filename)
                 kwargs.update({'compression': self.default_compression})
