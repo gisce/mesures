@@ -20,6 +20,7 @@ class MEDIDAS(object):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.file_type = file_type
+        self.by_upr = by_upr
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'medidas'
@@ -28,7 +29,6 @@ class MEDIDAS(object):
         self.distributor = distributor
         self.default_compression = compression
         self.columns = columns
-        self.by_upr = by_upr
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
