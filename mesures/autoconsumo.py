@@ -72,7 +72,9 @@ class AUTOCONSUMO(object):
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
         df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
         #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
-        df['subgrup'] = df['subgrup'].apply(lambda x: x.replace('.', '')[:2])
+        df['subgrup'] = df['subgrup'].apply(lambda x: '{}.{}.{}'.format(
+            x[0], x[1], x[2]
+        ))
         df['tipus_antiabocament'] = (
             df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x.zfill(2)))
         df = df[columns]
