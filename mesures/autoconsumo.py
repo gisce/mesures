@@ -76,7 +76,7 @@ class AUTOCONSUMO(object):
             x[0], x[1], x[2]
         ))
         df['tipus_antiabocament'] = (
-            df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x.zfill(2)))
+            df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x))
         df = df[columns]
         return df
 
