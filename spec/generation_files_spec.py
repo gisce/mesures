@@ -624,7 +624,7 @@ with description('An AUTOCONSUMO'):
         data = [
             {'cau': 'A', 'miteco': '1', 'reg_auto_prov': '12345', 'reg_auto_def': '1111',
              'tipus_autoconsum': 'A', 'tipus_antiabocament': '1', 'nom': 'test', 'configuracio_mesura': '1111',
-             'potencia_nominal': '2', 'codi_postal': '17007', 'subgrup': '12345', 'emmagatzematge': '1111',
+             'potencia_nominal': '2', 'codi_postal': '17007', 'subgrup': 'b11', 'emmagatzematge': '1111',
              'data_alta': '2021-01-12'}
         ]
         f = AUTOCONSUMO(data, compression=False)
