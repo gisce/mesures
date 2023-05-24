@@ -313,6 +313,30 @@ F5D_HEADER = F5_HEADER + [
     'factura'       # str
 ]
 
+MAGCL_HEADER = [
+    'distribuidora',        # str(4)
+    'comercialitzadora',    # str(4)
+    'agree_tensio',         # str(2)
+    'agree_tarifa',         # str(2)
+    'agree_dh',             # str(2)
+    'agree_tipo',           # str(2)
+    'provincia',            # str(2)
+    'tipus_demanda',        # str(2)
+    'timestamp',            # str(aaaa/mm/dd hh:mm)
+    'estacio',              # str(1) in ('0' for winter, '1' for summer)
+    'magnitud',             # str(2)
+    'consum',               # int(10)
+    'n_punts',              # int(7)
+    'm_iec_real',           # int(10)
+    'n_iec_real',           # int(7)
+    'm_iec_estimada',       # int(10)
+    'n_iec_estimada',       # int(7)
+    'm_integrats_real',     # int(10)
+    'n_integrats_real',     # int(7)
+    'm_integrats_estimada', # int(10)
+    'n_integrats_estimada'  # int(7)
+]
+
 MCIL345_HEADER = [
     'cil',                  # str(25) CUPS + 3 digits ('001' style)
     'timestamp',            # str(aaaa/mm/dd hh)
