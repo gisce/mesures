@@ -59,6 +59,7 @@
 - `F5`
 - `F5D`
 - `MCIL345`
+- `MCIL345QH`
 - `MEDIDAS`
 - `P1`
 - `P1D`
