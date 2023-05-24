@@ -55,6 +55,7 @@
 - `CUPSELECTRO`
 - `ENELECTROAUT`
 - `F1`
+- `F1QH`
 - `F3`
 - `F5`
 - `F5D`
