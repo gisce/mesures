@@ -1018,7 +1018,6 @@ with description('A MCIL345QH'):
                    'ES0291000000004444QR1F001;2022/09/01 00:30;1;90;0;1;2;3;4;R\n'\
                    'ES0291000000005555QR1F001;2022/09/01 00:15;1;180;0;11;22;33;44;R\n'\
                    'ES0291000000005555QR1F001;2022/09/01 00:30;1;180;0;11;22;33;44;R\n'
-        import pudb; pu.db
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A CILDAT'):
