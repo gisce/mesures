@@ -15,6 +15,7 @@ from mesures.cupsdat import CUPSDAT
 from mesures.dates import *
 from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
+from mesures.f1qh import F1QH
 from mesures.f3 import F3
 from mesures.f5d import F5D
 from mesures.mcil345 import MCIL345
@@ -89,6 +90,61 @@ class SampleData:
             data_f1.append(datas)
 
         return data_f1
+
+    @staticmethod
+    def get_sample_f1qh_data():
+        basic_f1qh = {
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2022-01-01 00:15:00",
+            "tipo_medida": "p",
+            "season": "W",
+            "ae": 10,
+            "ai": 10,
+            "r1": 10,
+            "r2": 10,
+            "r3": 10,
+            "r4": 10,
+            "quality_ai": 0,
+            "quality_ae": 0,
+            "quality_r1": 0,
+            "quality_r2": 0,
+            "quality_r3": 0,
+            "quality_r4": 0,
+            "quality_res": 0,
+            "quality_res2": 0,
+            "method": 1,
+        }
+
+        data_f1qh = [basic_f1qh.copy()]
+
+        ts = "2022-01-01 00:15:00"
+        for x in range(50):
+            datas = basic_f1qh.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            r1 = randint(0, 30)
+            r2 = randint(0, 4999)
+            r3 = randint(0, 30)
+            r4 = randint(0, 4999)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4})
+            data_f1qh.append(datas)
+
+        cups = "ES0012345678923456780F"
+        ts = "2022-01-01 00:00:00"
+        for x in range(70):
+            datas = basic_f1qh.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            r1 = randint(0, 30)
+            r2 = randint(0, 10)
+            r3 = randint(0, 30)
+            r4 = randint(0, 10)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4, 'cups': cups})
+            data_f1qh.append(datas)
+
+        return data_f1qh
 
     @staticmethod
     def get_sample_p5d_data():
@@ -646,6 +702,34 @@ with description('An F1'):
         f = F1(data)
         res = f.writer()
         expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+with description('An F1QH'):
+    with it('is instance of F1QH Class'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        assert isinstance(f, F1QH)
+
+    with it('a zip of raw Files'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        res = f.writer()
+        assert isinstance(f.total, (int, np.int64))
+        assert f.ai == f.total
+        assert isinstance(f.cups, list)
+        assert isinstance(f.number_of_cups, int)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;11;2022/01/01 00:15;0;10;10;10;10;10;10;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
 
