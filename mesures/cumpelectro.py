@@ -3,7 +3,6 @@ from mesures.dates import *
 from mesures.headers import CUMPELECTRO_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
-from zipfile import ZipFile
 import os
 import pandas as pd
 
@@ -17,6 +16,7 @@ class CUMPELECTRO(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CUMPELECTRO'
@@ -45,13 +45,6 @@ class CUMPELECTRO(object):
             )
 
     @property
-    def zip_filename(self):
-        return "{prefix}_{distributor}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d')
-        )
-
-    @property
     def cups(self):
         return list(set(self.file['cups']))
 
@@ -61,32 +54,38 @@ class CUMPELECTRO(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=columns)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
         # TODO clean "cargos" and "peajes" for new supply points
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
         """
-        CUMPELECTRO contains a curve files diary on zip
+        CUMPELECTRO contains a file with a line for each CUPS
         :return: file path
         """
-        zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+            if versions:
+                self.version = max(versions) + 1
+
         file_path = os.path.join('/tmp', self.filename)
+
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }
+
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
         self.file.to_csv(file_path, **kwargs)
-        zipped_file.write(file_path, arcname=os.path.basename(file_path))
-        zipped_file.close()
-        return zipped_file.filename
+
+        return file_path
