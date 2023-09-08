@@ -907,11 +907,23 @@ with description('A CUMPELECTRO'):
         f = CUMPELECTRO(data)
         assert isinstance(f, CUMPELECTRO)
 
-    with it('a zip of raw Files'):
+    with it('is a BZ2 file'):
         data = SampleData().get_sample_cumpelectro_data()
         f = CUMPELECTRO(data)
-        res = f.writer()
-        assert zipfile.is_zipfile(res)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' in filepath
+
+    with it('is a raw file if no compression is used'):
+        data = SampleData().get_sample_cumpelectro_data()
+        f = CUMPELECTRO(data, compression=False)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' not in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in filepath
 
     with it('has its class methods'):
         data = SampleData().get_sample_cumpelectro_data()
@@ -927,11 +939,23 @@ with description('A CUPSELECTRO'):
         f = CUPSELECTRO(data)
         assert isinstance(f, CUPSELECTRO)
 
-    with it('a zip of raw Files'):
+    with it('is a BZ2 file'):
         data = SampleData().get_sample_cupselectro_data()
         f = CUPSELECTRO(data)
-        res = f.writer()
-        assert zipfile.is_zipfile(res)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' in filepath
+
+    with it('is a raw file if no compression is used'):
+        data = SampleData().get_sample_cupselectro_data()
+        f = CUPSELECTRO(data, compression=False)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' not in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in filepath
 
     with it('has its class methods'):
         data = SampleData().get_sample_cupselectro_data()
@@ -946,11 +970,23 @@ with description('A POTELECTRO'):
         f = POTELECTRO(data)
         assert isinstance(f, POTELECTRO)
 
-    with it('a zip of raw Files'):
+    with it('is a BZ2 file'):
         data = SampleData().get_sample_potelectro_data()
         f = POTELECTRO(data)
-        res = f.writer()
-        assert zipfile.is_zipfile(res)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' in filepath
+
+    with it('is a raw file if no compression is used'):
+        data = SampleData().get_sample_potelectro_data()
+        f = POTELECTRO(data, compression=False)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' not in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in filepath
 
     with it('has its class methods'):
         data = SampleData().get_sample_potelectro_data()
@@ -965,11 +1001,23 @@ with description('A ENELECTROAUT'):
         f = ENELECTROAUT(data)
         assert isinstance(f, ENELECTROAUT)
 
-    with it('a zip of raw Files'):
+    with it('is a BZ2 file'):
         data = SampleData().get_sample_enelectroaut_data()
         f = ENELECTROAUT(data)
-        res = f.writer()
-        assert zipfile.is_zipfile(res)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' in filepath
+
+    with it('is a raw file if no compression is used'):
+        data = SampleData().get_sample_enelectroaut_data()
+        f = ENELECTROAUT(data, compression=False)
+        filepath = f.writer()
+        assert isinstance(filepath, str)
+        assert '.bz2' not in f.filename
+        assert isinstance(f.filename, str)
+        assert '.bz2' not in filepath
 
     with it('has its class methods'):
         data = SampleData().get_sample_enelectroaut_data()
