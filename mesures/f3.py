@@ -92,7 +92,7 @@ class F3(object):
             raise Exception("Filepath must be an str or a list")
 
         df = df.groupby(
-            ['cups', 'timestamp', 'season']
+            ['cups', 'timestamp', 'season', 'method']
         ).aggregate(
             {
                 'ai': 'sum',
