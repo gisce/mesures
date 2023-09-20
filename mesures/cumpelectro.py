@@ -80,6 +80,7 @@ class CUMPELECTRO(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
+                  'float_format': '%.2f',
                   check_line_terminator_param(): ';\n'
                   }
 
