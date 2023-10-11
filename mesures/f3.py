@@ -92,16 +92,16 @@ class F3(object):
             raise Exception("Filepath must be an str or a list")
 
         df = df.groupby(
-            ['cups', 'timestamp', 'season']
+            ['cups', 'timestamp', 'season', 'method']
         ).aggregate(
             {
                 'ai': 'sum',
                 'ae': 'sum'
             }
         ).reset_index()
-        # TODO review obtencion and firmeza
-        df['method'] = 1
-        df['firmeza'] = 1
+        df['firmeza'] = df.apply(lambda row: 1 if row['method'] in (1, 3) else 0, axis=1)
+        # TODO Review method
+
         df = df[columns]
         return df
 

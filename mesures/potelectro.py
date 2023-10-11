@@ -82,6 +82,7 @@ class POTELECTRO(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
+                  'float_format': '%.1f',
                   check_line_terminator_param(): ';\n'
                   }
 
