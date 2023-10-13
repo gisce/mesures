@@ -5,17 +5,6 @@
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml/badge.svg)
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml)
 
-
-![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.6-app.yml)
-![](https://github.com/gisce/mesures/actions/workflows/python3.7-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.7-app.yml)
-![](https://github.com/gisce/mesures/actions/workflows/python3.8-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.8-app.yml)
-![](https://github.com/gisce/mesures/actions/workflows/python3.9-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.9-app.yml)
-![](https://github.com/gisce/mesures/actions/workflows/python3.10-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.10-app.yml)
 ![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml/badge.svg)
 ![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml)
 
