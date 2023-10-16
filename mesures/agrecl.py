@@ -68,7 +68,7 @@ class AGRECL(object):
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y/%m/%d %H'))
         df['data_baixa'] = df['data_baixa'].apply(
             lambda x: '' if not isinstance(x, pd.Timestamp) else x.strftime('%Y/%m/%d %H'))
-        df = df.sort_values(['origen', 'comercialitzadora'])
+        df = df.sort_values(by=['origen', 'comercialitzadora'], ascending=[False, True])
         df = df[columns]
         return df
 
