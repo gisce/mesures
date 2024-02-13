@@ -55,6 +55,14 @@ class P5D(object):
         return filename
 
     @property
+    def zip_filename(self):
+        return "{prefix}_{distributor}_{comer}_{timestamp}.zip".format(
+            prefix=self.prefix, distributor=self.distributor,
+            comer=self.comer,
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
+        )
+
+    @property
     def total(self):
         return int(self.file['ai'].sum())
 
