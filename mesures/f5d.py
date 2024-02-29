@@ -83,7 +83,7 @@ class F5D(F5):
         existing_files = os.listdir('/tmp')
         if self.default_compression != 'zip':
             if existing_files:
-                versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+                versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                 if versions:
                     self.version = max(versions) + 1
 
@@ -102,7 +102,7 @@ class F5D(F5):
             zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
             file_path = os.path.join('/tmp', self.filename)
             kwargs.update({'compression': False})
-            self.file.to_csv(file_path, **kwargs)
+            self.file.to_csv(file_path)
             zipped_file.write(file_path, arcname=os.path.basename(file_path))
             file_path = zipped_file.filename
         else:
