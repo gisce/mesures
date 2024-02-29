@@ -675,6 +675,13 @@ with description('An F5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('gets expected content when uses ZIP compression'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data, compression='zip')
+        res = f.writer()
+        expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+        assert '.zip' in res
 
 with description('An F1'):
     with it('is instance of F1 Class'):

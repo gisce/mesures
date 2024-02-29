@@ -3,6 +3,7 @@ from mesures.dates import *
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5, DTYPES
 from mesures.utils import check_line_terminator_param
+from zipfile import ZipFile
 import os
 import pandas as pd
 
@@ -80,10 +81,11 @@ class F5D(F5):
         :return: file path of generated F5D File
         """
         existing_files = os.listdir('/tmp')
-        if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
-            if versions:
-                self.version = max(versions) + 1
+        if self.default_compression != 'zip':
+            if existing_files:
+                versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+                if versions:
+                    self.version = max(versions) + 1
 
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
@@ -95,5 +97,14 @@ class F5D(F5):
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
-        self.file.to_csv(file_path, **kwargs)
+        if kwargs.get('compression', False) == 'zip':
+            self.default_compression = False
+            zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+            file_path = os.path.join('/tmp', self.filename)
+            kwargs.update({'compression': False})
+            self.file.to_csv(file_path, **kwargs)
+            zipped_file.write(file_path, arcname=os.path.basename(file_path))
+            file_path = zipped_file.filename
+        else:
+            self.file.to_csv(file_path, **kwargs)
         return file_path
