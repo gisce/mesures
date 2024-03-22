@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 
-class A5D():
+class A5D(object):
     def __init__(self, data, distributor=None, comer=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
