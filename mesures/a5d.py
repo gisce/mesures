@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import A5D_HEADER as columns
+from mesures.headers import A5D_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
 
 
-class A5D():
+class A5D(object):
     def __init__(self, data, distributor=None, comer=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
@@ -17,6 +17,7 @@ class A5D():
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'A5D'
@@ -80,7 +81,7 @@ class A5D():
     def reader(self, filepath):
         if isinstance(filepath, str):
             df = pd.read_csv(
-                filepath, sep=';', names=columns
+                filepath, sep=';', names=self.columns
             )
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
@@ -93,7 +94,7 @@ class A5D():
         df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
         for key in ['r1', 'r2', 'r3', 'r4', 'ae', 'method', 'firmeza']:
             df[key] = ''
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -101,11 +102,16 @@ class A5D():
         A5D contains a hourly raw curve
         :return: file path
         """
-        file_path = os.path.join('/tmp', self.filename)
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+            if versions:
+                self.version = max(versions) + 1
 
+        file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }
@@ -113,5 +119,4 @@ class A5D():
             kwargs.update({'compression': self.default_compression})
 
         self.file.to_csv(file_path, **kwargs)
-
         return file_path

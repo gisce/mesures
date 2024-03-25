@@ -864,12 +864,12 @@ with description('An A5D'):
         f1 = f.writer()
         assert isinstance(f1, str)
         assert 'bz2' not in f1
-        assert f1.endswith('.0')
+        # Version control causes file to be version 1 instead of 0
+        assert f1.endswith('.1')
 
 with description('A B5D'):
     with it('bz2 as a default compression'):
-        f = B5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}],
-                distributor='1234', comer='1235', compression='bz2')
+        f = B5D([{'cups': 'XDS', 'timestamp': datetime.now(), 'season': 1, 'ai': 0, 'factura': 123}], compression='bz2')
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
@@ -885,7 +885,8 @@ with description('A B5D'):
         f1 = f.writer()
         assert isinstance(f1, str)
         assert 'bz2' not in f1
-        assert f1.endswith('.0')
+        # Version control causes file to be version 1 instead of 0
+        assert f1.endswith('.1')
 
 with description('An F3'):
     with it('is instance of F3 Class'):

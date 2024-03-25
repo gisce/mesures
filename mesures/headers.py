@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Valid for A5D and B5D
 A5D_HEADER = [
     'cups',
     'timestamp',
@@ -54,21 +55,6 @@ AUTOCONSUMO_HEADER = [
     'emmagatzematge',
     'data_alta',
     'data_baixa'
-]
-
-B5D_HEADER = [
-    'cups',
-    'timestamp',
-    'season',
-    'ai',
-    'ae',
-    'r1',
-    'r2',
-    'r3',
-    'r4',
-    'method',
-    'firmeza',
-    'factura'
 ]
 
 CILCAU_HEADER = [
