@@ -109,7 +109,16 @@ class P1(object):
             raise Exception("Filepath must be an str or a list")
 
         df['tipo_medida'] = 11
-        df.groupby(['cups', 'tipo_medida', 'timestamp', 'season', 'method']).aggregate({'ai': 'sum'})
+        df.groupby(
+            ['cups', 'tipo_medida', 'timestamp', 'season', 'method']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum'}
+        )
 
         df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
 
