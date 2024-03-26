@@ -35,6 +35,7 @@ import bz2
 import numpy as np
 import zipfile
 
+DELETE_FILES = 'rm -rf *.bz2 *.zip *.[0123456789]'
 
 class SampleData:
     @staticmethod
@@ -118,10 +119,10 @@ class SampleData:
 
         data_p2d = [basic_p2d.copy()]
 
-        ts = "2022-01-01 01:00:00"
-        for x in range(50):
+        ts = "2022-01-01 00:15:00"
+        for x in range(360):
             datas = basic_p2d.copy()
-            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
             ai = randint(0, 5000)
             ae = randint(0, 2)
             r1 = randint(0, 30)
@@ -132,10 +133,10 @@ class SampleData:
             data_p2d.append(datas)
 
         cups = "ES0012345678923456780F"
-        ts = "2022-01-01 00:00:00"
-        for x in range(70):
+        ts = "2022-01-01 00:15:00"
+        for x in range(360):
             datas = basic_p2d.copy()
-            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
             ai = randint(0, 5000)
             ae = randint(0, 2)
             r1 = randint(0, 30)
@@ -903,7 +904,7 @@ with description('A P1D'):
         f1 = f.writer()
         assert isinstance(f1, str)
 
-with description('A P2D'):
+with fdescription('A P2D'):
     with it('is instance of P2D Class'):
         data = SampleData().get_sample_p2d_data()
         f = P2D(data)
