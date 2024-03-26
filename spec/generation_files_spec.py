@@ -23,6 +23,7 @@ from mesures.mcil345qh import MCIL345QH
 from mesures.medidas import MEDIDAS
 from mesures.p1 import P1
 from mesures.p1d import P1D
+from mesures.p2d import P2D
 from mesures.p5d import P5D
 from mesures.potelectro import POTELECTRO
 from random import randint
@@ -90,6 +91,61 @@ class SampleData:
             data_f1.append(datas)
 
         return data_f1
+
+    @staticmethod
+    def get_sample_p2d_data():
+        basic_p2d = {
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2022-01-01 01:00:00",
+            "tipo_medida": "p4",
+            "season": "W",
+            "ae": 11.8,
+            "ai": 1.2,
+            "r1": 10,
+            "r2": 10,
+            "r3": 10,
+            "r4": 10,
+            "quality_ai": 0,
+            "quality_ae": 0,
+            "quality_r1": 0,
+            "quality_r2": 0,
+            "quality_r3": 0,
+            "quality_r4": 0,
+            "quality_res": 0,
+            "quality_res2": 0,
+            "method": 1,
+        }
+
+        data_p2d = [basic_p2d.copy()]
+
+        ts = "2022-01-01 01:00:00"
+        for x in range(50):
+            datas = basic_p2d.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            r1 = randint(0, 30)
+            r2 = randint(0, 4999)
+            r3 = randint(0, 30)
+            r4 = randint(0, 4999)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4})
+            data_p2d.append(datas)
+
+        cups = "ES0012345678923456780F"
+        ts = "2022-01-01 00:00:00"
+        for x in range(70):
+            datas = basic_p2d.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            r1 = randint(0, 30)
+            r2 = randint(0, 10)
+            r3 = randint(0, 30)
+            r4 = randint(0, 10)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4, 'cups': cups})
+            data_p2d.append(datas)
+
+        return data_p2d
 
     @staticmethod
     def get_sample_f1qh_data():
@@ -841,6 +897,22 @@ with description('A P1D'):
     with it('should have bz2 as a default compression'):
         data = SampleData().get_sample_data()
         f = P1D(data)
+        assert isinstance(f.filename, str)
+        assert '.bz2' in f.filename
+        assert f.filename.endswith('.bz2')
+        f1 = f.writer()
+        assert isinstance(f1, str)
+
+with description('A P2D'):
+    with it('is instance of P2D Class'):
+        data = SampleData().get_sample_p2d_data()
+        f = P2D(data)
+        assert isinstance(f, P2D)
+
+    with it('should have bz2 as a default compression'):
+        data = SampleData().get_sample_p2d_data()
+        f = P2D(data)
+        res = f.writer()
         assert isinstance(f.filename, str)
         assert '.bz2' in f.filename
         assert f.filename.endswith('.bz2')
