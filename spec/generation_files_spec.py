@@ -904,7 +904,7 @@ with description('A P1D'):
         f1 = f.writer()
         assert isinstance(f1, str)
 
-with fdescription('A P2D'):
+with description('A P2D'):
     with it('is instance of P2D Class'):
         data = SampleData().get_sample_p2d_data()
         f = P2D(data)

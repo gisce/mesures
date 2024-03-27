@@ -67,10 +67,6 @@ class A5D(object):
         return int(self.file['ai'].sum())
 
     @property
-    def ae(self):
-        return int(self.file['ae'].sum())
-
-    @property
     def cups(self):
         return list(set(self.file['cups']))
 
@@ -89,7 +85,8 @@ class A5D(object):
             raise Exception("Filepath must be an str or a list")
 
         df = df.groupby(['cups', 'timestamp', 'season', 'factura']).aggregate(
-            {'ai': 'sum', 'ae': 'sum'}
+            {'ai': 'sum', 'ae': 'sum',
+             'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         ).reset_index()
         df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
         for key in ['r1', 'r2', 'r3', 'r4', 'ae', 'method', 'firmeza']:
