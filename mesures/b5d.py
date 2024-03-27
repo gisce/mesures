@@ -30,7 +30,6 @@ class B5D(A5D):
         return int(self.file['ae'].sum())
 
     def reader(self, filepath):
-        import pudb; pu.db
         if isinstance(filepath, str):
             df = pd.read_csv(
                 filepath, sep=';', names=self.columns
