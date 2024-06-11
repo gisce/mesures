@@ -26,6 +26,8 @@ from mesures.p1d import P1D
 from mesures.p2d import P2D
 from mesures.p5d import P5D
 from mesures.potelectro import POTELECTRO
+from mesures.reobjeagrecl import REOBJEAGRECL
+from mesures.reobjeincl import REOBJEINCL
 from random import randint
 try:
     from StringIO import StringIO
@@ -685,6 +687,83 @@ class SampleData:
             'cp': '17005',
         }]
 
+    @staticmethod
+    def get_sample_reobjeagrecl_data():
+        return [{
+            'distribuidora': '4444',
+            'comercialitzadora': '5555',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'agree_tipo': '05',
+            'provincia': 'HU',
+            'tipus_demanda': '41',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'magnitud': 'AE',
+            'energia_publicada': '100',
+            'energia_proposada': '110',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '2',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.'
+        },
+        {
+            'distribuidora': '4444',
+            'comercialitzadora': '6666',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'agree_tipo': '05',
+            'provincia': 'HU',
+            'tipus_demanda': '00',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'magnitud': 'AE',
+            'energia_publicada': 40,
+            'energia_proposada': 50,
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'S',
+            'motiu_receptor': '1',
+            'comentari_receptor': False
+        }
+        ]
+
+    @staticmethod
+    def get_sample_reobjeincl_data():
+        return [{
+            'cups': 'ES0291000000004444QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'energia_entrant_publicada': 100,
+            'energia_entrant_proposada': 110,
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '2',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.'
+        },
+        {
+            'cups': 'ES0291000000005555QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'energia_entrant_publicada': 100,
+            'energia_entrant_proposada': 100,
+            'energia_sortint_publicada': 10,
+            'energia_sortint_proposada': 20,
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '2',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.'
+        }]
+
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -1252,4 +1331,32 @@ with description('A CILDAT'):
         res = f.writer()
         expected = 'ES0291000000004444QR1F001;NBT44444444;;RA22-0000004444-2022;17005;49.75;' \
                    'CIL DE PRUEBAS GISCE;;b.1.1;4;20221006;30000101;05;20221001;S\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBJEAGRECL'):
+    with it('is instance of REOBJEAGRECL Class'):
+        data = SampleData().get_sample_reobjeagrecl_data()
+        f = REOBJEAGRECL(data)
+        assert isinstance(f, REOBJEAGRECL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobjeagrecl_data()
+        f = REOBJEAGRECL(data)
+        res = f.writer()
+        expected = "4444;5555;E0;2T;E3;05;HU;41;2024/01/01 01;2024/02/01 00;100;AE;100;110;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
+                   "4444;6666;E0;2T;E3;05;HU;00;2024/01/01 01;2024/02/01 00;100;AE;40;50;Paga la energia, primer aviso.;N;S;1;\n"
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBJEINCL'):
+    with it('is instance of REOBJEINCL Class'):
+        data = SampleData().get_sample_reobjeincl_data()
+        f = REOBJEINCL(data)
+        assert isinstance(f, REOBJEINCL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobjeincl_data()
+        f = REOBJEINCL(data)
+        res = f.writer()
+        expected = "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;110;;;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
+                   "ES0291000000005555QR1F;2024/01/01 01;2024/02/01 00;100;100;100;10.0;20.0;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n"
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
