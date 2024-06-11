@@ -487,3 +487,41 @@ POTELECTRO_HEADER = [
     'energia_proyectada_p5',    # int(10)
     'energia_proyectada_p6'     # int(10)
 ]
+
+REOBJEAGRECL_HEADER = [
+    'distribuidora',        # str(4)
+    'comercialitzadora',    # str(4)
+    'agree_tensio',         # str(2)
+    'agree_tarifa',         # str(2)
+    'agree_dh',             # str(2)
+    'agree_tipo',           # str(2)
+    'provincia',            # str(2)
+    'tipus_demanda',        # str(2)
+    'data_inici',           # str aaaa/mm/dd hh
+    'data_fi',              # str aaaa/mm/dd hh
+    'motiu_emissor',        # str(3)
+    'magnitud',             # str(3)
+    'energia_publicada',    # int(10) kWh
+    'energia_proposada',    # int(10) kWh
+    'comentari_emissor',    # str(255)
+    'auto_obj',             # str(1) S/N
+    'acceptacio',           # str(1) S/N
+    'motiu_receptor',       # str(1)
+    'comentari_receptor'    # str(255)
+]
+
+REOBJEINCL_HEADER = [
+    'cups',                         # str(22)
+    'data_inici',                   # str aaaammdd hh
+    'data_fi',                      # str aaaammdd hh
+    'motiu_emissor',                # str(3)
+    'energia_entrant_publicada',    # int(10) kWh
+    'energia_entrant_proposada',    # int(10) kWh
+    'energia_sortint_publicada',    # int(10) kWh
+    'energia_sortint_proposada',    # int(10) kWh
+    'comentari_emissor',            # str(255)
+    'auto_obj',                     # str(1) S/N
+    'acceptacio',                   # str(1) S/N
+    'motiu_receptor',               # str(2)
+    'comentari_receptor'            # str(255)
+]
