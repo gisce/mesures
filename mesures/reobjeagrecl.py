@@ -57,6 +57,7 @@ class REOBJEAGRECL(object):
             raise Exception("Filepath must be an str or a list")
 
         df['comentari_receptor'] = df.apply(lambda row: row['comentari_receptor'] or '', axis=1)
+        df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
         df['energia_publicada'] = df.apply(lambda row: row['energia_publicada'] or '', axis=1)
         df['energia_proposada'] = df.apply(lambda row: row['energia_proposada'] or '', axis=1)
 
@@ -64,15 +65,17 @@ class REOBJEAGRECL(object):
 
     def writer(self):
         """
-        REOBJEAGRECL contains hourly generation curves
+        REOBJEAGRECL TMP file generattion
         :return: file path
         """
+        # Check and change value version of file
         existing_files = os.listdir('/tmp')
         if existing_files:
             versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
             if versions:
                 self.version = max(versions) + 1
 
+        # Generate file path
         file_path = os.path.join('/tmp', self.filename)
 
         kwargs = {'sep': ';',
@@ -86,6 +89,8 @@ class REOBJEAGRECL(object):
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
+        # Convert dict data to csv file and save it to the file path generated
         self.file.to_csv(file_path, **kwargs)
 
+        # Return location tmp file
         return file_path

@@ -704,7 +704,6 @@ class SampleData:
             'magnitud': 'AE',
             'energia_publicada': '100',
             'energia_proposada': '110',
-            'comentari_emissor': 'Paga la energia, primer aviso.',
             'auto_obj': 'N',
             'acceptacio': 'N',
             'motiu_receptor': '2',
@@ -1343,7 +1342,7 @@ with description('A REOBJEAGRECL'):
         data = SampleData().get_sample_reobjeagrecl_data()
         f = REOBJEAGRECL(data)
         res = f.writer()
-        expected = "4444;5555;E0;2T;E3;05;HU;41;2024/01/01 01;2024/02/01 00;100;AE;100;110;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
+        expected = "4444;5555;E0;2T;E3;05;HU;41;2024/01/01 01;2024/02/01 00;100;AE;100;110;;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
                    "4444;6666;E0;2T;E3;05;HU;00;2024/01/01 01;2024/02/01 00;100;AE;40;50;Paga la energia, primer aviso.;N;S;1;\n"
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
