@@ -83,7 +83,8 @@ class REOBJEAGRECL(object):
                   'columns': self.columns,
                   'index': False,
                   'float_format': '%.2f',
-                  check_line_terminator_param(): ';\n'
+                  check_line_terminator_param(): ';\n',
+                  'encoding': 'iso-8859-15',
                   }
 
         if self.default_compression:
