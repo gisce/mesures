@@ -26,6 +26,7 @@ from mesures.p1d import P1D
 from mesures.p2d import P2D
 from mesures.p5d import P5D
 from mesures.potelectro import POTELECTRO
+from mesures.reobje2 import REOBJE2
 from mesures.reobjeagrecl import REOBJEAGRECL
 from mesures.reobjeincl import REOBJEINCL
 from random import randint
@@ -763,6 +764,36 @@ class SampleData:
             'comentari_receptor': 'La energia está correcta. A llorar a la llorería.'
         }]
 
+    @staticmethod
+    def get_sample_reobje2_data():
+        return [{
+            'cups': 'ES0291000000004444QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'energia_publicada': '100',
+            'energia_proposada': '110',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '2',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+            'magnitud': 'AE'
+        },
+        {
+            'cups': 'ES0291000000004444QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'energia_publicada': '100',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '2',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+            'magnitud': 'AE'
+        }]
+
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -1358,4 +1389,21 @@ with description('A REOBJEINCL'):
         res = f.writer()
         expected = "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;110;;;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
                    "ES0291000000005555QR1F;2024/01/01 01;2024/02/01 00;100;100;100;10.0;20.0;Paga la energia, primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.\n"
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBJE2'):
+    with it('is instance of REOBJE2 Class'):
+        data = SampleData().get_sample_reobje2_data()
+        f = REOBJE2(data)
+        assert isinstance(f, REOBJE2)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobje2_data()
+        f = REOBJE2(data)
+        res = f.writer()
+        expected = ("ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;110;Paga la energia, "
+                    "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
+                    "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;;Paga la energia, "
+                    "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
+                    )
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
