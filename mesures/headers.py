@@ -501,8 +501,8 @@ REOBJEAGRECL_HEADER = [
     'data_fi',              # str aaaa/mm/dd hh
     'motiu_emissor',        # str(3)
     'magnitud',             # str(3)
-    'energia_publicada',    # int(10) kWh
-    'energia_proposada',    # int(10) kWh
+    'energia_publicada',    # str(10) kWh
+    'energia_proposada',    # str(10) kWh
     'comentari_emissor',    # str(255)
     'auto_obj',             # str(1) S/N
     'acceptacio',           # str(1) S/N
@@ -515,13 +515,28 @@ REOBJEINCL_HEADER = [
     'data_inici',                   # str aaaammdd hh
     'data_fi',                      # str aaaammdd hh
     'motiu_emissor',                # str(3)
-    'energia_entrant_publicada',    # int(10) kWh
-    'energia_entrant_proposada',    # int(10) kWh
-    'energia_sortint_publicada',    # int(10) kWh
-    'energia_sortint_proposada',    # int(10) kWh
+    'energia_entrant_publicada',    # str(10) kWh
+    'energia_entrant_proposada',    # str(10) kWh
+    'energia_sortint_publicada',    # str(10) kWh
+    'energia_sortint_proposada',    # str(10) kWh
     'comentari_emissor',            # str(255)
     'auto_obj',                     # str(1) S/N
     'acceptacio',                   # str(1) S/N
     'motiu_receptor',               # str(2)
     'comentari_receptor'            # str(255)
+]
+
+REOBJE2_HEADER = [
+    'cups',                         # str(22)
+    'data_inici',                   # str aaaammdd hh
+    'data_fi',                      # str aaaammdd hh
+    'motiu_emissor',                # str(3)
+    'energia_publicada',            # str(10) kWh
+    'energia_proposada',            # str(10) kWh
+    'comentari_emissor',            # str(255)
+    'auto_obj',                     # str(1) S/N
+    'acceptacio',                   # str(1) S/N
+    'motiu_receptor',               # str(2)
+    'comentari_receptor',           # str(255)
+    'magnitud'                      # str(2) AS/AE
 ]
