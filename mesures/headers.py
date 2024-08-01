@@ -546,8 +546,8 @@ REOBJECIL_HEADER = [
     'data_inici',                   # str aaaammdd hh
     'data_fi',                      # str aaaammdd hh
     'motiu_emissor',                # str(3)
-    'as_publicada',                 # str(10) kVArh
-    'as_proposada',                 # str(10) kVArh
+    'as_publicada',                 # str(10) kWh
+    'as_proposada',                 # str(10) kWh
     'r2_publicada',                 # str(10) kVArh
     'r2_proposada',                 # str(10) kVArh
     'r3_publicada',                 # str(10) kVArh
