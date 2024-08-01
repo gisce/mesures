@@ -27,6 +27,7 @@ from mesures.p2d import P2D
 from mesures.p5d import P5D
 from mesures.potelectro import POTELECTRO
 from mesures.reobje2 import REOBJE2
+from mesures.reobjecil import REOBJECIL
 from mesures.reobjeagrecl import REOBJEAGRECL
 from mesures.reobjeincl import REOBJEINCL
 from random import randint
@@ -794,6 +795,34 @@ class SampleData:
             'magnitud': 'AE'
         }]
 
+    @staticmethod
+    def get_sample_reobjecil_data():
+        return [{
+            'cil': 'ES0291000000004444QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'as_publicada': '100',
+            'as_proposada': '110',
+            'r2_publicada': '100',
+            'r2_proposada': '110',
+            'r3_publicada': '100',
+            'r3_proposada': '110',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+            'motiu_receptor': '99',
+            'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+        },
+        {
+            'cil': 'ES0291000000004444QR1F',
+            'data_inici': '2024/01/01 01',
+            'data_fi': '2024/02/01 00',
+            'motiu_emissor': '100',
+            'auto_obj': 'N',
+            'acceptacio': 'N',
+        }]
+
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -1406,4 +1435,19 @@ with description('A REOBJE2'):
                     "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;;Paga la energia, "
                     "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
                     )
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBJECIL'):
+    with it('is instance of REOBJECIL Class'):
+        data = SampleData().get_sample_reobjecil_data()
+        f = REOBJECIL(data)
+        assert isinstance(f, REOBJECIL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobjecil_data()
+        f = REOBJECIL(data)
+        res = f.writer()
+        expected = ("ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;110;100;110;100;110;"
+                    "Paga la energia, primer aviso.;N;N;99;La energia está correcta. A llorar a la llorería.\n"
+                    "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;;;;;;;;N;N;;\n")
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected

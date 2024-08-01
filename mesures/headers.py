@@ -540,3 +540,21 @@ REOBJE2_HEADER = [
     'comentari_receptor',           # str(255)
     'magnitud'                      # str(2) AS/AE
 ]
+
+REOBJECIL_HEADER = [
+    'cil',                          # str(22)
+    'data_inici',                   # str aaaammdd hh
+    'data_fi',                      # str aaaammdd hh
+    'motiu_emissor',                # str(3)
+    'as_publicada',                 # str(10) kVArh
+    'as_proposada',                 # str(10) kVArh
+    'r2_publicada',                 # str(10) kVArh
+    'r2_proposada',                 # str(10) kVArh
+    'r3_publicada',                 # str(10) kVArh
+    'r3_proposada',                 # str(10) kVArh
+    'comentari_emissor',            # str(255)
+    'auto_obj',                     # str(1) S/N
+    'acceptacio',                   # str(1) S/N
+    'motiu_receptor',               # str(2)
+    'comentari_receptor'            # str(255)
+]
