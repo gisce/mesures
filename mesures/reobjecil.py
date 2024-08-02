@@ -26,6 +26,7 @@ class REOBJECIL(REOBJEAGRECL):
 
         df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
         df['comentari_receptor'] = df.apply(lambda row: row['comentari_receptor'] or '', axis=1)
+        df['motiu_receptor'] = df.apply(lambda row: row['motiu_receptor'] or '', axis=1)
         df['as_publicada'] = df.apply(lambda row: row['as_publicada'] or '', axis=1)
         df['as_proposada'] = df.apply(lambda row: row['as_proposada'] or '', axis=1)
         df['r2_publicada'] = df.apply(lambda row: row['r2_publicada'] or '', axis=1)
