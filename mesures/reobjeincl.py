@@ -25,6 +25,7 @@ class REOBJEINCL(REOBJEAGRECL):
 
         df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
         df['comentari_receptor'] = df.apply(lambda row: row['comentari_receptor'] or '', axis=1)
+        df['motiu_receptor'] = df.apply(lambda row: row['motiu_receptor'] or '', axis=1)
         df['energia_entrant_publicada'] = df.apply(lambda row: row['energia_entrant_publicada'] or '', axis=1)
         df['energia_entrant_proposada'] = df.apply(lambda row: row['energia_entrant_proposada'] or '', axis=1)
         df['energia_sortint_publicada'] = df.apply(lambda row: row['energia_sortint_publicada'] or '', axis=1)

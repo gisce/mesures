@@ -60,6 +60,7 @@ class REOBJEAGRECL(object):
         df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
         df['energia_publicada'] = df.apply(lambda row: row['energia_publicada'] or '', axis=1)
         df['energia_proposada'] = df.apply(lambda row: row['energia_proposada'] or '', axis=1)
+        df['motiu_receptor'] = df.apply(lambda row: row['motiu_receptor'] or '', axis=1)
 
         return df
 
