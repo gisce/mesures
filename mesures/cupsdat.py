@@ -66,7 +66,7 @@ class CUPSDAT(object):
         )
 
         df['fecha_hora_final_vigencia'] = df.apply(
-            lambda row: REE_END_DATE_HOUR
+            lambda row: CUPSDAT_CPUS45_REE_END_DATE_HOUR
             if row['fecha_hora_final_vigencia'] == ''
             else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
 
