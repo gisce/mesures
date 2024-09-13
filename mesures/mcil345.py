@@ -156,7 +156,6 @@ class MCIL345(object):
             df = (datetime.strptime(daymin, DATE_MASK) + timedelta(days=1)).strftime(DATE_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             # Avoid to generate file if dataframe is empty
             if len(dataf):
                 existing_files = os.listdir('/tmp')

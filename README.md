@@ -49,7 +49,6 @@
 - `F5`
 - `F5D`
 - `MAGCL`
-- `MAGCLQH`
 - `MCIL345`
 - `MCIL345QH`
 - `MEDIDAS`

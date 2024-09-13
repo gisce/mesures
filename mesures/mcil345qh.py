@@ -19,6 +19,7 @@ class MCIL345QH(MCIL345):
         self.prefix = 'MCIL345QH'
 
     def reader(self, filepath):
+        """Overrided to use DATETIME_HOUR_MASK instead of DATE_MASK"""
         if isinstance(filepath, str):
             df = pd.read_csv(filepath, sep=';', names=COLUMNS)
         elif isinstance(filepath, list):
@@ -62,7 +63,8 @@ class MCIL345QH(MCIL345):
 
     def writer(self):
         """
-        MCIL345 contains hourly generation curves
+        MCIL345QH contains hourly generation curves
+        Overrided to use DATETIME_HOUR_MASK instead of DATE_MASK
         :return: file path
         """
         daymin = self.file['timestamp'].min()
@@ -74,7 +76,6 @@ class MCIL345QH(MCIL345):
             df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             # Avoid to generate file if dataframe is empty
             if len(dataf):
                 existing_files = os.listdir('/tmp')
