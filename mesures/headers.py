@@ -192,6 +192,10 @@ CUPSDAT_HEADER = [
     'tension'                       # str(2)
 ]
 
+CUPSDAT_HEADER_2024 = CUPSDAT_HEADER + [
+    'indicador_envio_medida'        # str(1) in ('Q', 'H')
+]
+
 CUPSELECTRO_HEADER = [
     'cups',                     # str(22)
     'cif_empresa',              # str(9)

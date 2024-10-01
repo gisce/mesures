@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import CUPSDAT_HEADER as COLUMNS
+from mesures.headers import CUPSDAT_HEADER as COLUMNS, CUPSDAT_HEADER_2024 as COLUMNS_2024
 from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
@@ -8,14 +8,18 @@ import pandas as pd
 
 
 class CUPSDAT(object):
-    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, include_measure_indicator=False,
+                 version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
+        :param include_measure_indicator: boolean (indicates if new columns is included)
         """
         data = DummyKeys(data).data
         self.columns = columns
+        if include_measure_indicator:
+            self.columns = COLUMNS_2024
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CUPSDAT'
@@ -69,6 +73,13 @@ class CUPSDAT(object):
             lambda row: CUPSDAT_CPUS45_REE_END_DATE_HOUR
             if row['fecha_hora_final_vigencia'] == ''
             else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
+
+        # Patch indicador_tipo_medida if needed
+        if 'indicador_envio_medida' in self.columns:
+            df['indicador_envio_medida'] = df.apply(
+                lambda row: 'Q'
+                if row['tipo'] in ('1', '2') or not row.get('indicador_envio_medida', False)
+                else row['indicador_envio_medida'], axis=1)
 
         return df[self.columns]
 

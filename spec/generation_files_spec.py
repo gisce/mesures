@@ -645,6 +645,12 @@ class SampleData:
         }]
 
     @staticmethod
+    def get_sample_cupsdat_data_isp_2024():
+        res = SampleData().get_sample_cupsdat_data()
+        res[0].update({'indicador_envio_medida': 'Q'})
+        return res
+
+    @staticmethod
     def get_sample_cups45_data():
         return [{
             'cups': 'ES0291000000004444QR1F',
@@ -1292,6 +1298,21 @@ with description('A CUPSDAT'):
                    'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/01 01;2022/10/17 00;17005;S;27\n' \
                    'ES0291000000005555QR1F;CUPS de Demo 02;X0005555;4444;5555;2;' \
                    'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/17 01;3000/01/01 00;17005;S;27\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+    with it('has new field indicador_envio_medida if it is specified in function call'):
+        data = SampleData().get_sample_cupsdat_data_isp_2024()
+        f = CUPSDAT(data, include_measure_indicator=True)
+        assert 'indicador_envio_medida' in f.columns
+
+    with it('has its expected content when indicador_envio_medida is included'):
+        data = SampleData().get_sample_cupsdat_data_isp_2024()
+        f = CUPSDAT(data, include_measure_indicator=True)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F;CUPS de Demo 01;X0004444;4444;5555;2;' \
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/01 01;2022/10/17 00;17005;S;27;Q\n' \
+                   'ES0291000000005555QR1F;CUPS de Demo 02;X0005555;4444;5555;2;' \
+                   'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/17 01;3000/01/01 00;17005;S;27;Q\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('A CUPS45'):
