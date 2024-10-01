@@ -8,17 +8,17 @@ import pandas as pd
 
 
 class CUPSDAT(object):
-    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, include_measure_indicator=False,
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, include_measure_type_indicator=False,
                  version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
-        :param include_measure_indicator: boolean (indicates if new columns is included)
+        :param include_measure_type_indicator: boolean (indicates if new columns is included)
         """
         data = DummyKeys(data).data
         self.columns = columns
-        if include_measure_indicator:
+        if include_measure_type_indicator:
             self.columns = COLUMNS_2024
         self.file = self.reader(data)
         self.generation_date = datetime.now()

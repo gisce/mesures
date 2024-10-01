@@ -1302,12 +1302,12 @@ with description('A CUPSDAT'):
 
     with it('has new field indicador_envio_medida if it is specified in function call'):
         data = SampleData().get_sample_cupsdat_data_isp_2024()
-        f = CUPSDAT(data, include_measure_indicator=True)
+        f = CUPSDAT(data, include_measure_type_indicator=True)
         assert 'indicador_envio_medida' in f.columns
 
     with it('has its expected content when indicador_envio_medida is included'):
         data = SampleData().get_sample_cupsdat_data_isp_2024()
-        f = CUPSDAT(data, include_measure_indicator=True)
+        f = CUPSDAT(data, include_measure_type_indicator=True)
         res = f.writer()
         expected = 'ES0291000000004444QR1F;CUPS de Demo 01;X0004444;4444;5555;2;' \
                    'E2;6A;G0;A;GI;400;400;400;400;400;500;1091;2022/10/01 01;2022/10/17 00;17005;S;27;Q\n' \
