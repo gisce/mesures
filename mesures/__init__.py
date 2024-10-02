@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-__version__ = '2.9.5'
+__version__ = '3.0.0'
 __author__ = 'GISCE-TI S.L.'
