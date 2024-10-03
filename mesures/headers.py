@@ -352,6 +352,35 @@ MEDIDAS_HEADER = [
     'read_type'             # str(1) in ('E' for estimated, 'R' for real)
 ]
 
+OBAGRECL_HEADER = [
+    'distribuidora',        # str(4)
+    'comercialitzadora',    # str(4)
+    'agree_tensio',         # str(2)
+    'agree_tarifa',         # str(2)
+    'agree_dh',             # str(2)
+    'agree_tipo',           # str(2)
+    'provincia',            # str(2)
+    'tipus_demanda',        # str(3)
+    'periode',              # str aaaa/mm
+    'motiu_emissor',        # str(3)
+    'magnitud',             # str(2) AE/AS
+    'energia_publicada',    # str(10) kWh
+    'energia_proposada',    # str(10) kWh
+    'comentari_emissor',    # str(255)
+    'auto_obj',             # str(1) S/N
+]
+
+OBCUPS_HEADER = [
+    'cups',                 # str(22)
+    'periode',              # str aaaa/mm
+    'motiu_emissor',        # str(3)
+    'energia_publicada',    # str(10) kWh
+    'energia_proposada',    # str(10) kWh
+    'comentari_emissor',    # str(255)
+    'auto_obj',             # str(1) S/N
+    'magnitud'              # str(2) AS/AE
+]
+
 P1_HEADER = [
     'cups',          # str(22)
     'tipo_medida',   # str(2) (always '11')

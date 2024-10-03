@@ -21,6 +21,8 @@ from mesures.f5d import F5D
 from mesures.mcil345 import MCIL345
 from mesures.mcil345qh import MCIL345QH
 from mesures.medidas import MEDIDAS
+from mesures.obagrecl import OBAGRECL
+from mesures.obcups import OBCUPS
 from mesures.p1 import P1
 from mesures.p1d import P1D
 from mesures.p2d import P2D
@@ -829,6 +831,66 @@ class SampleData:
             'acceptacio': 'N',
         }]
 
+    @staticmethod
+    def get_sample_obagrecl_data():
+        return [{
+            'distribuidora': '4444',
+            'comercialitzadora': '5555',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'agree_tipo': '05',
+            'provincia': 'HU',
+            'tipus_demanda': '41',
+            'periode': '2024/10',
+            'motiu_emissor': '100',
+            'magnitud': 'AE',
+            'energia_publicada': '100',
+            'energia_proposada': '110',
+            'auto_obj': 'N'
+        },
+        {
+            'distribuidora': '4444',
+            'comercialitzadora': '6666',
+            'agree_tensio': 'E0',
+            'agree_tarifa': '2T',
+            'agree_dh': 'E3',
+            'agree_tipo': '05',
+            'provincia': 'HU',
+            'tipus_demanda': '00',
+            'periode': '2024/10',
+            'motiu_emissor': '100',
+            'magnitud': 'AE',
+            'energia_publicada': 40,
+            'energia_proposada': 50,
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N'
+        }
+        ]
+
+    @staticmethod
+    def get_sample_obcups_data():
+        return [{
+            'cups': 'ES0291000000004444QR1F',
+            'periode': '2024/10',
+            'motiu_emissor': '100',
+            'energia_publicada': '100',
+            'energia_proposada': '110',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'magnitud': 'AE'
+        },
+        {
+            'cups': 'ES0291000000004444QR1F',
+            'periode': '2024/10',
+            'motiu_emissor': '100',
+            'energia_publicada': '100',
+            'comentari_emissor': 'Paga la energia, primer aviso.',
+            'auto_obj': 'N',
+            'magnitud': 'AE'
+        }
+        ]
+
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -1471,4 +1533,35 @@ with description('A REOBJECIL'):
         expected = ("ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;100;110;100;110;100;110;"
                     "Paga la energia, primer aviso.;N;N;99;La energia está correcta. A llorar a la llorería.\n"
                     "ES0291000000004444QR1F;2024/01/01 01;2024/02/01 00;100;;;;;;;;N;N;;\n")
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('An OBAGRECL'):
+    with it('is instance of OBAGRECL Class'):
+        data = SampleData().get_sample_obagrecl_data()
+        f = OBAGRECL(data)
+        assert isinstance(f, OBAGRECL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_obagrecl_data()
+        f = OBAGRECL(data)
+        res = f.writer()
+        expected = "4444;5555;E0;2T;E3;05;HU;41;2024/10;100;AE;100;110;;N\n" \
+                   "4444;6666;E0;2T;E3;05;HU;00;2024/10;100;AE;40;50;Paga la energia, primer aviso.;N\n"
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('An OBCUPS'):
+    with it('is instance of OBCUPS Class'):
+        data = SampleData().get_sample_obcups_data()
+        f = OBCUPS(data)
+        assert isinstance(f, OBCUPS)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_obcups_data()
+        f = OBCUPS(data)
+        res = f.writer()
+        expected = ("ES0291000000004444QR1F;2024/10;100;100;110;Paga la energia, "
+                    "primer aviso.;N;AE\n"
+                    "ES0291000000004444QR1F;2024/10;100;100;;Paga la energia, "
+                    "primer aviso.;N;AE\n"
+                    )
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
