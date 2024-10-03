@@ -52,6 +52,8 @@
 - `MCIL345`
 - `MCIL345QH`
 - `MEDIDAS`
+- `OBAGRECL`
+- `OBCUPS`
 - `P1`
 - `P1D`
 - `P2`
