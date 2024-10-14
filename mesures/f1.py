@@ -18,13 +18,13 @@ class F1(object):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.columns = COLUMNS
+        self.allow_decimals = allow_decimals
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'F1'
         self.version = version
         self.distributor = distributor
         self.default_compression = compression
-        self.allow_decimals = allow_decimals
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
