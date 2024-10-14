@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class F1(object):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', allow_decimals=False, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -24,6 +24,7 @@ class F1(object):
         self.version = version
         self.distributor = distributor
         self.default_compression = compression
+        self.allow_decimals = allow_decimals
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -129,6 +130,11 @@ class F1(object):
 
         df['res'] = 0
         df['res2'] = 0
+
+        if not self.allow_decimals:
+            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+                df[key] = df[key].astype('int')
+
         df = df[self.columns]
         return df
 
