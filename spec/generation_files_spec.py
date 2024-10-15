@@ -980,7 +980,7 @@ with description('An F1'):
         f = F1(data)
         assert isinstance(f, F1)
 
-    with it('a zip of raw Files'):
+    with it('is a zip of raw Files'):
         data = SampleData().get_sample_data()
         f = F1(data)
         res = f.writer()
