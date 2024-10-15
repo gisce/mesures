@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class F1(object):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', allow_decimals=False, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -18,6 +18,7 @@ class F1(object):
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
         self.columns = COLUMNS
+        self.allow_decimals = allow_decimals
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'F1'
@@ -129,6 +130,11 @@ class F1(object):
 
         df['res'] = 0
         df['res2'] = 0
+
+        if not self.allow_decimals:
+            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+                df[key] = df[key].astype('int')
+
         df = df[self.columns]
         return df
 

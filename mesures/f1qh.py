@@ -8,13 +8,14 @@ import pandas as pd
 
 
 class F1QH(F1):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', allow_decimals=False, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
-        super(F1QH, self).__init__(data=data, distributor=distributor, compression=compression, version=version)
+        super(F1QH, self).__init__(data=data, distributor=distributor, compression=compression,
+                                   allow_decimals=allow_decimals, version=version)
         self.prefix = 'F1QH'
 
     def reader(self, filepath):
@@ -49,6 +50,11 @@ class F1QH(F1):
 
         df['res'] = 0
         df['res2'] = 0
+
+        if not self.allow_decimals:
+            for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+                df[key] = df[key].astype('int')
+
         df = df[self.columns]
         return df
 

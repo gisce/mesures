@@ -100,6 +100,34 @@ class SampleData:
         return data_f1
 
     @staticmethod
+    def get_sample_data_with_decimals():
+        basic_f1 = {
+            "cups": "ES0012345678912345670F",
+            "timestamp": "2022-01-01 01:00:00",
+            "tipo_medida": "p",
+            "season": "W",
+            "ai": 10.1,
+            "ae": 10.2,
+            "r1": 10.3,
+            "r2": 10.4,
+            "r3": 10.5,
+            "r4": 10.6,
+            "quality_ai": 0,
+            "quality_ae": 0,
+            "quality_r1": 0,
+            "quality_r2": 0,
+            "quality_r3": 0,
+            "quality_r4": 0,
+            "quality_res": 0,
+            "quality_res2": 0,
+            "method": 1,
+        }
+
+        data_f1 = [basic_f1.copy()]
+
+        return data_f1
+
+    @staticmethod
     def get_sample_p2d_data():
         basic_p2d = {
             "cups": "ES0012345678912345670F",
@@ -969,6 +997,20 @@ with description('An F1'):
 
     with it('gets expected content'):
         data = SampleData().get_sample_data()
+        f = F1(data)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+    with it('allows decimals if specified'):
+        data = SampleData().get_sample_data_with_decimals()
+        f = F1(data, allow_decimals=True)
+        res = f.writer()
+        expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10.1;10.2;10.3;10.4;10.5;10.6;0;0;1;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+    with it('truncate decimals if not allow_decimals parameter is specified'):
+        data = SampleData().get_sample_data_with_decimals()
         f = F1(data)
         res = f.writer()
         expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
