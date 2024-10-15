@@ -980,7 +980,7 @@ with description('An F1'):
         f = F1(data)
         assert isinstance(f, F1)
 
-    with it('is a zip of raw Files'):
+    with it('is a zip of raw files'):
         data = SampleData().get_sample_data()
         f = F1(data)
         res = f.writer()
@@ -1009,7 +1009,7 @@ with description('An F1'):
         expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10.1;10.2;10.3;10.4;10.5;10.6;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
-    with it('truncate decimals if not allow_decimals parameter is specified'):
+    with it('truncates decimals if not allow_decimals parameter is specified'):
         data = SampleData().get_sample_data_with_decimals()
         f = F1(data)
         res = f.writer()
@@ -1022,7 +1022,7 @@ with description('An F1QH'):
         f = F1QH(data)
         assert isinstance(f, F1QH)
 
-    with it('a zip of raw Files'):
+    with it('is a zip of raw files'):
         data = SampleData().get_sample_f1qh_data()
         f = F1QH(data)
         res = f.writer()
