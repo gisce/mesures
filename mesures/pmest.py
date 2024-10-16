@@ -17,6 +17,7 @@ class PMEST(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'PMEST'
@@ -93,7 +94,7 @@ class PMEST(object):
     def reader(self, filepath):
         if isinstance(filepath, str):
             df = pd.read_csv(
-                filepath, sep=';', names=columns
+                filepath, sep=';', names=self.columns
             )
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
@@ -120,7 +121,7 @@ class PMEST(object):
                 'r4': 'sum',
             }
         ).reset_index()
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -138,10 +139,11 @@ class PMEST(object):
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H'), axis=1)
+            dataf['timestamp'] = dataf['timestamp'].astype(str)
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
-                      'columns': columns,
+                      'columns': self.columns,
                       'index': False,
                       check_line_terminator_param(): ';\n'
                       }

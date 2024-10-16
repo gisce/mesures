@@ -42,7 +42,7 @@ class DummyCurve(object):
                 except ValueError:
                     # str season
                     data['season'] = 0 if data['season'].lower() == 'w' else 1
-            if 'kind_fact' in data:
+            if 'kind_fact' in data and not 'method' in data:
                 try:
                     data['method'] = int(data.pop('kind_fact'))
                 except ValueError:

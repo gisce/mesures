@@ -27,6 +27,7 @@ from mesures.p1 import P1
 from mesures.p1d import P1D
 from mesures.p2d import P2D
 from mesures.p5d import P5D
+from mesures.pmest import PMEST
 from mesures.potelectro import POTELECTRO
 from mesures.reobje2 import REOBJE2
 from mesures.reobjecil import REOBJECIL
@@ -236,6 +237,39 @@ class SampleData:
             data_f1qh.append(datas)
 
         return data_f1qh
+
+    @staticmethod
+    def get_sample_data_pmest():
+        basic_pmest = {
+            "pm": "DK029141",
+            "tipo_medida": 11,
+            "timestamp": "2024-11-01 01:00:00",
+            "season": 0,
+            "method": 4,
+            "ai": 10,
+            "ae": 11,
+            "r1": 12,
+            "r2": 13,
+            "r3": 14,
+            "r4": 15
+        }
+
+        data_pmest = [basic_pmest.copy()]
+
+        ts = "2024-11-01 01:00:00"
+        for x in range(50):
+            datas = basic_pmest.copy()
+            ts = (datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            ai = randint(0, 5000)
+            ae = randint(0, 2)
+            r1 = randint(0, 30)
+            r2 = randint(0, 4999)
+            r3 = randint(0, 30)
+            r4 = randint(0, 4999)
+            datas.update({'timestamp': ts, 'ai': ai, 'ae': ae, 'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4})
+            data_pmest.append(datas)
+
+        return data_pmest
 
     @staticmethod
     def get_sample_p5d_data():
@@ -1607,3 +1641,30 @@ with description('An OBCUPS'):
                     "primer aviso.;N;AE\n"
                     )
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('An PMEST'):
+    with it('is instance of PMEST Class'):
+        data = SampleData().get_sample_data_pmest()
+        f = PMEST(data)
+        assert isinstance(f, PMEST)
+
+    with it('is a zip of raw files'):
+        data = SampleData().get_sample_data_pmest()
+        f = PMEST(data)
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_data_pmest()
+        f = PMEST(data)
+        res = f.writer()
+        assert isinstance(f.total, (int, np.int64))
+        assert f.ai == f.total
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_data_pmest()
+        f = PMEST(data)
+        res = f.writer()
+        # WARNING: timestamp is expressed as "yyyy/mm/dd HH" in file, but in dataframe is still ISO formatted
+        expected = 'DK029141;11;2024-11-01 01:00:00;0;4;10;11;12;13;14;15'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
