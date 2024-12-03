@@ -74,12 +74,12 @@ class CUPSDAT(object):
             if row['fecha_hora_final_vigencia'] == ''
             else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
 
-        # # Patch indicador_tipo_medida if needed
-        # if 'indicador_envio_medida' in self.columns:
-        #     df['indicador_envio_medida'] = df.apply(
-        #         lambda row: 'Q'
-        #         if row['tipo'] in ('1', '2') or not row.get('indicador_envio_medida', False)
-        #         else row['indicador_envio_medida'], axis=1)
+        # Patch indicador_tipo_medida if needed
+        if 'indicador_envio_medida' in self.columns:
+            df['indicador_envio_medida'] = df.apply(
+                lambda row: 'H'
+                if not row.get('indicador_envio_medida', False)
+                else row['indicador_envio_medida'], axis=1)
 
         return df[self.columns]
 
