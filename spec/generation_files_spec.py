@@ -712,6 +712,7 @@ class SampleData:
     def get_sample_cupsdat_data_isp_2024():
         res = SampleData().get_sample_cupsdat_data()
         res[0].update({'indicador_envio_medida': 'Q'})
+        res[1].update({'indicador_envio_medida': 'Q'})
         return res
 
     @staticmethod
