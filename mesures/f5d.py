@@ -9,19 +9,28 @@ import pandas as pd
 
 TYPES = DTYPES.copy()
 TYPES.update({'factura': 'category'})
-
+ENERGY_MAGNS = ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']
+CNMC_ENERGY_MAGNS = ['ai_fix', 'ao_fix']
 
 class F5D(F5):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
+    def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
         """
         :param data: list of dicts or absolute file_path
+        :param file_format: str format to generate
         :param distributor: str distributor REE code
         :param comer: str comer REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
+
+        self.file_format = file_format
+        if self.file_format == 'CNMC':
+            columns = columns + CNMC_ENERGY_MAGNS
+        self.columns = columns
+
         super(F5D, self).__init__(data, distributor=distributor, comer=comer, compression=compression,
                                   columns=columns, dtypes=dtypes, version=version)
         self.prefix = 'F5D'
+
 
     @property
     def filename(self):
@@ -39,6 +48,22 @@ class F5D(F5):
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
             timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
+
+    @property
+    def ai_fix(self):
+        if not self.file_format == 'CNMC':
+            res = 0
+        else:
+            res = int(self.file['ai_fix'].sum())
+        return res
+
+    @property
+    def ao_fix(self):
+        if not self.file_format == 'CNMC':
+            res = 0
+        else:
+            res = int(self.file['ao_fix'].sum())
+        return res
 
     def cut_by_dates(self, di, df):
         """
@@ -62,14 +87,21 @@ class F5D(F5):
         if 'factura' not in df:
             df['factura'] = 'F0000000000'
 
+        agregates = {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
+        if self.file_format == 'CNMC':
+            agregates.update({'ai_fix': 'sum', 'ao_fix': 'sum'})
+
         df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
-            {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
-        ).reset_index()
+            agregates).reset_index()
 
         if isinstance(filepath, list):
             df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
 
-        for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
+        magnituds = ENERGY_MAGNS
+        if self.file_format == 'CNMC':
+            magnituds += CNMC_ENERGY_MAGNS
+
+        for key in magnituds:
             if key not in df:
                 df[key] = 0
             df[key] = df[key].astype('int32')
