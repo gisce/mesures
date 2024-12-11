@@ -304,7 +304,7 @@ class SampleData:
         return data_p5d
 
     @staticmethod
-    def get_sample_f5d_data():
+    def get_sample_f5d_data(file_format='REE'):
         basic_f5d = {
             "cups": "ES0012345678912345670F",
             "timestamp": "2020-01-01 01:00:00",
@@ -319,8 +319,9 @@ class SampleData:
             "firm_fact": False,
             'invoice_number': 'FE20214444'
         }
+        if file_format == 'CNMC':
+            basic_f5d.update({'ao_fix': 1000, 'ai_fix': 1000})
         data_f5d = [basic_f5d.copy()]
-
         ts = "2020-01-01 01:00:00"
         for x in range(50):
             datas = basic_f5d.copy()
@@ -1008,6 +1009,20 @@ with description('An F5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
         assert '.zip' in res
+
+    with it('with CNMC format has its class methods'):
+        data = SampleData().get_sample_f5d_data(file_format='CNMC')
+        f = F5D(data, file_format='CNMC')
+        res = f.writer()
+        assert isinstance(f.ai_fix, (int, np.int64))
+        assert isinstance(f.ao_fix, (int, np.int64))
+
+    with it('with CNMC format gets expected content'):
+        data = SampleData().get_sample_f5d_data(file_format='CNMC')
+        f = F5D(data, file_format='CNMC')
+        res = f.writer()
+        expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444;1000;1000'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
 with description('An F1'):
     with it('is instance of F1 Class'):
