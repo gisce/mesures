@@ -92,7 +92,7 @@ class CUPSDAT(object):
                   'header': False,
                   'columns': self.columns,
                   'index': False,
-                  'encoding': 'iso8859-15',
+                  'encoding': 'iso-8859-15',
                   check_line_terminator_param(): ';\n'
                   }
 
