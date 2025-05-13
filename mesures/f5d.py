@@ -133,8 +133,8 @@ class F5D(F5):
             self.default_compression = False
             zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
             file_path = os.path.join('/tmp', self.filename)
-            kwargs.update({'compression': False})
-            self.file.to_csv(file_path)
+            kwargs.pop('compression')
+            self.file.to_csv(file_path, **kwargs)
             zipped_file.write(file_path, arcname=os.path.basename(file_path))
             file_path = zipped_file.filename
         else:
