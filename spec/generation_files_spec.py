@@ -320,7 +320,7 @@ class SampleData:
             'invoice_number': 'FE20214444'
         }
         if file_format == 'CNMC':
-            basic_f5d.update({'ao_fix': 1000, 'ai_fix': 1000})
+            basic_f5d.update({'ae_fix': 1000, 'ai_fix': 1000})
         data_f5d = [basic_f5d.copy()]
         ts = "2020-01-01 01:00:00"
         for x in range(50):
@@ -1015,7 +1015,7 @@ with description('An F5D'):
         f = F5D(data, file_format='CNMC')
         res = f.writer()
         assert isinstance(f.ai_fix, (int, np.int64))
-        assert isinstance(f.ao_fix, (int, np.int64))
+        assert isinstance(f.ae_fix, (int, np.int64))
 
     with it('with CNMC format gets expected content'):
         data = SampleData().get_sample_f5d_data(file_format='CNMC')
