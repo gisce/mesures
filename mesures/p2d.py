@@ -17,7 +17,7 @@ class P2D(P2):
         super(P2D, self).__init__(data, distributor, compression=compression, columns=columns, version=version)
         self.prefix = 'P2D'
         self.comer = comer
-        self.measures_date = None
+        self.measures_date = self.file['timestamp'].min()
 
     @property
     def filename(self):

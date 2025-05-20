@@ -42,7 +42,7 @@ import bz2
 import numpy as np
 import zipfile
 
-DELETE_FILES = 'rm -rf *.bz2 *.zip *.[0123456789]'
+DELETE_FILES = 'rm -rf *.bz2 *.zip *.[0123456789] medidas_*.txt'
 
 class SampleData:
     @staticmethod
