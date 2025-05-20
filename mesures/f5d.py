@@ -10,7 +10,7 @@ import pandas as pd
 TYPES = DTYPES.copy()
 TYPES.update({'factura': 'category'})
 ENERGY_MAGNS = ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']
-CNMC_ENERGY_MAGNS = ['ai_fix', 'ao_fix']
+CNMC_ENERGY_MAGNS = ['ai_fix', 'ae_fix']
 
 class F5D(F5):
     def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
@@ -58,11 +58,11 @@ class F5D(F5):
         return res
 
     @property
-    def ao_fix(self):
+    def ae_fix(self):
         if not self.file_format == 'CNMC':
             res = 0
         else:
-            res = int(self.file['ao_fix'].sum())
+            res = int(self.file['ae_fix'].sum())
         return res
 
     def cut_by_dates(self, di, df):
@@ -89,7 +89,7 @@ class F5D(F5):
 
         agregates = {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         if self.file_format == 'CNMC':
-            agregates.update({'ai_fix': 'sum', 'ao_fix': 'sum'})
+            agregates.update({'ai_fix': 'sum', 'ae_fix': 'sum'})
 
         df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
             agregates).reset_index()
