@@ -17,6 +17,7 @@ class P2D(P2):
         super(P2D, self).__init__(data, distributor, compression=compression, columns=columns, version=version)
         self.prefix = 'P2D'
         self.comer = comer
+        self.measures_date = None
 
     @property
     def filename(self):
