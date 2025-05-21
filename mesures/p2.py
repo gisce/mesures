@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from mesures.headers import P2_HEADER as COLUMNS
 from mesures.p1 import P1
+from mesures.dates import *
+from mesures.utils import check_line_terminator_param
+from zipfile import ZipFile
+import os
+import pandas as pd
 
 
 class P2(P1):
@@ -12,3 +17,81 @@ class P2(P1):
         """
         super(P2, self).__init__(data, distributor, compression=compression, columns=columns, version=version)
         self.prefix = 'P2'
+
+    def reader(self, filepath):
+        if isinstance(filepath, str):
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
+        elif isinstance(filepath, list):
+            df = pd.DataFrame(data=filepath)
+        else:
+            raise Exception("Filepath must be an str or a list")
+
+        df['tipo_medida'] = 11
+        df.groupby(
+            ['cups', 'tipo_medida', 'timestamp', 'season', 'method']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum'}
+        )
+
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
+
+        df['method'] = 1
+        df['res'] = 0
+        df['res2'] = 0
+
+        df['ai'] = df['ai'].astype('int')
+        df['ae'] = df['ae'].astype('int')
+        df['r1'] = df['r1'].astype('int')
+        df['r2'] = df['r2'].astype('int')
+        df['r3'] = df['r3'].astype('int')
+        df['r4'] = df['r4'].astype('int')
+
+        for key in self.columns:
+            if 'quality' in key and key not in df:
+                df[key] = 0
+        df = df[self.columns]
+        return df
+
+    def writer(self):
+        """
+        P2 contains all curve measure in one file
+        :return: file path
+        """
+        daymin = self.file['timestamp'].min()
+        daymax = self.file['timestamp'].max()
+        self.measures_date = daymin
+        zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+        while daymin <= daymax:
+            di = daymin
+            df = (datetime.strptime(daymin, DATETIME_MASK) + timedelta(days=1)).strftime(DATETIME_MASK)
+            self.measures_date = di
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
+            # Avoid to generate file if dataframe is empty
+            if len(dataf):
+                existing_files = os.listdir('/tmp')
+                if existing_files:
+                    versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f]
+                    if versions:
+                        self.version = max(versions) + 1
+
+                file_path = os.path.join('/tmp', self.filename)
+                kwargs = {'sep': ';',
+                          'header': False,
+                          'columns': self.columns,
+                          'index': False,
+                          check_line_terminator_param(): ';\n'
+                          }
+                if self.default_compression:
+                    kwargs.update({'compression': self.default_compression})
+                dataf.to_csv(file_path, **kwargs)
+                zipped_file.write(file_path, arcname=os.path.basename(file_path))
+
+            daymin = df
+        zipped_file.close()
+        return zipped_file.filename
