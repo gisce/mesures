@@ -45,6 +45,9 @@ class DummyCurve(object):
             if 'kind_fact' in data and not 'method' in data:
                 try:
                     data['method'] = int(data.pop('kind_fact'))
+                    # 0 is not a valid method
+                    if data['method'] < 1:
+                        data['method'] = 1
                 except ValueError:
                     data['method'] = 1
             if 'firm_fact' in data:
