@@ -3,6 +3,7 @@ from mesures.dates import *
 from mesures.headers import F5_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
+from mesures.base import BaseStream
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -21,7 +22,7 @@ DTYPES = {'cups': 'category',
 
 
 class F5(object):
-    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=DTYPES, version=0):
+    def __init__(self, data, distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=DTYPES, version=0, skip_reader=False):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -32,7 +33,7 @@ class F5(object):
             data = DummyCurve(data).curve_data
         self.columns = columns
         self.dtypes = dtypes
-        self.file = self.reader(data)
+        self.file = self.reader(data) if not skip_reader else None
         self.generation_date = datetime.now()
         self.prefix = 'F5'
         self.default_compression = compression
@@ -173,3 +174,40 @@ class F5(object):
             zipped_file.write(file_path, arcname=os.path.basename(file_path))
         zipped_file.close()
         return zipped_file.filename
+
+
+class F5Stream(BaseStream, F5):
+    _GROUP = ['cups', 'timestamp', 'season', 'firmeza', 'method']
+    _ENERGY = ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']
+    _SORT = ['timestamp', 'cups']
+
+    def __init__(self, distributor=None, comer=None, compression='bz2', version=0):
+        cols = self._GROUP + self._ENERGY
+        aggregation_map = {col: 'sum' for col in self._ENERGY}
+
+        F5.__init__(self, data=[], distributor=distributor, comer=comer,
+                    compression=compression, columns=cols,
+                    dtypes=DTYPES, version=version)
+
+        BaseStream.__init__(self, selection_columns=cols,
+                            aggregation_columns=self._GROUP,
+                            aggregation_map=aggregation_map,
+                            sort_columns=self._SORT,
+                            dtype_map=DTYPES)
+
+    # --------------------------------------------------------------
+    # Serialisation – reuse original writer
+    # --------------------------------------------------------------
+    def writer(self):
+        df = self.data_frame  # force materialisation
+        tmp_f5 = F5(df.to_dict('records'), distributor=self.distributor,
+                    comer=self.comer, compression=self.default_compression,
+                    columns=self.columns, dtypes=self.dtypes,
+                    version=self.version)
+        return tmp_f5.writer()
+
+    def __exit__(self, exc_type, _exc, _tb):
+        if exc_type is None and len(self._agg):
+            self.writer()
+
+
