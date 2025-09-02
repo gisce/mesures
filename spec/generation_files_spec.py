@@ -1238,6 +1238,15 @@ with description('A P1D'):
         f1 = f.writer()
         assert isinstance(f1, str)
 
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = P1D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 1  # 2nd P1D file generated in tests
+        f = P1D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3rd P1D file generated in tests
+
 with description('A P2D'):
     with it('is instance of P2D Class'):
         data = SampleData().get_sample_p2d_data()
