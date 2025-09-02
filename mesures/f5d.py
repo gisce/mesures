@@ -113,11 +113,8 @@ class F5D(F5):
         :return: file path of generated F5D File
         """
         existing_files = os.listdir('/tmp')
-        if existing_files:
-            if self.default_compression != 'zip':
-                versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
-            else:
-                versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' in f]
+        if existing_files and self.default_compression != 'zip':
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 

@@ -979,6 +979,15 @@ with description('A P5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_p5d_data()
+        f = P5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3th P5D file generated in tests
+        f = P5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 3  # 4th P5D file generated in tests
+
 with description('An F5D'):
     with it('is instance of F5D Class'):
         data = SampleData().get_sample_f5d_data()
@@ -1024,6 +1033,15 @@ with description('An F5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444;1000;1000'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 4  # 5th F5D file generated in tests
+        f = F5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 5  # 6th F5D file generated in tests
+
 with description('An F1'):
     with it('is instance of F1 Class'):
         data = SampleData().get_sample_data()
@@ -1066,6 +1084,15 @@ with description('An F1'):
         expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = F1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 5  # 6th F1 file generated in tests
+        f = F1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 6  # 7th F1 file generated in tests
+
 with description('An F1QH'):
     with it('is instance of F1QH Class'):
         data = SampleData().get_sample_f1qh_data()
@@ -1093,6 +1120,15 @@ with description('An F1QH'):
         res = f.writer()
         expected = 'ES0012345678912345670F;11;2022/01/01 00:15;0;10;10;10;10;10;10;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th F1QH file generated in tests
+        f = F1QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 4  # 5th F1QH file generated in tests
 
 
 with description('An AGRECL'):
