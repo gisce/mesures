@@ -69,9 +69,9 @@ class F1QH(F1):
 
         existing_files = os.listdir('/tmp')
         if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f]
-            if versions:
-                self.version = max(versions) + 1
+            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            if zip_versions:
+                self.version = max(zip_versions) + 1
 
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
@@ -81,6 +81,10 @@ class F1QH(F1):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             # Avoid to generate file if dataframe is empty
             if len(dataf):
+                if existing_files:
+                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+                    if versions:
+                        self.version = max(versions) + 1
                 file_path = os.path.join('/tmp', self.filename)
                 kwargs = {'sep': ';',
                           'header': False,

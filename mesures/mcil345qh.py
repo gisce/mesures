@@ -70,6 +70,11 @@ class MCIL345QH(MCIL345):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            if zip_versions:
+                self.version = max(zip_versions) + 1
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
@@ -78,9 +83,8 @@ class MCIL345QH(MCIL345):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             # Avoid to generate file if dataframe is empty
             if len(dataf):
-                existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f]
+                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
 

@@ -76,7 +76,7 @@ class P2(P1):
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f]
+                    versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
                     if versions:
                         self.version = max(versions) + 1
 
