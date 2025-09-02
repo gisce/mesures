@@ -1223,6 +1223,15 @@ with description('A P1'):
             assert name.endswith('.bz2')
             file_bz2 = bz2.decompress(zip_file.read(name))
 
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = P1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 1  # 2nd P1 file generated in tests with None partner
+        f = P1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd P1 file generated in tests with None partner
+
 with description('A P1D'):
     with it('is instance of P1D Class'):
         data = SampleData().get_sample_data()
@@ -1262,6 +1271,15 @@ with description('A P2D'):
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
         assert isinstance(f1, str)
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_p2d_data()
+        f = P2D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3rd P2D file generated in tests
+        f = P2D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 3  # 4th P2D file generated in tests
 
 with description('An A5D'):
     with it('bz2 as a default compression'):
