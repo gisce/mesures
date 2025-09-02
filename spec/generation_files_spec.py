@@ -1553,6 +1553,15 @@ with description('A MCIL345'):
                    'ES0291000000005555QR1F001;2022/09/01 01;1;180;0;11;22;33;44;R\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345 file generated in tests
+        f = MCIL345(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345 file generated in tests
+
 with description('A MCIL345QH'):
     with it('is instance of MCIL345QH Class'):
         data = SampleData().get_sample_mcil345qh_data()
@@ -1581,6 +1590,15 @@ with description('A MCIL345QH'):
                    'ES0291000000005555QR1F001;2022/09/01 00:15;1;180;0;11;22;33;44;R\n'\
                    'ES0291000000005555QR1F001;2022/09/01 00:30;1;180;0;11;22;33;44;R\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345QH file generated in tests
+        f = MCIL345QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345QH file generated in tests
 
 with description('A CILDAT'):
     with it('is instance of CILDAT Class'):
