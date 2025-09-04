@@ -23,7 +23,6 @@ class P2D(P2):
     def filename(self):
         filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
         if self.default_compression:
@@ -35,7 +34,6 @@ class P2D(P2):
     def zip_filename(self):
         return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
         )
