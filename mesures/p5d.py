@@ -106,7 +106,7 @@ class P5D(object):
         """
         existing_files = os.listdir('/tmp')
         if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 

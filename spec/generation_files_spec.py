@@ -979,6 +979,15 @@ with description('A P5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_p5d_data()
+        f = P5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3th P5D file generated in tests
+        f = P5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 3  # 4th P5D file generated in tests
+
 with description('An F5D'):
     with it('is instance of F5D Class'):
         data = SampleData().get_sample_f5d_data()
@@ -1024,6 +1033,15 @@ with description('An F5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444;1000;1000'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 4  # 5th F5D file generated in tests
+        f = F5D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 5  # 6th F5D file generated in tests
+
 with description('An F1'):
     with it('is instance of F1 Class'):
         data = SampleData().get_sample_data()
@@ -1066,6 +1084,15 @@ with description('An F1'):
         expected = 'ES0012345678912345670F;11;2022/01/01 01:00:00;0;10;10;10;10;10;10;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
+    with it('uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = F1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 5  # 6th F1 file generated in tests
+        f = F1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 6  # 7th F1 file generated in tests
+
 with description('An F1QH'):
     with it('is instance of F1QH Class'):
         data = SampleData().get_sample_f1qh_data()
@@ -1093,6 +1120,15 @@ with description('An F1QH'):
         res = f.writer()
         expected = 'ES0012345678912345670F;11;2022/01/01 00:15;0;10;10;10;10;10;10;0;0;1;1'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_f1qh_data()
+        f = F1QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th F1QH file generated in tests
+        f = F1QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 4  # 5th F1QH file generated in tests
 
 
 with description('An AGRECL'):
@@ -1187,6 +1223,15 @@ with description('A P1'):
             assert name.endswith('.bz2')
             file_bz2 = bz2.decompress(zip_file.read(name))
 
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = P1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 1  # 2nd P1 file generated in tests with None partner
+        f = P1(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd P1 file generated in tests with None partner
+
 with description('A P1D'):
     with it('is instance of P1D Class'):
         data = SampleData().get_sample_data()
@@ -1201,6 +1246,15 @@ with description('A P1D'):
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
         assert isinstance(f1, str)
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_data()
+        f = P1D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 1  # 2nd P1D file generated in tests
+        f = P1D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3rd P1D file generated in tests
 
 with description('A P2D'):
     with it('is instance of P2D Class'):
@@ -1217,6 +1271,15 @@ with description('A P2D'):
         assert f.filename.endswith('.bz2')
         f1 = f.writer()
         assert isinstance(f1, str)
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_p2d_data()
+        f = P2D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 2  # 3rd P2D file generated in tests
+        f = P2D(data)
+        res = f.writer()
+        assert int(f.filename.split('.')[1]) == 3  # 4th P2D file generated in tests
 
 with description('An A5D'):
     with it('bz2 as a default compression'):
@@ -1517,6 +1580,15 @@ with description('A MCIL345'):
                    'ES0291000000005555QR1F001;2022/09/01 01;1;180;0;11;22;33;44;R\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345 file generated in tests
+        f = MCIL345(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345 file generated in tests
+
 with description('A MCIL345QH'):
     with it('is instance of MCIL345QH Class'):
         data = SampleData().get_sample_mcil345qh_data()
@@ -1545,6 +1617,15 @@ with description('A MCIL345QH'):
                    'ES0291000000005555QR1F001;2022/09/01 00:15;1;180;0;11;22;33;44;R\n'\
                    'ES0291000000005555QR1F001;2022/09/01 00:30;1;180;0;11;22;33;44;R\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345QH file generated in tests
+        f = MCIL345QH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345QH file generated in tests
 
 with description('A CILDAT'):
     with it('is instance of CILDAT Class'):

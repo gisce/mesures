@@ -21,9 +21,8 @@ class P2D(P2):
 
     @property
     def filename(self):
-        filename = "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.{version}".format(
+        filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
         )
         if self.default_compression:
@@ -33,9 +32,8 @@ class P2D(P2):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.{version}.zip".format(
+        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            measures_date=self.measures_date[:10].replace('/', ''),
             timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
         )
@@ -46,7 +44,7 @@ class P2D(P2):
         """
         existing_files = os.listdir('/tmp')
         if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f]
+            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 

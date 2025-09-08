@@ -24,6 +24,7 @@ class P1(object):
         self.version = version
         self.distributor = distributor
         self.default_compression = compression
+        self.measures_date = None
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -141,6 +142,14 @@ class P1(object):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            if zip_versions:
+                self.version = max(zip_versions) + 1
+
+        zip_measures_date = self.measures_date
+        zip_version = self.version
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
@@ -150,7 +159,7 @@ class P1(object):
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f]
+                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
                 # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
@@ -169,6 +178,8 @@ class P1(object):
 
             daymin = df
         zipped_file.close()
+        self.measures_date = zip_measures_date
+        self.version = zip_version
         new_zip_filename = os.path.join('/tmp', self.zip_filename)
         os.rename(zipped_file.filename, new_zip_filename)
         zipped_file.filename = new_zip_filename
