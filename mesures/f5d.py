@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
 from mesures.headers import F5D_HEADER as COLUMNS
+from mesures.base import BaseStream
 from mesures.f5 import F5, DTYPES
 from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
@@ -13,7 +14,7 @@ ENERGY_MAGNS = ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']
 CNMC_ENERGY_MAGNS = ['ai_fix', 'ae_fix']
 
 class F5D(F5):
-    def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
+    def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0, skip_reader=False):
         """
         :param data: list of dicts or absolute file_path
         :param file_format: str format to generate
@@ -28,7 +29,7 @@ class F5D(F5):
         self.columns = columns
 
         super(F5D, self).__init__(data, distributor=distributor, comer=comer, compression=compression,
-                                  columns=columns, dtypes=dtypes, version=version)
+                                  columns=columns, dtypes=dtypes, version=version, skip_reader=skip_reader)
         self.prefix = 'F5D'
 
 
@@ -139,3 +140,59 @@ class F5D(F5):
         else:
             self.file.to_csv(file_path, **kwargs)
         return file_path
+
+
+class F5DStream(BaseStream, F5D):
+    """Streaming replacement for :class:`mesures.f5d.F5D`."""
+
+    _GROUP = ['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']
+    _ENERGY_BASE = list(ENERGY_MAGNS)
+    _SORT = ['timestamp', 'factura', 'cups']
+
+    def __init__(self, distributor=None, comer=None, file_format='REE',
+                 compression='bz2', columns=COLUMNS, version=0):
+        if F5D is None:
+            raise RuntimeError("The 'mesures' library is not installed")
+
+        self._ENERGY = list(self._ENERGY_BASE)
+        if file_format == 'CNMC':
+            self._ENERGY += CNMC_ENERGY_MAGNS
+
+        # cols = self._GROUP + self._ENERGY
+        dtype_map = TYPES
+        for col in self._ENERGY:
+            dtype_map.setdefault(col, 'int32')
+
+        aggregation_map = {col: 'sum' for col in self._ENERGY}
+
+        F5D.__init__(self, data=[], file_format=file_format,
+                      distributor=distributor, comer=comer,
+                      compression=compression, columns=columns,
+                      dtypes=dtype_map, version=version, skip_reader=True)
+
+        BaseStream.__init__(self, selection_columns=columns,
+                            aggregation_columns=self._GROUP,
+                            aggregation_map=aggregation_map,
+                            sort_columns=self._SORT,
+                            dtype_map=dtype_map)
+
+        self.prefix = 'F5D'
+        self.generation_date = datetime.now()
+        self.file_format = file_format
+
+    def add_chunk(self, chunk):
+        for d in chunk:  # ensure 'factura' present
+            d.setdefault('factura', 'F0000000000')
+        return super(F5DStream, self).add_chunk(chunk)
+
+    def writer(self):
+        df = self.data_frame
+        tmp_f5d = F5D(df.to_dict('records'), file_format=self.file_format,
+                       distributor=self.distributor, comer=self.comer,
+                       compression=self.default_compression, columns=self.columns,
+                       dtypes=self.dtypes, version=self.version)
+        return tmp_f5d.writer()
+
+    def __exit__(self, exc_type, _exc, _tb):
+        if exc_type is None and len(self._agg):
+            self.writer()

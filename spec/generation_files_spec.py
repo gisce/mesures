@@ -17,7 +17,7 @@ from mesures.enelectroaut import ENELECTROAUT
 from mesures.f1 import F1
 from mesures.f1qh import F1QH
 from mesures.f3 import F3
-from mesures.f5d import F5D
+from mesures.f5d import F5D, F5DStream
 from mesures.mcil345 import MCIL345
 from mesures.mcil345qh import MCIL345QH
 from mesures.medidas import MEDIDAS
@@ -1010,6 +1010,25 @@ with description('An F5D'):
         res = f.writer()
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+    with it('gets same content when we use magic stream'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data)
+        res = f.writer()
+
+        def _chunks(l, n):
+            for i in range(0, len(l), n):
+                yield l[i:i + n]
+
+        with F5DStream() as fstream:
+            for _chunk in _chunks(data, 4):
+                fstream.add_chunk(_chunk)
+
+        print(fstream.data_frame[fstream.selection_columns])
+        print(f.file[f.columns])
+
+
+        assert f.file[f.columns] == fstream.data_frame[f.columns]
 
     with it('gets expected content when uses ZIP compression'):
         data = SampleData().get_sample_f5d_data()
