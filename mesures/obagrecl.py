@@ -57,9 +57,9 @@ class OBAGRECL(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
-        df['energia_publicada'] = df.apply(lambda row: row['energia_publicada'] or '', axis=1)
-        df['energia_proposada'] = df.apply(lambda row: row['energia_proposada'] or '', axis=1)
+        df['comentari_emissor'] = df.apply(lambda row: row.get('comentari_emissor', False) or '', axis=1)
+        df['energia_publicada'] = df.apply(lambda row: row.get('energia_publicada', False) or '', axis=1)
+        df['energia_proposada'] = df.apply(lambda row: row.get('energia_proposada', False) or '', axis=1)
 
         return df
 

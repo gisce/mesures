@@ -55,7 +55,7 @@ class OBCIL(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
+        df['comentari_emissor'] = df.apply(lambda row: row.get('comentari_emissor', False) or '', axis=1)
         df['ae_publicada'] = df.apply(lambda row: row.get('ae_publicada', False) or '', axis=1)
         df['ae_proposada'] = df.apply(lambda row: row.get('ae_proposada', False) or '', axis=1)
         df['r2_publicada'] = df.apply(lambda row: row.get('r2_publicada', False) or '', axis=1)
