@@ -16,6 +16,7 @@ class AUTOCONSUMO(object):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'AUTOCONSUMO'
@@ -60,7 +61,7 @@ class AUTOCONSUMO(object):
     def reader(self, file_path):
         if isinstance(file_path, str):
             df = pd.read_csv(
-                file_path, sep=';', names=columns
+                file_path, sep=';', names=self.columns
             )
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
@@ -71,11 +72,10 @@ class AUTOCONSUMO(object):
             lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
         df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
         df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
-        #df['potencia_nominal'] = np.where(df['cil'], '', df['potencia_nominal'])
         df['subgrup'] = df['subgrup'].apply(lambda x: '{}.{}.{}'.format(x[0], x[1], x[2]) if x != '' else '')
         df['tipus_antiabocament'] = (
             df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x))
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -85,7 +85,7 @@ class AUTOCONSUMO(object):
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }
