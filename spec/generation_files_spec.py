@@ -22,6 +22,7 @@ from mesures.mcil345 import MCIL345
 from mesures.mcil345qh import MCIL345QH
 from mesures.medidas import MEDIDAS
 from mesures.obagrecl import OBAGRECL
+from mesures.obcil import OBCIL
 from mesures.obcups import OBCUPS
 from mesures.p1 import P1
 from mesures.p1d import P1D
@@ -933,6 +934,28 @@ class SampleData:
         ]
 
     @staticmethod
+    def get_sample_obcil_data():
+        return [{
+            'cil': 'ES0291000000004444QR1F001',
+            'periode': '2024/10',
+            'motiu_emissor': '101',
+            'ae_publicada': '100',
+            'ae_proposada': '110',
+            'comentari_emissor': 'Paga la saliente, primer aviso.',
+            'auto_obj': 'N'
+        },
+        {
+            'cil': 'ES0291000000004444QR1F001',
+            'periode': '2024/10',
+            'motiu_emissor': '101',
+            'r2_publicada': '100',
+            'r2_proposada': '110',
+            'comentari_emissor': 'Paga la reactiva, primer aviso.',
+            'auto_obj': 'N'
+        }
+        ]
+
+    @staticmethod
     def get_sample_obcups_data():
         return [{
             'cups': 'ES0291000000004444QR1F',
@@ -1720,6 +1743,20 @@ with description('An OBAGRECL'):
         res = f.writer()
         expected = "4444;5555;E0;2T;E3;05;HU;41;2024/10;100;AE;100;110;;N\n" \
                    "4444;6666;E0;2T;E3;05;HU;00;2024/10;100;AE;40;50;Paga la energia, primer aviso.;N\n"
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('An OBCIL'):
+    with it('is instance of OBAGRECL Class'):
+        data = SampleData().get_sample_obcil_data()
+        f = OBCIL(data)
+        assert isinstance(f, OBCIL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_obcil_data()
+        f = OBCIL(data)
+        res = f.writer()
+        expected = ("ES0291000000004444QR1F001;2024/10;101;100;110;;;;;Paga la saliente, primer aviso.;N\n"
+                    "ES0291000000004444QR1F001;2024/10;101;;;100;110;;;Paga la reactiva, primer aviso.;N\n")
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('An OBCUPS'):
