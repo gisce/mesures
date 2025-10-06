@@ -54,7 +54,8 @@ AUTOCONSUMO_HEADER = [
     'subgrup',
     'emmagatzematge',
     'data_alta',
-    'data_baixa'
+    'data_baixa',
+    'estat'
 ]
 
 CILCAU_HEADER = [

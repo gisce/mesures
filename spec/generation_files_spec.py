@@ -1157,15 +1157,17 @@ with description('An ALMACENACAU'):
 with description('An AUTOCONSUMO'):
     with it('with compression=False must be a raw file'):
         data = [
-            {'cau': 'A', 'miteco': '1', 'reg_auto_prov': '12345', 'reg_auto_def': '1111',
-             'tipus_autoconsum': 'A', 'tipus_antiabocament': '1', 'nom': 'test', 'configuracio_mesura': '1111',
+            {'cau': 'ES0012345678912345670FA001', 'miteco': '1', 'reg_auto_prov': '12345', 'reg_auto_def': '1111',
+             'tipus_autoconsum': '41', 'tipus_antiabocament': '1', 'nom': 'test', 'configuracio_mesura': '1111',
              'potencia_nominal': '2', 'codi_postal': '17007', 'subgrup': 'b11', 'emmagatzematge': '1111',
-             'data_alta': '2021-01-12'}
+             'data_alta': '2021-01-12', 'estat': '1'}
         ]
         f = AUTOCONSUMO(data, compression=False)
         assert f.filename.endswith('.0')
         filepath = f.writer()
         assert 'bz2' not in filepath
+        expected = 'ES0012345678912345670FA001;1;12345;1111;41;1;test;1111;2;17007;b.1.1;S;20210112;30000101;1'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
 with description('An CUPSCAU'):
     with it('with compression=False must be a raw file'):
