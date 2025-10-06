@@ -368,7 +368,21 @@ OBAGRECL_HEADER = [
     'energia_publicada',    # str(10) kWh
     'energia_proposada',    # str(10) kWh
     'comentari_emissor',    # str(255)
-    'auto_obj',             # str(1) S/N
+    'auto_obj'              # str(1) S/N
+]
+
+OBCIL_HEADER = [
+    'cil',                  # str(25)
+    'periode',              # str aaaa/mm
+    'motiu_emissor',        # str(3)
+    'ae_publicada',         # str(10) kWh
+    'ae_proposada',         # str(10) kWh
+    'r2_publicada',         # str(10) kVArh
+    'r2_proposada',         # str(10) kVArh
+    'r3_publicada',         # str(10) kVArh
+    'r3_proposada',         # str(10) kVArh
+    'comentari_emissor',    # str(255)
+    'auto_obj'              # str(1) S/N
 ]
 
 OBCUPS_HEADER = [

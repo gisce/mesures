@@ -1,35 +1,33 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import OBAGRECL_HEADER as COLUMNS
+from mesures.headers import OBCIL_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
 
 
-class OBAGRECL(object):
-    def __init__(self, data, emissor=None, distribuidora=None, periode=None, compression='bz2', columns=COLUMNS,
-                 version=0):
+class OBCIL(object):
+    def __init__(self, data, emissor=None, distribuidora=None, periode=None, compression='bz2', version=0):
         """
         :param data: list of dicts or absolute file_path
         :param emissor: str emissor REE code
         :param distribuidora: str distribuïdora REE code
         :param periode: str e.g. '202401'
         :param compression: 'bz2', 'gz'... OR False otherwise
-        :param columns: list
         :param version: int
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
-        self.prefix = 'OBAGRECL'
+        self.prefix = 'OBCIL'
         self.version = version
         self.emissor = emissor
         self.distribuidora = distribuidora
         self.default_compression = compression
         self.periode = periode
-        self.columns = columns
 
     def __len__(self):
         return len(self.file)
@@ -51,21 +49,25 @@ class OBAGRECL(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
         df['comentari_emissor'] = df.apply(lambda row: row.get('comentari_emissor', False) or '', axis=1)
-        df['energia_publicada'] = df.apply(lambda row: row.get('energia_publicada', False) or '', axis=1)
-        df['energia_proposada'] = df.apply(lambda row: row.get('energia_proposada', False) or '', axis=1)
+        df['ae_publicada'] = df.apply(lambda row: row.get('ae_publicada', False) or '', axis=1)
+        df['ae_proposada'] = df.apply(lambda row: row.get('ae_proposada', False) or '', axis=1)
+        df['r2_publicada'] = df.apply(lambda row: row.get('r2_publicada', False) or '', axis=1)
+        df['r2_proposada'] = df.apply(lambda row: row.get('r2_proposada', False) or '', axis=1)
+        df['r3_publicada'] = df.apply(lambda row: row.get('r3_publicada', False) or '', axis=1)
+        df['r3_proposada'] = df.apply(lambda row: row.get('r3_proposada', False) or '', axis=1)
 
         return df
 
     def writer(self):
         """
-        OBAGRECL TMP file generattion
+        OBCIL TMP file generattion
         :return: file path
         """
         # Check and change value version of file
