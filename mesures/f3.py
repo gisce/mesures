@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import F3_HEADER as columns
+from mesures.headers import F3_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
+import numpy as np
 
 
 class F3(object):
@@ -17,6 +18,7 @@ class F3(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'F3'
@@ -46,21 +48,21 @@ class F3(object):
     def filename(self):
         if self.default_compression:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime(YEAR_MONTH),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version,
                 compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime(YEAR_MONTH),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
 
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m'),
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime(YEAR_MONTH),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
     @property
@@ -85,7 +87,7 @@ class F3(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=columns)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
@@ -99,10 +101,13 @@ class F3(object):
                 'ae': 'sum'
             }
         ).reset_index()
-        df['firmeza'] = df.apply(lambda row: 1 if row['method'] in (1, 3) else 0, axis=1)
+        df['firmeza'] = np.where(df['method'].isin([1,3]),
+                                 1,
+                                 0
+        )
         # TODO Review method
 
-        df = df[columns]
+        df = df[self.columns]
         return df
 
     def writer(self):
@@ -124,7 +129,7 @@ class F3(object):
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
-                      'columns': columns,
+                      'columns': self.columns,
                       'index': False,
                       check_line_terminator_param(): ';\n'
                       }

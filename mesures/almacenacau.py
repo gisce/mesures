@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
-from mesures.headers import ALMACENACAU_HEADER as columns
+from mesures.headers import ALMACENACAU_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
@@ -16,6 +16,7 @@ class ALMACENACAU(object):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'ALMACENACAU'
@@ -40,34 +41,39 @@ class ALMACENACAU(object):
         if self.default_compression:
             return "{prefix}_{distributor}_{timestamp}.{version}.{compression}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
                 version=self.version, compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{timestamp}.{version}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(
-                file_path, sep=';', names=columns
-            )
+            df = pd.read_csv(file_path, sep=';', names=self.columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['data_baixa'] = df['data_baixa'].apply(
-            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
-        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
+        df['data_alta'] = pd.to_datetime(df['data_alta'])
+        df['data_alta'] = df['data_alta'].dt.strftime(SIMPLE_DATE_MASK)
+
+        df['data_baixa'] = pd.to_datetime(df['data_baixa'], errors='coerce')
+        df['data_baixa'] = np.where(
+            df['data_baixa'].apply(lambda x: isinstance(x, pd.Timestamp)),
+            df['data_baixa'].dt.strftime(SIMPLE_DATE_MASK),
+            REE_END_DATE
+        )
+
         df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].astype(str)
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
         except KeyError:
             df['comentari'] = ''
-        return df[columns]
+        return df[self.columns]
 
     def writer(self):
         """
@@ -76,7 +82,7 @@ class ALMACENACAU(object):
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }

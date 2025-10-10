@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
 from mesures.cupscau import CUPSCAU
-from mesures.headers import CILCAU_HEADER as columns
+from mesures.headers import CILCAU_HEADER as COLUMNS
 from mesures.utils import check_line_terminator_param
 import os
 import numpy as np
@@ -9,13 +9,13 @@ import pandas as pd
 
 
 class CILCAU(CUPSCAU):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
-        super(CILCAU, self).__init__(data, distributor, compression, version=version)
+        super(CILCAU, self).__init__(data, distributor, compression, columns=columns, version=version)
         self.prefix = 'CILCAU'
 
     @property
@@ -28,22 +28,20 @@ class CILCAU(CUPSCAU):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(
-                file_path, sep=';', names=columns
-            )
+            df = pd.read_csv(file_path, sep=';', names=self.columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:
             raise Exception("Filepath must be an str or a list")
 
         df['data_baixa'] = df['data_baixa'].apply(
-            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
-        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
+            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime(SIMPLE_DATE_MASK))
+        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime(SIMPLE_DATE_MASK))
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
         except KeyError:
             df['comentari'] = ''
-        return df[columns]
+        return df[self.columns]
 
     def writer(self):
         """
@@ -52,7 +50,7 @@ class CILCAU(CUPSCAU):
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': columns,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }

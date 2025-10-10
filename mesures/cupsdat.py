@@ -43,7 +43,7 @@ class CUPSDAT(object):
     def filename(self):
         filename = "{prefix}_{distributor}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
         )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -65,14 +65,16 @@ class CUPSDAT(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
+        # TODO FIX APPLY
         df['fecha_hora_inicio_vigencia'] = df.apply(
-            lambda row: datetime.strptime(row['fecha_hora_inicio_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1
+            lambda row: datetime.strptime(row['fecha_hora_inicio_vigencia'], DATE_HOUR_MASK).strftime(DATE_MASK), axis=1
         )
 
+        # TODO FIX APPLY
         df['fecha_hora_final_vigencia'] = df.apply(
             lambda row: CUPSDAT_CPUS45_REE_END_DATE_HOUR
             if row['fecha_hora_final_vigencia'] == ''
-            else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
+            else datetime.strptime(row['fecha_hora_final_vigencia'], DATE_HOUR_MASK).strftime(DATE_MASK), axis=1)
 
         return df[self.columns]
 

@@ -48,7 +48,7 @@ class F1(object):
     def filename(self):
         filename = '{prefix}_{distributor}_{measures_date}_{timestamp}.{version}'.format(
                 prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -59,7 +59,7 @@ class F1(object):
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
         )
 
     @property
@@ -100,9 +100,7 @@ class F1(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=self.columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:

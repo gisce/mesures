@@ -31,9 +31,7 @@ class B5D(A5D):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=self.columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
@@ -43,7 +41,7 @@ class B5D(A5D):
             {'ai': 'sum', 'ae': 'sum',
              'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
         ).reset_index()
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
         for key in ['method', 'firmeza']:
             df[key] = ''
         df = df[self.columns]

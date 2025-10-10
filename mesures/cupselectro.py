@@ -35,13 +35,13 @@ class CUPSELECTRO(object):
         if self.default_compression:
             return "{prefix}_{distributor}_{timestamp}.{version}.{compression}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version,
                 compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{timestamp}.{version}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
 
     @property
@@ -57,9 +57,7 @@ class CUPSELECTRO(object):
             df = pd.read_csv(filepath, sep=';', names=self.columns, index_col=False)
         except:
             if isinstance(filepath, str):
-                df = pd.read_csv(
-                    filepath, sep=';', names=self.columns
-                )
+                df = pd.read_csv(filepath, sep=';', names=self.columns)
             elif isinstance(filepath, list):
                 df = pd.DataFrame(data=filepath)
             else:

@@ -47,21 +47,25 @@ class PMEST(object):
     def filename(self):
         if self.default_compression:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.{compression}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
-                compression=self.default_compression
+                prefix=self.prefix, distributor=self.distributor,
+                measures_date=self.measures_date.strftime(SIMPLE_DATE_MASK),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
+                version=self.version, compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}".format(
-                prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                prefix=self.prefix, distributor=self.distributor,
+                measures_date=self.measures_date.strftime(SIMPLE_DATE_MASK),
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
+                version=self.version
             )
 
     @property
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.zip".format(
-            prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date.strftime('%Y%m%d'),
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            prefix=self.prefix, distributor=self.distributor,
+            measures_date=self.measures_date.strftime(SIMPLE_DATE_MASK),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
     @property
     def total(self):
@@ -93,9 +97,7 @@ class PMEST(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=self.columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
@@ -138,7 +140,8 @@ class PMEST(object):
             df = daymin + timedelta(days=1)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            dataf['timestamp'] = dataf.apply(lambda row: row['timestamp'].strftime('%Y/%m/%d %H'), axis=1)
+            dataf['timestamp'] = pd.to_datetime(dataf['timestamp'])
+            dataf['timestamp'] = dataf['timestamp'].dt.strftime(DATE_MASK)
             dataf['timestamp'] = dataf['timestamp'].astype(str)
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',

@@ -41,13 +41,13 @@ class AUTOCONSUMO(object):
         if self.default_compression:
             return "{prefix}_{distributor}_{timestamp}.{version}.{compression}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version,
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version,
                 compression=self.default_compression
             )
         else:
             return "{prefix}_{distributor}_{timestamp}.{version}".format(
                 prefix=self.prefix, distributor=self.distributor,
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
 
     @property
@@ -60,17 +60,15 @@ class AUTOCONSUMO(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(
-                file_path, sep=';', names=self.columns
-            )
+            df = pd.read_csv(file_path, sep=';', names=self.columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:
             raise Exception("Filepath must be an str or a list")
 
         df['data_baixa'] = df['data_baixa'].apply(
-            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime('%Y%m%d'))
-        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime('%Y%m%d'))
+            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime(SIMPLE_DATE_MASK))
+        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime(SIMPLE_DATE_MASK))
         df['emmagatzematge'] = np.where(df['emmagatzematge'], 'S', 'N')
         df['subgrup'] = df['subgrup'].apply(lambda x: '{}.{}.{}'.format(x[0], x[1], x[2]) if x != '' else '')
         df['tipus_antiabocament'] = (

@@ -15,6 +15,7 @@ class CILDAT(object):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CILDAT'
@@ -40,7 +41,7 @@ class CILDAT(object):
         filename = "{prefix}_{distributor}_{timestamp}.{version}".format(
             prefix=self.prefix,
             distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version)
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -57,20 +58,23 @@ class CILDAT(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(file_path, sep=';', names=COLUMNS)
+            df = pd.read_csv(file_path, sep=';', names=self.columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['fecha_alta'] = df.apply(lambda row: row['fecha_alta'].strftime('%Y%m%d'), axis=1)
+        # TODO FIX APPLY
+        df['fecha_alta'] = df.apply(lambda row: row['fecha_alta'].strftime(SIMPLE_DATE_MASK), axis=1)
+        # TODO FIX APPLY
         df['fecha_baja'] = df.apply(lambda row: REE_END_DATE
                                     if not isinstance(row['fecha_baja'], pd.Timestamp)
-                                    else row['fecha_baja'].strftime('%Y%m%d'),
+                                    else row['fecha_baja'].strftime(SIMPLE_DATE_MASK),
                                     axis=1)
-        df['fecha_acta_servicio'] = df.apply(lambda row: row['fecha_acta_servicio'].strftime('%Y%m%d'), axis=1)
+        # TODO FIX APPLY
+        df['fecha_acta_servicio'] = df.apply(lambda row: row['fecha_acta_servicio'].strftime(SIMPLE_DATE_MASK), axis=1)
 
-        return df[COLUMNS]
+        return df[self.columns]
 
     def writer(self):
         """
@@ -80,7 +84,7 @@ class CILDAT(object):
 
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': COLUMNS,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }

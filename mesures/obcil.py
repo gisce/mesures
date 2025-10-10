@@ -39,7 +39,7 @@ class OBCIL(object):
             emissor=self.emissor,
             distribuidora=self.distribuidora,
             periode=self.periode,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
             )
         if self.default_compression:
@@ -55,13 +55,14 @@ class OBCIL(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['comentari_emissor'] = df.apply(lambda row: row.get('comentari_emissor', False) or '', axis=1)
-        df['ae_publicada'] = df.apply(lambda row: row.get('ae_publicada', False) or '', axis=1)
-        df['ae_proposada'] = df.apply(lambda row: row.get('ae_proposada', False) or '', axis=1)
-        df['r2_publicada'] = df.apply(lambda row: row.get('r2_publicada', False) or '', axis=1)
-        df['r2_proposada'] = df.apply(lambda row: row.get('r2_proposada', False) or '', axis=1)
-        df['r3_publicada'] = df.apply(lambda row: row.get('r3_publicada', False) or '', axis=1)
-        df['r3_proposada'] = df.apply(lambda row: row.get('r3_proposada', False) or '', axis=1)
+        for col in ['comentari_emissor',
+                    'ae_publicada', 'ae_proposada',
+                    'r2_publicada', 'r3_proposada',
+                    'r3_publicada', 'r3_proposada']:
+            if col not in df.columns:
+                df[col] = ''
+            else:
+                df[col] = df[col].fillna('')
 
         return df
 

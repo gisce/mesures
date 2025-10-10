@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class MCIL345(object):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -17,6 +17,7 @@ class MCIL345(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'MCIL345'
@@ -24,7 +25,6 @@ class MCIL345(object):
         self.distributor = distributor
         self.default_compression = compression
         self.measures_date = None
-        self.columns = COLUMNS
 
     def __repr__(self):
         return "{}: {} kWh".format(self.filename, self.total)
@@ -50,7 +50,7 @@ class MCIL345(object):
             prefix=self.prefix,
             distributor=self.distributor,
             measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
             )
         if self.default_compression:
@@ -64,7 +64,7 @@ class MCIL345(object):
             prefix=self.prefix,
             distributor=self.distributor,
             measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
         )
 
@@ -102,13 +102,14 @@ class MCIL345(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
         try:
-            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime(DATE_MASK), axis=1)
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df['timestamp'] = df['timestamp'].dt.strftime(DATE_MASK)
         except Exception as err:
             # Timestamp is already well parsed
             pass
@@ -152,7 +153,8 @@ class MCIL345(object):
         self.measures_date = daymin
         existing_files = os.listdir('/tmp')
         if existing_files:
-            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            zip_versions = [int(f.split('.')[1])
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
                 self.version = max(zip_versions) + 1
 
@@ -168,7 +170,8 @@ class MCIL345(object):
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+                    versions = [int(f.split('.')[1])
+                                for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
 

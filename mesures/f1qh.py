@@ -20,9 +20,7 @@ class F1QH(F1):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=self.columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
