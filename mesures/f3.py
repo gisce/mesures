@@ -96,16 +96,15 @@ class F3(object):
         df = df.groupby(
             ['cups', 'timestamp', 'season', 'method']
         ).aggregate(
-            {
-                'ai': 'sum',
-                'ae': 'sum'
-            }
+            {'ai': 'sum',
+             'ae': 'sum'}
         ).reset_index()
-        df['firmeza'] = np.where(df['method'].isin([1,3]),
-                                 1,
-                                 0
+
+        df['firmeza'] = np.where(
+            df['method'].isin([1,3]),
+            1,
+            0
         )
-        # TODO Review method
 
         df = df[self.columns]
         return df

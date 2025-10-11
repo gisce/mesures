@@ -37,12 +37,22 @@ class B5D(A5D):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df = df.groupby(['cups', 'timestamp', 'season', 'factura']).aggregate(
-            {'ai': 'sum', 'ae': 'sum',
-             'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
+        df = df.groupby(
+            ['cups', 'timestamp', 'season', 'factura']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum'}
         ).reset_index()
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
+
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
+
         for key in ['method', 'firmeza']:
             df[key] = ''
+
         df = df[self.columns]
         return df

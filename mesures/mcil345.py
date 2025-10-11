@@ -116,9 +116,7 @@ class MCIL345(object):
 
         # Group by CIL and balance energies
         df = df.groupby(
-            ['cil',
-             'timestamp',
-             'season']
+            ['cil', 'timestamp', 'season']
         ).agg(
             {'ai': 'sum',
              'ae': 'sum',

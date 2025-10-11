@@ -83,7 +83,11 @@ class F5D(F5):
             raise Exception("Filepath must be an str or a list")
 
         if 'firmeza' not in df:
-            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+            df['firmeza'] = np.where(
+                df['method'].isin([1, 3]),
+                1,
+                0
+            )
 
         if 'factura' not in df:
             df['factura'] = 'F0000000000'
@@ -92,8 +96,11 @@ class F5D(F5):
         if self.file_format == 'CNMC':
             agregates.update({'ai_fix': 'sum', 'ae_fix': 'sum'})
 
-        df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
-            agregates).reset_index()
+        df = df.groupby(
+            ['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']
+        ).aggregate(
+            agregates
+        ).reset_index()
 
         if isinstance(filepath, list):
             df['timestamp'] = pd.to_datetime(df['timestamp'])

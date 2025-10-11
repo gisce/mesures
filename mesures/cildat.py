@@ -5,6 +5,7 @@ from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
+import numpy as np
 
 
 class CILDAT(object):
@@ -64,15 +65,18 @@ class CILDAT(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        # TODO FIX APPLY
-        df['fecha_alta'] = df.apply(lambda row: row['fecha_alta'].strftime(SIMPLE_DATE_MASK), axis=1)
-        # TODO FIX APPLY
-        df['fecha_baja'] = df.apply(lambda row: REE_END_DATE
-                                    if not isinstance(row['fecha_baja'], pd.Timestamp)
-                                    else row['fecha_baja'].strftime(SIMPLE_DATE_MASK),
-                                    axis=1)
-        # TODO FIX APPLY
-        df['fecha_acta_servicio'] = df.apply(lambda row: row['fecha_acta_servicio'].strftime(SIMPLE_DATE_MASK), axis=1)
+        df['fecha_alta'] = pd.to_datetime(df['fecha_alta'])
+        df['fecha_alta'] = df['fecha_alta'].dt.strftime(SIMPLE_DATE_MASK)
+
+        df['fecha_baja'] = pd.to_datetime(df['fecha_baja'], errors='coerce')
+        df['fecha_baja'] = np.where(
+            df['fecha_baja'].apply(lambda x: isinstance(x, pd.Timestamp)),
+            df['fecha_baja'].dt.strftime(SIMPLE_DATE_MASK),
+            REE_END_DATE
+        )
+
+        df['fecha_acta_servicio'] = pd.to_datetime(df['fecha_acta_servicio'], errors='coerce')
+        df['fecha_acta_servicio'] = df['fecha_acta_servicio'].dt.strftime(SIMPLE_DATE_MASK)
 
         return df[self.columns]
 

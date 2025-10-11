@@ -90,13 +90,21 @@ class P5D(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df = df.groupby(['cups', 'timestamp', 'season']).aggregate({'ai': 'sum', 'ae': 'sum'}).reset_index()
+        df = df.groupby(
+            ['cups', 'timestamp', 'season']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum'}
+        ).reset_index()
+
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
+
         for key in ['ai', 'ae']:
             if key not in df:
                 df[key] = 0
             df[key] = df[key].astype('int32')
+
         df = df[self.columns]
         return df
 

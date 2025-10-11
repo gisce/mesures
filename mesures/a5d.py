@@ -92,10 +92,13 @@ class A5D(object):
              'r3': 'sum',
              'r4': 'sum'}
         ).reset_index()
+
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
+
         for key in ['r1', 'r2', 'r3', 'r4', 'ae', 'method', 'firmeza']:
             df[key] = ''
+
         df = df[self.columns]
         return df
 

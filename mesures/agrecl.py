@@ -65,6 +65,7 @@ class AGRECL(object):
 
         if 'tipus_operacio' not in df:
             df['tipus_operacio'] = ''
+
         if 'tipus_demanda' not in df:
             df['tipus_demanda'] = '0'
 
@@ -79,6 +80,7 @@ class AGRECL(object):
         )
 
         df = df.sort_values(by=['origen', 'comercialitzadora'], ascending=[False, True])
+
         df = df[self.columns]
         return df
 

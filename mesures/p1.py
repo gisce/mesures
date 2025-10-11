@@ -110,6 +110,7 @@ class P1(object):
             raise Exception("Filepath must be an str or a list")
 
         df['tipo_medida'] = 11
+
         df.groupby(
             ['cups', 'tipo_medida', 'timestamp', 'season', 'method']
         ).aggregate(
@@ -132,6 +133,7 @@ class P1(object):
         for key in self.columns:
             if 'quality' in key and key not in df:
                 df[key] = 0
+
         df = df[self.columns]
         return df
 

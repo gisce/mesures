@@ -4,8 +4,8 @@ from mesures.headers import CUPSCAU_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
-import numpy as np
 import pandas as pd
+import numpy as np
 
 
 class CUPSCAU(object):
@@ -73,13 +73,21 @@ class CUPSCAU(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['data_baixa'] = df['data_baixa'].apply(
-            lambda x: REE_END_DATE if not isinstance(x, pd.Timestamp) else x.strftime(SIMPLE_DATE_MASK))
-        df['data_alta'] = df['data_alta'].apply(lambda x: x.strftime(SIMPLE_DATE_MASK))
+        df['data_alta'] = pd.to_datetime(df['data_alta'])
+        df['data_alta'] = df['data_alta'].dt.strftime(SIMPLE_DATE_MASK)
+
+        df['data_baixa'] = pd.to_datetime(df['data_baixa'], errors='coerce')
+        df['data_baixa'] = np.where(
+            df['data_baixa'].apply(lambda x: isinstance(x, pd.Timestamp)),
+            df['data_baixa'].dt.strftime(SIMPLE_DATE_MASK),
+            REE_END_DATE
+        )
+
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
         except KeyError:
             df['comentari'] = ''
+
         return df[self.columns]
 
     def writer(self):

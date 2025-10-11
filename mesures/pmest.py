@@ -107,22 +107,22 @@ class PMEST(object):
             # 8 absoluta
             # 11 incremental
             df['tipo_medida'] = 11
+
         if 'method' not in df:
             df['method'] = 7
+
         df = df.groupby(
-            [
-                'pm', 'tipo_medida', 'timestamp', 'season', 'method'
-            ]
+            ['pm', 'tipo_medida', 'timestamp', 'season', 'method']
         ).aggregate(
-            {
-                'ai': 'sum',
-                'ae': 'sum',
-                'r1': 'sum',
-                'r2': 'sum',
-                'r3': 'sum',
-                'r4': 'sum',
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum',
             }
         ).reset_index()
+
         df = df[self.columns]
         return df
 

@@ -4,8 +4,8 @@ from mesures.headers import ALMACENACAU_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
-import numpy as np
 import pandas as pd
+import numpy as np
 
 
 class ALMACENACAU(object):
@@ -69,10 +69,12 @@ class ALMACENACAU(object):
         )
 
         df['tecnologia_emmagatzematge'] = df['tecnologia_emmagatzematge'].astype(str)
+
         try:
             df['comentari'] = np.where(df['comentari'], df['comentari'], '')
         except KeyError:
             df['comentari'] = ''
+
         return df[self.columns]
 
     def writer(self):
