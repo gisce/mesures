@@ -6,6 +6,7 @@ from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
+import numpy as np
 
 
 class F1(object):
@@ -48,7 +49,7 @@ class F1(object):
     def filename(self):
         filename = '{prefix}_{distributor}_{measures_date}_{timestamp}.{version}'.format(
                 prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
-                timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+                timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -59,7 +60,7 @@ class F1(object):
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
         )
 
     @property
@@ -100,9 +101,7 @@ class F1(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(
-                filepath, sep=';', names=self.columns
-            )
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
@@ -111,22 +110,27 @@ class F1(object):
         df['tipo_medida'] = 11
 
         if 'firmeza' not in df:
-            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+            df['firmeza'] = np.where(
+                df['method'].isin([1,3]),
+                1,
+                0
+            )
 
         df = df.groupby(
             ['cups', 'tipo_medida', 'timestamp', 'season', 'method', 'firmeza']
-            ).aggregate(
-            {
-                'ai': 'sum',
-                'ae': 'sum',
-                'r1': 'sum',
-                'r2': 'sum',
-                'r3': 'sum',
-                'r4': 'sum',
-            }
+        ).aggregate(
+        {
+            'ai': 'sum',
+            'ae': 'sum',
+            'r1': 'sum',
+            'r2': 'sum',
+            'r3': 'sum',
+            'r4': 'sum',
+        }
         ).reset_index()
 
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_MASK)
 
         df['res'] = 0
         df['res2'] = 0
@@ -149,7 +153,8 @@ class F1(object):
 
         existing_files = os.listdir('/tmp')
         if existing_files:
-            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            zip_versions = [int(f.split('.')[1])
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
                 self.version = max(zip_versions) + 1
 
@@ -165,7 +170,8 @@ class F1(object):
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+                    versions = [int(f.split('.')[1])
+                                for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
                 file_path = os.path.join('/tmp', self.filename)

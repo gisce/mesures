@@ -13,7 +13,8 @@ ENERGY_MAGNS = ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']
 CNMC_ENERGY_MAGNS = ['ai_fix', 'ae_fix']
 
 class F5D(F5):
-    def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2', columns=COLUMNS, dtypes=TYPES, version=0):
+    def __init__(self, data, file_format='REE', distributor=None, comer=None, compression='bz2',
+                 columns=COLUMNS, dtypes=TYPES, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param file_format: str format to generate
@@ -82,7 +83,11 @@ class F5D(F5):
             raise Exception("Filepath must be an str or a list")
 
         if 'firmeza' not in df:
-            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+            df['firmeza'] = np.where(
+                df['method'].isin([1, 3]),
+                1,
+                0
+            )
 
         if 'factura' not in df:
             df['factura'] = 'F0000000000'
@@ -91,11 +96,15 @@ class F5D(F5):
         if self.file_format == 'CNMC':
             agregates.update({'ai_fix': 'sum', 'ae_fix': 'sum'})
 
-        df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']).aggregate(
-            agregates).reset_index()
+        df = df.groupby(
+            ['cups', 'timestamp', 'season', 'firmeza', 'method', 'factura']
+        ).aggregate(
+            agregates
+        ).reset_index()
 
         if isinstance(filepath, list):
-            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
 
         magnituds = ENERGY_MAGNS
         if self.file_format == 'CNMC':
@@ -114,7 +123,8 @@ class F5D(F5):
         """
         existing_files = os.listdir('/tmp')
         if existing_files and self.default_compression != 'zip':
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+            versions = [int(f.split('.')[1])
+                        for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 

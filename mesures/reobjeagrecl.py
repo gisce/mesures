@@ -20,6 +20,7 @@ class REOBJEAGRECL(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'REOBJEAGRECL'
@@ -28,7 +29,6 @@ class REOBJEAGRECL(object):
         self.comer = comer
         self.default_compression = compression
         self.periode = periode
-        self.columns = columns
 
     def __len__(self):
         return len(self.file)
@@ -40,7 +40,7 @@ class REOBJEAGRECL(object):
             distributor=self.distributor,
             comer=self.comer,
             periode=self.periode,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
             )
         if self.default_compression:
@@ -50,17 +50,18 @@ class REOBJEAGRECL(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['comentari_receptor'] = df.apply(lambda row: row['comentari_receptor'] or '', axis=1)
-        df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
-        df['energia_publicada'] = df.apply(lambda row: row['energia_publicada'] or '', axis=1)
-        df['energia_proposada'] = df.apply(lambda row: row['energia_proposada'] or '', axis=1)
-        df['motiu_receptor'] = df.apply(lambda row: row['motiu_receptor'] or '', axis=1)
+        for col in ['comentari_emissor', 'comentari_receptor', 'motiu_receptor',
+                    'energia_publicada', 'energia_proposada']:
+            if col not in df.columns:
+                df[col] = ''
+            else:
+                df[col] = df[col].fillna('')
 
         return df
 

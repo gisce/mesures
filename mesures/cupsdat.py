@@ -5,6 +5,7 @@ from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
+import numpy as np
 
 
 class CUPSDAT(object):
@@ -43,7 +44,7 @@ class CUPSDAT(object):
     def filename(self):
         filename = "{prefix}_{distributor}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
         )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -65,14 +66,15 @@ class CUPSDAT(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['fecha_hora_inicio_vigencia'] = df.apply(
-            lambda row: datetime.strptime(row['fecha_hora_inicio_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1
-        )
+        df['fecha_hora_inicio_vigencia'] = pd.to_datetime(df['fecha_hora_inicio_vigencia'])
+        df['fecha_hora_inicio_vigencia'] = df['fecha_hora_inicio_vigencia'].dt.strftime(DATE_MASK)
 
-        df['fecha_hora_final_vigencia'] = df.apply(
-            lambda row: CUPSDAT_CPUS45_REE_END_DATE_HOUR
-            if row['fecha_hora_final_vigencia'] == ''
-            else datetime.strptime(row['fecha_hora_final_vigencia'], '%Y-%m-%d %H').strftime(DATE_MASK), axis=1)
+        df['fecha_hora_final_vigencia'] = pd.to_datetime(df['fecha_hora_final_vigencia'], errors='coerce')
+        df['fecha_hora_final_vigencia'] = np.where(
+            df['fecha_hora_final_vigencia'].apply(lambda x: isinstance(x, pd.Timestamp)),
+            df['fecha_hora_final_vigencia'].dt.strftime(DATE_MASK),
+            CUPSDAT_CPUS45_REE_END_DATE_HOUR
+        )
 
         return df[self.columns]
 

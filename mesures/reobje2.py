@@ -13,21 +13,22 @@ class REOBJE2(REOBJEAGRECL):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         super(REOBJE2, self).__init__(data, distributor=distributor, comer=comer, periode=periode,
-                                      compression=compression, columns=COLUMNS, version=version)
+                                      compression=compression, columns=columns, version=version)
         self.prefix = 'REOBJE2'
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['motiu_receptor'] = df.apply(lambda row: row['motiu_receptor'] or '', axis=1)
-        df['comentari_emissor'] = df.apply(lambda row: row['comentari_emissor'] or '', axis=1)
-        df['comentari_receptor'] = df.apply(lambda row: row['comentari_receptor'] or '', axis=1)
-        df['energia_publicada'] = df.apply(lambda row: row['energia_publicada'] or '', axis=1)
-        df['energia_proposada'] = df.apply(lambda row: row['energia_proposada'] or '', axis=1)
+        for col in ['comentari_emissor', 'comentari_receptor', 'motiu_receptor',
+                    'energia_publicada', 'energia_proposada']:
+            if col not in df.columns:
+                df[col] = ''
+            else:
+                df[col] = df[col].fillna('')
 
         return df

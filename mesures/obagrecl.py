@@ -21,6 +21,7 @@ class OBAGRECL(object):
         """
         if isinstance(data, list):
             data = DummyCurve(data).curve_data
+        self.columns = columns
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'OBAGRECL'
@@ -29,7 +30,6 @@ class OBAGRECL(object):
         self.distribuidora = distribuidora
         self.default_compression = compression
         self.periode = periode
-        self.columns = columns
 
     def __len__(self):
         return len(self.file)
@@ -41,7 +41,7 @@ class OBAGRECL(object):
             emissor=self.emissor,
             distribuidora=self.distribuidora,
             periode=self.periode,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
             )
         if self.default_compression:
@@ -51,15 +51,17 @@ class OBAGRECL(object):
 
     def reader(self, filepath):
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['comentari_emissor'] = df.apply(lambda row: row.get('comentari_emissor', False) or '', axis=1)
-        df['energia_publicada'] = df.apply(lambda row: row.get('energia_publicada', False) or '', axis=1)
-        df['energia_proposada'] = df.apply(lambda row: row.get('energia_proposada', False) or '', axis=1)
+        for col in ['comentari_emissor', 'energia_publicada', 'energia_proposada']:
+            if col not in df.columns:
+                df[col] = ''
+            else:
+                df[col] = df[col].fillna('')
 
         return df
 

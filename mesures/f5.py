@@ -126,14 +126,26 @@ class F5(object):
             raise Exception("Filepath must be an str or a list")
 
         if 'firmeza' not in df:
-            df['firmeza'] = df['method'].apply(lambda x: 1 if x in (1, 3) else 0)
+            df['firmeza'] = np.where(
+                df['method'].isin([1, 3]),
+                1,
+                0
+            )
 
-        df = df.groupby(['cups', 'timestamp', 'season', 'firmeza', 'method']).aggregate(
-            {'ai': 'sum', 'ae': 'sum', 'r1': 'sum', 'r2': 'sum', 'r3': 'sum', 'r4': 'sum'}
+        df = df.groupby(
+            ['cups', 'timestamp', 'season', 'firmeza', 'method']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum',
+             'r1': 'sum',
+             'r2': 'sum',
+             'r3': 'sum',
+             'r4': 'sum'}
         ).reset_index()
 
         if isinstance(filepath, list):
-            df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
 
         for key in ['ai', 'ae', 'r1', 'r2', 'r3', 'r4']:
             if key not in df:
@@ -150,14 +162,12 @@ class F5(object):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
-        # TODO get a zip filename without measures_date
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
             df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,

@@ -23,7 +23,7 @@ class P2D(P2):
     def filename(self):
         filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
         )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -44,7 +44,8 @@ class P2D(P2):
         """
         existing_files = os.listdir('/tmp')
         if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+            versions = [int(f.split('.')[1])
+                        for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 

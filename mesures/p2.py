@@ -27,6 +27,7 @@ class P2(P1):
             raise Exception("Filepath must be an str or a list")
 
         df['tipo_medida'] = 11
+
         df.groupby(
             ['cups', 'tipo_medida', 'timestamp', 'season', 'method']
         ).aggregate(
@@ -38,7 +39,8 @@ class P2(P1):
              'r4': 'sum'}
         )
 
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime(DATETIME_MASK))
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_MASK)
 
         df['method'] = 1
         df['res'] = 0
@@ -54,6 +56,7 @@ class P2(P1):
         for key in self.columns:
             if 'quality' in key and key not in df:
                 df[key] = 0
+
         df = df[self.columns]
         return df
 
@@ -67,7 +70,8 @@ class P2(P1):
         self.measures_date = daymin
         existing_files = os.listdir('/tmp')
         if existing_files:
-            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            zip_versions = [int(f.split('.')[1])
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
                 self.version = max(zip_versions) + 1
 
@@ -79,12 +83,12 @@ class P2(P1):
             df = (datetime.strptime(daymin, DATETIME_MASK) + timedelta(days=1)).strftime(DATETIME_MASK)
             self.measures_date = di
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
-            # dataf['timestamp'] = dataf['timestamp'].apply(lambda x: x.strftime(DATETIME_HOUR_MASK))
             # Avoid to generate file if dataframe is empty
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+                    versions = [int(f.split('.')[1])
+                                for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
 

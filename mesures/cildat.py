@@ -5,6 +5,7 @@ from mesures.parsers.dummy_data import DummyKeys
 from mesures.utils import check_line_terminator_param
 import os
 import pandas as pd
+import numpy as np
 
 
 class CILDAT(object):
@@ -15,6 +16,7 @@ class CILDAT(object):
         :param compression: 'bz2', 'gz'... OR False otherwise
         """
         data = DummyKeys(data).data
+        self.columns = COLUMNS
         self.file = self.reader(data)
         self.generation_date = datetime.now()
         self.prefix = 'CILDAT'
@@ -40,7 +42,7 @@ class CILDAT(object):
         filename = "{prefix}_{distributor}_{timestamp}.{version}".format(
             prefix=self.prefix,
             distributor=self.distributor,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version)
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -57,20 +59,26 @@ class CILDAT(object):
 
     def reader(self, file_path):
         if isinstance(file_path, str):
-            df = pd.read_csv(file_path, sep=';', names=COLUMNS)
+            df = pd.read_csv(file_path, sep=';', names=self.columns)
         elif isinstance(file_path, list):
             df = pd.DataFrame(data=file_path)
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df['fecha_alta'] = df.apply(lambda row: row['fecha_alta'].strftime('%Y%m%d'), axis=1)
-        df['fecha_baja'] = df.apply(lambda row: REE_END_DATE
-                                    if not isinstance(row['fecha_baja'], pd.Timestamp)
-                                    else row['fecha_baja'].strftime('%Y%m%d'),
-                                    axis=1)
-        df['fecha_acta_servicio'] = df.apply(lambda row: row['fecha_acta_servicio'].strftime('%Y%m%d'), axis=1)
+        df['fecha_alta'] = pd.to_datetime(df['fecha_alta'])
+        df['fecha_alta'] = df['fecha_alta'].dt.strftime(SIMPLE_DATE_MASK)
 
-        return df[COLUMNS]
+        df['fecha_baja'] = pd.to_datetime(df['fecha_baja'], errors='coerce')
+        df['fecha_baja'] = np.where(
+            df['fecha_baja'].apply(lambda x: isinstance(x, pd.Timestamp)),
+            df['fecha_baja'].dt.strftime(SIMPLE_DATE_MASK),
+            REE_END_DATE
+        )
+
+        df['fecha_acta_servicio'] = pd.to_datetime(df['fecha_acta_servicio'], errors='coerce')
+        df['fecha_acta_servicio'] = df['fecha_acta_servicio'].dt.strftime(SIMPLE_DATE_MASK)
+
+        return df[self.columns]
 
     def writer(self):
         """
@@ -80,7 +88,7 @@ class CILDAT(object):
 
         kwargs = {'sep': ';',
                   'header': False,
-                  'columns': COLUMNS,
+                  'columns': self.columns,
                   'index': False,
                   check_line_terminator_param(): ';\n'
                   }

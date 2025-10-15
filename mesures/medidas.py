@@ -56,7 +56,7 @@ class MEDIDAS(object):
             distributor=self.distributor,
             measures_date=self.measures_date,
             period=self.period,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
         )
         if self.default_compression:
@@ -71,7 +71,7 @@ class MEDIDAS(object):
             upr=upr,
             measures_date=self.measures_date,
             period=self.period,
-            timestamp=self.generation_date.strftime('%Y%m%d'),
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
             version=self.version
         )
         if self.default_compression:
@@ -87,7 +87,7 @@ class MEDIDAS(object):
             cil=self.cil,
             measures_date=self.measures_date,
             period=self.period,
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
         return filename
@@ -99,7 +99,7 @@ class MEDIDAS(object):
             upr=upr,
             measures_date=self.measures_date,
             period=self.period,
-            timestamp=self.generation_date.strftime('%Y%m%d')
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
         return filename
@@ -108,7 +108,7 @@ class MEDIDAS(object):
     def zip_filename(self):
         return "{prefix}_{distributor}_{measures_date}_{period}_{timestamp}.zip".format(
             prefix=self.prefix, distributor=self.distributor, measures_date=self.measures_date,
-            period=self.period, timestamp=self.generation_date.strftime('%Y%m%d')
+            period=self.period, timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
         )
 
     @property
@@ -143,7 +143,8 @@ class MEDIDAS(object):
         else:
             raise Exception("Filepath must be an str or a list")
         try:
-            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime(DATETIME_MASK), axis=1)
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_MASK)
         except Exception as err:
             # Timestamp is already well parsed
             pass
@@ -191,7 +192,7 @@ class MEDIDAS(object):
         """
         daymin = self.file['timestamp'].min()
         measures_date = datetime.strptime(daymin, DATETIME_MASK)
-        self.measures_date = measures_date.strftime('%Y%m')
+        self.measures_date = measures_date.strftime(YEAR_MONTH)
 
         cil = self.file['cil'].min()
         self.cil = cil

@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class MCIL345QH(MCIL345):
-    def __init__(self, data, distributor=None, compression='bz2', version=0):
+    def __init__(self, data, distributor=None, compression='bz2', columns=COLUMNS, version=0):
         """
         :param data: list of dicts or absolute file_path
         :param distributor: str distributor REE code
@@ -21,22 +21,21 @@ class MCIL345QH(MCIL345):
     def reader(self, filepath):
         """Overrided to use DATETIME_HOUR_MASK instead of DATE_MASK"""
         if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=COLUMNS)
+            df = pd.read_csv(filepath, sep=';', names=self.columns)
         elif isinstance(filepath, list):
             df = pd.DataFrame(data=filepath)
         else:
             raise Exception("Filepath must be an str or a list")
         try:
-            df['timestamp'] = df.apply(lambda row: row['timestamp'].strftime(DATETIME_HOUR_MASK), axis=1)
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
         except Exception as err:
             # Timestamp is already well parsed
             pass
 
         # Group by CIL and balance energies
         df = df.groupby(
-            ['cil',
-             'timestamp',
-             'season']
+            ['cil', 'timestamp', 'season']
         ).agg(
             {'ai': 'sum',
              'ae': 'sum',
@@ -72,7 +71,8 @@ class MCIL345QH(MCIL345):
         self.measures_date = daymin
         existing_files = os.listdir('/tmp')
         if existing_files:
-            zip_versions = [int(f.split('.')[1]) for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            zip_versions = [int(f.split('.')[1])
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
                 self.version = max(zip_versions) + 1
 
@@ -88,7 +88,8 @@ class MCIL345QH(MCIL345):
             if len(dataf):
                 existing_files = os.listdir('/tmp')
                 if existing_files:
-                    versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+                    versions = [int(f.split('.')[1])
+                                for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
                     if versions:
                         self.version = max(versions) + 1
 

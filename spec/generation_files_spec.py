@@ -802,8 +802,7 @@ class SampleData:
             'comentari_emissor': 'Paga la energia, primer aviso.',
             'auto_obj': 'N',
             'acceptacio': 'S',
-            'motiu_receptor': '1',
-            'comentari_receptor': False
+            'motiu_receptor': '1'
         }
         ]
 

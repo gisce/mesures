@@ -48,7 +48,7 @@ class P5D(object):
     def filename(self):
         filename = "{prefix}_{distributor}_{comer}_{timestamp}.{version}".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime('%Y%m%d'), version=self.version
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.version
             )
         if self.default_compression:
             filename += '.{compression}'.format(compression=self.default_compression)
@@ -90,12 +90,21 @@ class P5D(object):
         else:
             raise Exception("Filepath must be an str or a list")
 
-        df = df.groupby(['cups', 'timestamp', 'season']).aggregate({'ai': 'sum', 'ae': 'sum'}).reset_index()
-        df['timestamp'] = df['timestamp'].apply(lambda x: x.strftime('%Y/%m/%d %H:%M'))
+        df = df.groupby(
+            ['cups', 'timestamp', 'season']
+        ).aggregate(
+            {'ai': 'sum',
+             'ae': 'sum'}
+        ).reset_index()
+
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = df['timestamp'].dt.strftime(DATETIME_HOUR_MASK)
+
         for key in ['ai', 'ae']:
             if key not in df:
                 df[key] = 0
             df[key] = df[key].astype('int32')
+
         df = df[self.columns]
         return df
 
@@ -106,7 +115,8 @@ class P5D(object):
         """
         existing_files = os.listdir('/tmp')
         if existing_files:
-            versions = [int(f.split('.')[1]) for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
+            versions = [int(f.split('.')[1])
+                        for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
 
