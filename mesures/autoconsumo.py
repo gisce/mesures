@@ -83,7 +83,13 @@ class AUTOCONSUMO(object):
         df['tipus_antiabocament'] = (
             df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x))
 
-        df = df[self.columns]
+        try:
+            df = df[self.columns]
+        except:
+            # Fins que entri en vigor el nou fitxer, traiem 'estat' de la llista d'índexs del df.
+            self.columns.remove('estat')
+            df = df[self.columns]
+
         return df
 
     def writer(self):
