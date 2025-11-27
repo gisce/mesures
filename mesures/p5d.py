@@ -3,6 +3,7 @@ from mesures.dates import *
 from mesures.headers import P5D_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
 from mesures.utils import check_line_terminator_param
+from zipfile import ZipFile
 import os
 import pandas as pd
 
@@ -114,7 +115,7 @@ class P5D(object):
         :return: file path
         """
         existing_files = os.listdir('/tmp')
-        if existing_files:
+        if existing_files and self.default_compression != 'zip':
             versions = [int(f.split('.')[1])
                         for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
@@ -130,5 +131,14 @@ class P5D(object):
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
-        self.file.to_csv(file_path, **kwargs)
+        if kwargs.get('compression', False) == 'zip':
+            self.default_compression = False
+            zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
+            file_path = os.path.join('/tmp', self.filename)
+            kwargs.pop('compression')
+            self.file.to_csv(file_path, **kwargs)
+            zipped_file.write(file_path, arcname=os.path.basename(file_path))
+            file_path = zipped_file.filename
+        else:
+            self.file.to_csv(file_path, **kwargs)
         return file_path
