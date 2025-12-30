@@ -55,7 +55,7 @@ class P2(P1):
 
         for key in self.columns:
             if 'quality' in key and key not in df:
-                df[key] = 0
+                df[key] = '0'
 
         df = df[self.columns]
         return df

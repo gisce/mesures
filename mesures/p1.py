@@ -132,7 +132,7 @@ class P1(object):
 
         for key in self.columns:
             if 'quality' in key and key not in df:
-                df[key] = 0
+                df[key] = '0'
 
         df = df[self.columns]
         return df
