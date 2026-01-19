@@ -6,6 +6,7 @@ from mesures.utils import check_line_terminator_param
 from zipfile import ZipFile
 import os
 import pandas as pd
+import numpy as np
 
 TYPES = DTYPES.copy()
 TYPES.update({'factura': 'category'})
