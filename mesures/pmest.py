@@ -153,6 +153,8 @@ class PMEST(object):
             dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
             # Avoid to generate file if dataframe is empty
             if len(dataf):
+                dataf['timestamp'] = dataf['timestamp'].dt.strftime(DATE_MASK)
+                dataf['timestamp'] = dataf['timestamp'].astype(str)
                 existing_files = os.listdir('/tmp')
                 if existing_files:
                     versions = [int(f.split('.')[1])
