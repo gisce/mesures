@@ -1,4 +1,4 @@
 expects
-pandas>=0.23.4
+pandas>=0.23.4,<3.0.0
 numpy
 six
