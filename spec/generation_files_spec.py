@@ -34,6 +34,9 @@ from mesures.reobje2 import REOBJE2
 from mesures.reobjecil import REOBJECIL
 from mesures.reobjeagrecl import REOBJEAGRECL
 from mesures.reobjeincl import REOBJEINCL
+from mesures.reobagrecl import REOBAGRECL
+from mesures.reobcups import REOBCUPS
+from mesures.reobcil import REOBCIL
 from random import randint
 try:
     from StringIO import StringIO
@@ -977,6 +980,107 @@ class SampleData:
         }
         ]
 
+    @staticmethod
+    def get_sample_reobagrecl_data():
+        return [
+            {
+                'distribuidora': '4444',
+                'comercialitzadora': '5555',
+                'agree_tensio': 'E0',
+                'agree_tarifa': '2T',
+                'agree_dh': 'E3',
+                'agree_tipo': '05',
+                'provincia': 'HU',
+                'tipus_demanda': '41',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'magnitud': 'AE',
+                'energia_publicada': '100',
+                'energia_proposada': '110',
+                'auto_obj': 'N',
+                'acceptacio': 'N',
+                'motiu_receptor': '2',
+                'comentari_receptor': 'La energia está correcta. A llorar a la llorería.'
+            },
+            {
+                'distribuidora': '4444',
+                'comercialitzadora': '6666',
+                'agree_tensio': 'E0',
+                'agree_tarifa': '2T',
+                'agree_dh': 'E3',
+                'agree_tipo': '05',
+                'provincia': 'HU',
+                'tipus_demanda': '00',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'magnitud': 'AE',
+                'energia_publicada': 40,
+                'energia_proposada': 50,
+                'comentari_emissor': 'Paga la energia, primer aviso.',
+                'auto_obj': 'N',
+                'acceptacio': 'S',
+                'motiu_receptor': '1'
+            }
+        ]
+
+    @staticmethod
+    def get_sample_reobcups_data():
+        return [
+            {
+                'cups': 'ES0291000000004444QR1F',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'energia_publicada': '100',
+                'energia_proposada': '110',
+                'comentari_emissor': 'Paga la energia, primer aviso.',
+                'auto_obj': 'N',
+                'acceptacio': 'N',
+                'motiu_receptor': '2',
+                'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+                'magnitud': 'AE'
+            },
+            {
+                'cups': 'ES0291000000004444QR1F',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'energia_publicada': '100',
+                'comentari_emissor': 'Paga la energia, primer aviso.',
+                'auto_obj': 'N',
+                'acceptacio': 'N',
+                'motiu_receptor': '2',
+                'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+                'magnitud': 'AE'
+            }
+        ]
+
+    @staticmethod
+    def get_sample_reobcil_data():
+        return [
+            {
+                'cil': 'ES0291000000004444QR1F',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'as_publicada': '100',
+                'as_proposada': '110',
+                'r2_publicada': '100',
+                'r2_proposada': '110',
+                'r3_publicada': '100',
+                'r3_proposada': '110',
+                'comentari_emissor': 'Paga la energia, primer aviso.',
+                'auto_obj': 'N',
+                'acceptacio': 'N',
+                'motiu_receptor': '99',
+                'comentari_receptor': 'La energia está correcta. A llorar a la llorería.',
+            },
+            {
+                'cil': 'ES0291000000004444QR1F',
+                'periode': '2025/05',
+                'motiu_emissor': '100',
+                'auto_obj': 'N',
+                'acceptacio': 'N',
+            }
+        ]
+
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -1775,6 +1879,52 @@ with description('An OBCUPS'):
                     "ES0291000000004444QR1F;2024/10;100;100;;Paga la energia, "
                     "primer aviso.;N;AE\n"
                     )
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBAGRECL'):
+    with it('is instance of REOBAGRECL Class'):
+        data = SampleData().get_sample_reobagrecl_data()
+        f = REOBAGRECL(data)
+        assert isinstance(f, REOBAGRECL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobagrecl_data()
+        f = REOBAGRECL(data)
+        f.writer()
+        expected = "4444;5555;E0;2T;E3;05;HU;41;2025/05;100;AE;100;110;;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
+                   "4444;6666;E0;2T;E3;05;HU;00;2025/05;100;AE;40;50;Paga la energia, primer aviso.;N;S;1;\n"
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBCUPS'):
+    with it('is instance of REOBCUPS Class'):
+        data = SampleData().get_sample_reobcups_data()
+        f = REOBCUPS(data)
+        assert isinstance(f, REOBCUPS)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobcups_data()
+        f = REOBCUPS(data)
+        f.writer()
+        expected = ("ES0291000000004444QR1F;2025/05;100;100;110;Paga la energia, "
+                    "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
+                    "ES0291000000004444QR1F;2025/05;100;100;;Paga la energia, "
+                    "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
+                    )
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+with description('A REOBCIL'):
+    with it('is instance of REOBCIL Class'):
+        data = SampleData().get_sample_reobcil_data()
+        f = REOBCIL(data)
+        assert isinstance(f, REOBCIL)
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_reobcil_data()
+        f = REOBCIL(data)
+        f.writer()
+        expected = ("ES0291000000004444QR1F;2025/05;100;100;110;100;110;100;110;"
+                    "Paga la energia, primer aviso.;N;N;99;La energia está correcta. A llorar a la llorería.\n"
+                    "ES0291000000004444QR1F;2025/05;100;;;;;;;;N;N;;\n")
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
 
 with description('An PMEST'):
