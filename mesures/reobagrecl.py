@@ -15,20 +15,3 @@ class REOBAGRECL(REOBJEAGRECL):
         super(REOBAGRECL, self).__init__(data, distributor=distributor, comer=comer, periode=periode,
                                       compression=compression, columns=columns, version=version)
         self.prefix = 'REOBAGRECL'
-
-    def reader(self, filepath):
-        if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=self.columns)
-        elif isinstance(filepath, list):
-            df = pd.DataFrame(data=filepath)
-        else:
-            raise Exception("Filepath must be an str or a list")
-
-        for col in ['comentari_emissor', 'comentari_receptor', 'motiu_receptor',
-                    'energia_publicada', 'energia_proposada']:
-            if col not in df.columns:
-                df[col] = ''
-            else:
-                df[col] = df[col].fillna('')
-
-        return df

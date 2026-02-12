@@ -1890,7 +1890,7 @@ with description('A REOBAGRECL'):
     with it('gets expected content'):
         data = SampleData().get_sample_reobagrecl_data()
         f = REOBAGRECL(data)
-        res = f.writer()
+        f.writer()
         expected = "4444;5555;E0;2T;E3;05;HU;41;2025/05;100;AE;100;110;;N;N;2;La energia está correcta. A llorar a la llorería.\n" \
                    "4444;6666;E0;2T;E3;05;HU;00;2025/05;100;AE;40;50;Paga la energia, primer aviso.;N;S;1;\n"
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
@@ -1904,7 +1904,7 @@ with description('A REOBCUPS'):
     with it('gets expected content'):
         data = SampleData().get_sample_reobcups_data()
         f = REOBCUPS(data)
-        res = f.writer()
+        f.writer()
         expected = ("ES0291000000004444QR1F;2025/05;100;100;110;Paga la energia, "
                     "primer aviso.;N;N;2;La energia está correcta. A llorar a la llorería.;AE\n"
                     "ES0291000000004444QR1F;2025/05;100;100;;Paga la energia, "
@@ -1921,7 +1921,7 @@ with description('A REOBCIL'):
     with it('gets expected content'):
         data = SampleData().get_sample_reobcil_data()
         f = REOBCIL(data)
-        res = f.writer()
+        f.writer()
         expected = ("ES0291000000004444QR1F;2025/05;100;100;110;100;110;100;110;"
                     "Paga la energia, primer aviso.;N;N;99;La energia está correcta. A llorar a la llorería.\n"
                     "ES0291000000004444QR1F;2025/05;100;;;;;;;;N;N;;\n")

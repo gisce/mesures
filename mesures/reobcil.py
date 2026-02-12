@@ -15,22 +15,3 @@ class REOBCIL(REOBJECIL):
         super(REOBCIL, self).__init__(data, distributor=distributor, comer=comer, periode=periode,
                                         compression=compression, columns=columns, version=version)
         self.prefix = 'REOBCIL'
-
-    def reader(self, filepath):
-        if isinstance(filepath, str):
-            df = pd.read_csv(filepath, sep=';', names=self.columns)
-        elif isinstance(filepath, list):
-            df = pd.DataFrame(data=filepath)
-        else:
-            raise Exception("Filepath must be an str or a list")
-
-        for col in ['comentari_emissor', 'comentari_receptor', 'motiu_receptor',
-                    'as_publicada', 'as_proposada',
-                    'r2_publicada', 'r2_proposada',
-                    'r3_publicada', 'r3_proposada']:
-            if col not in df.columns:
-                df[col] = ''
-            else:
-                df[col] = df[col].fillna('')
-
-        return df
