@@ -606,3 +606,55 @@ REOBJECIL_HEADER = [
     'motiu_receptor',               # str(2)
     'comentari_receptor'            # str(255)
 ]
+
+REOBAGRECL_HEADER = [
+    'distribuidora',        # str(4)
+    'comercialitzadora',    # str(4)
+    'agree_tensio',         # str(2)
+    'agree_tarifa',         # str(2)
+    'agree_dh',             # str(2)
+    'agree_tipo',           # str(2)
+    'provincia',            # str(2)
+    'tipus_demanda',        # str(2)
+    'periode',              # str aaaa/mm
+    'motiu_emissor',        # str(3)
+    'magnitud',             # str(3)
+    'energia_publicada',    # str(10) kWh
+    'energia_proposada',    # str(10) kWh
+    'comentari_emissor',    # str(255)
+    'auto_obj',             # str(1) S/N
+    'acceptacio',           # str(1) S/N
+    'motiu_receptor',       # str(1)
+    'comentari_receptor'    # str(255)
+]
+
+REOBCUPS_HEADER = [
+    'cups',                         # str(22)
+    'periode',                      # str aaaa/mm
+    'motiu_emissor',                # str(3)
+    'energia_publicada',            # str(10) kWh
+    'energia_proposada',            # str(10) kWh
+    'comentari_emissor',            # str(255)
+    'auto_obj',                     # str(1) S/N
+    'acceptacio',                   # str(1) S/N
+    'motiu_receptor',               # str(2)
+    'comentari_receptor',           # str(255)
+    'magnitud'                      # str(2) AS/AE
+]
+
+REOBCIL_HEADER = [
+    'cil',                          # str(22)
+    'periode',                      # str aaaa/mm
+    'motiu_emissor',                # str(3)
+    'as_publicada',                 # str(10) kWh
+    'as_proposada',                 # str(10) kWh
+    'r2_publicada',                 # str(10) kVArh
+    'r2_proposada',                 # str(10) kVArh
+    'r3_publicada',                 # str(10) kVArh
+    'r3_proposada',                 # str(10) kVArh
+    'comentari_emissor',            # str(255)
+    'auto_obj',                     # str(1) S/N
+    'acceptacio',                   # str(1) S/N
+    'motiu_receptor',               # str(2)
+    'comentari_receptor'            # str(255)
+]
