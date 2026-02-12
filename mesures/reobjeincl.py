@@ -29,6 +29,6 @@ class REOBJEINCL(REOBJEAGRECL):
             if col not in df.columns:
                 df[col] = ''
             else:
-                df[col] = df[col].fillna('')
+                df[col] = df[col].replace(False, '')
 
         return df
