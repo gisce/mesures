@@ -61,6 +61,7 @@
 - `P2D`
 - `P5D`
 - `PMEST`
+- `PMESTQH`
 - `POTELECTRO`
 - `REOBJE2`
 - `REOBJECIL`
