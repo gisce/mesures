@@ -130,9 +130,10 @@ class F5D(F5):
                 self.version = max(versions) + 1
 
         if existing_files:
-            zip_versions = [int(f.split('.')[1])
+            zip_versions = [f.split('.')[1]
                             for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
+                zip_versions = [int(x) for x in zip_versions if x.isdigit()]
                 self.zip_version = max(zip_versions) + 1
 
         file_path = os.path.join('/tmp', self.filename)

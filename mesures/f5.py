@@ -168,9 +168,10 @@ class F5(object):
 
         existing_files = os.listdir('/tmp')
         if existing_files:
-            zip_versions = [int(f.split('.')[1])
+            zip_versions = [f.split('.')[1]
                             for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
             if zip_versions:
+                zip_versions = [int(x) for x in zip_versions if x.isdigit()]
                 self.zip_version = max(zip_versions) + 1
 
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
