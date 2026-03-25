@@ -1193,7 +1193,7 @@ with description('An F5D'):
         expected = 'ES0012345678912345670F;2020/01/01 01:00;0;0;0;0;0;0;0;1;0;FE20214444;1000;1000'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
 
-    with it('uses version control for ZIP'):
+    with it('uses version control'):
         data = SampleData().get_sample_f5d_data()
         f = F5D(data)
         res = f.writer()
@@ -1201,6 +1201,15 @@ with description('An F5D'):
         f = F5D(data)
         res = f.writer()
         assert int(f.filename.split('.')[1]) == 5  # 6th F5D file generated in tests
+
+    with it('uses version control in ZIP'):
+        data = SampleData().get_sample_f5d_data()
+        f = F5D(data, compression='zip')
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 1  # 2nd F5D file with ZIP format generated in tests
+        f = F5D(data, compression='zip')
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd F5D file with ZIP format generated in tests
 
 with description('An F1'):
     with it('is instance of F1 Class'):
