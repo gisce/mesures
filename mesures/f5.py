@@ -38,6 +38,7 @@ class F5(object):
         self.prefix = 'F5'
         self.default_compression = compression
         self.version = version
+        self.zip_version = version
         self.distributor = distributor
         self.comer = comer
 
@@ -72,10 +73,11 @@ class F5(object):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.zip".format(
+        return "{prefix}_{distributor}_{comer}_{measures_date}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
             measures_date=self.measures_date[:10].replace('/', ''),
-            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK),
+            version=self.zip_version
         )
 
     @property
@@ -163,6 +165,14 @@ class F5(object):
         daymin = self.file['timestamp'].min()
         daymax = self.file['timestamp'].max()
         self.measures_date = daymin
+
+        existing_files = os.listdir('/tmp')
+        if existing_files:
+            zip_versions = [int(f.split('.')[1])
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            if zip_versions:
+                self.zip_version = max(zip_versions) + 1
+
         zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
         while daymin <= daymax:
             di = daymin
