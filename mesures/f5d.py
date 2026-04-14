@@ -46,9 +46,9 @@ class F5D(F5):
 
     @property
     def zip_filename(self):
-        return "{prefix}_{distributor}_{comer}_{timestamp}.zip".format(
+        return "{prefix}_{distributor}_{comer}_{timestamp}.{version}.zip".format(
             prefix=self.prefix, distributor=self.distributor, comer=self.comer,
-            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK)
+            timestamp=self.generation_date.strftime(SIMPLE_DATE_MASK), version=self.zip_version
         )
 
     @property
@@ -128,6 +128,13 @@ class F5D(F5):
                         for f in existing_files if self.filename.split('.')[0] in f and '.zip' not in f]
             if versions:
                 self.version = max(versions) + 1
+
+        if existing_files:
+            zip_versions = [f.split('.')[1]
+                            for f in existing_files if self.zip_filename.split('.')[0] in f and '.zip' in f]
+            if zip_versions:
+                zip_versions = [int(x) for x in zip_versions if x.isdigit()]
+                self.zip_version = max(zip_versions) + 1
 
         file_path = os.path.join('/tmp', self.filename)
         kwargs = {'sep': ';',
