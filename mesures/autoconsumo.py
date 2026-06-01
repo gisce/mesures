@@ -80,8 +80,11 @@ class AUTOCONSUMO(object):
 
         df['subgrup'] = df['subgrup'].apply(lambda x: '{}.{}.{}'.format(x[0], x[1], x[2]) if x != '' else '')
 
-        df['tipus_antiabocament'] = (
-            df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x))
+        df['tipus_antiabocament'] = df['tipus_antiabocament'].apply(lambda x: '' if (x == 0 or not x or x == '') else x)
+
+        df['tipus_antiabocament'] = np.where((df['tipus_autoconsum'].isin(['31', '32', '33']) & (df['tipus_antiabocament'].isin(['']))),
+                                             '1',
+                                             df['tipus_antiabocament'])
 
         try:
             df = df[self.columns]
