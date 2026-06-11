@@ -19,6 +19,8 @@ from mesures.f1qh import F1QH
 from mesures.f3 import F3
 from mesures.f5d import F5D
 from mesures.mcil345 import MCIL345
+from mesures.mcil345gn import MCIL345GN
+from mesures.mcil345gnqh import MCIL345GNQH
 from mesures.mcil345qh import MCIL345QH
 from mesures.medidas import MEDIDAS
 from mesures.obagrecl import OBAGRECL
@@ -1823,6 +1825,80 @@ with description('A MCIL345QH'):
         f = MCIL345QH(data)
         res = f.writer()
         assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345QH file generated in tests
+
+with description('A MCIL345GN'):
+    with it('is instance of MCIL345GN Class'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345GN(data)
+        assert isinstance(f, MCIL345GN)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345GN(data)
+        res = f.writer()
+        assert isinstance(f.cils, list)
+        assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.ae, int)
+        assert isinstance(f.ai, int)
+        assert isinstance(f.r1, int)
+        assert isinstance(f.r2, int)
+        assert isinstance(f.r3, int)
+        assert isinstance(f.r4, int)
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345GN(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F001;2022/09/01 01;1;100;10;1;2;3;4;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 01;1;200;20;11;22;33;44;R\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345_data()
+        f = MCIL345GN(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345GN file generated in tests
+        f = MCIL345GN(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345GN file generated in tests
+
+with fdescription('A MCIL345GNQH'):
+    with it('is instance of MCIL345GN Class'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345GNQH(data)
+        assert isinstance(f, MCIL345GNQH)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345GNQH(data)
+        res = f.writer()
+        assert isinstance(f.cils, list)
+        assert isinstance(f.number_of_cils, int)
+        assert isinstance(f.ae, int)
+        assert isinstance(f.ai, int)
+        assert isinstance(f.r1, int)
+        assert isinstance(f.r2, int)
+        assert isinstance(f.r3, int)
+        assert isinstance(f.r4, int)
+
+    with it('has its expected content'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345GNQH(data)
+        res = f.writer()
+        expected = 'ES0291000000004444QR1F001;2022/09/01 00:15;1;100;10;1;2;3;4;R\n' \
+                   'ES0291000000004444QR1F001;2022/09/01 00:30;1;100;10;1;2;3;4;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 00:15;1;200;20;11;22;33;44;R\n' \
+                   'ES0291000000005555QR1F001;2022/09/01 00:30;1;200;20;11;22;33;44;R\n'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+    with it('Uses version control for ZIP'):
+        data = SampleData().get_sample_mcil345qh_data()
+        f = MCIL345GNQH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 2  # 3rd MCIL345GNQH file generated in tests
+        f = MCIL345GNQH(data)
+        res = f.writer()
+        assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345GNQH file generated in tests
 
 with description('A CILDAT'):
     with it('is instance of CILDAT Class'):
