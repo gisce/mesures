@@ -1907,7 +1907,7 @@ with description('A MCIL345GN'):
         res = f.writer()
         assert int(f.zip_filename.split('.')[1]) == 3  # 4th MCIL345GN file generated in tests
 
-with fdescription('A MCIL345GNQH'):
+with description('A MCIL345GNQH'):
     with it('is instance of MCIL345GN Class'):
         data = SampleData().get_sample_mcil345qh_data()
         f = MCIL345GNQH(data)
