@@ -650,7 +650,8 @@ class SampleData:
             'r3': 3,
             'power_factor': 0.55,
             'power_factor_type': 0,
-            'read_type': 'R'
+            'read_type': 'R',
+            'uprs': 'UPR01'
         },
             {
             'cil': 'ES0291000000005555QR1F001',
@@ -661,7 +662,8 @@ class SampleData:
             'r3': 3,
             'power_factor': 0.55,
             'power_factor_type': 0,
-            'read_type': 'R'
+            'read_type': 'R',
+            'uprs': 'UPR01'
         },
             {
             'cil': 'ES0291000000005555QR1F001',
@@ -672,7 +674,8 @@ class SampleData:
             'r3': 3,
             'power_factor': 0.55,
             'power_factor_type': 0,
-            'read_type': 'E'
+            'read_type': 'E',
+            'uprs': 'UPR02'
             },
         ]
 
@@ -1691,6 +1694,48 @@ with description('A MEDIDAS'):
         expected = 'ES0291000000004444QR1F001;2022/09/01 01:00:00;1;10;2;3;;;R\n' \
                    'ES0291000000005555QR1F001;2022/09/01 01:00:00;1;40;4;6;;;E\n'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False) == expected
+
+        # Expected a ZIP file with a single TXT file in it
+        zip_file = zipfile.ZipFile(res, "r")
+        found_files = 0
+        for name in zip_file.namelist():
+            assert name.endswith('.txt')
+            found_files += 1
+        assert found_files == 1
+
+    with it('can be exported by UPR'):
+        data = SampleData().get_sample_medidas_data()
+        f = MEDIDAS(data, by_upr=True)
+        res = f.writer()
+
+        # Expected a ZIP file with a TXT file in it for each UPRS
+        zip_file = zipfile.ZipFile(res, "r")
+        uprs_names = ['UPR01', 'UPR02']
+        found_uprs = []
+        for name in zip_file.namelist():
+            assert name.endswith('.txt')
+            uprs_name = name.split('_')[2]
+            assert uprs_name in uprs_names
+            if uprs_name not in found_uprs:
+                found_uprs.append(uprs_name)
+        assert len(found_uprs) == len(uprs_names)
+
+    with it('can be exported by CIL'):
+        data = SampleData().get_sample_medidas_data()
+        f = MEDIDAS(data, by_cil=True)
+        res = f.writer()
+
+        # Expected a ZIP file with a TXT file in it for each CIL
+        zip_file = zipfile.ZipFile(res, "r")
+        cil_names = ['ES0291000000004444QR1F001', 'ES0291000000005555QR1F001']
+        found_files = []
+        for name in zip_file.namelist():
+            assert name.endswith('.txt')
+            cil_name = name.split('_')[2]
+            assert cil_name in cil_names
+            if cil_name not in found_files:
+                found_files.append(cil_name)
+        assert len(found_files) == len(cil_names)
 
 with description('A CUPSDAT'):
     with it('is instance of CUPSDAT Class'):
