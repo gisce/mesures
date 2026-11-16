@@ -437,6 +437,35 @@ P1_HEADER = [
     'firmeza'        # str(1) in ('0' for 'No firme', '1' for 'Firme')
 ]
 
+P1REG_HEADER = [
+    'codigo_pm',      # str(8)   - Número de Registradpr
+    'direccion',      # str(5)   - Sempre 1
+    'tipo_medida',    # str(2)   - Sempre 11
+    'timestamp_ita',  # str(10)  - 5*hex: data en format ITA IEC 870-5-102
+    'season',         # str(1)   - Tag estiu/hivern ('0' o '1')
+    'day_of_week',    # str(1)   - Dia de la setmana (1 = Dilluns... 7 = Diumenge)
+    'validez',        # str(2)   - 'VA' (Vàlida) o 'IN' (Invàlida)
+    'ai',             # str(10)
+    'calidad_ai',     # str(3)
+    'ae',             # str(10)
+    'calidad_ae',     # str(3)
+    'r1',             # str(10)
+    'calidad_r1',     # str(3)
+    'r2',             # str(10)
+    'calidad_r2',     # str(3)
+    'r3',             # str(10)
+    'calidad_r3',     # str(3)
+    'r4',             # str(10)
+    'calidad_r4',     # str(3)
+    'res1',           # str(10)
+    'calidad_res1',   # str(3)
+    'res2',           # str(10)
+    'calidad_res2',   # str(3)
+    'fecha_firma',    # str(10)  - aaaa/mm/dd (buit si no hi ha signatura)
+    'firma_r',        # str(40)  - 20*hex (buit si no hi ha signatura)
+    'firma_s'         # str(40)  - 20*hex (buit si no hi ha signatura)
+]
+
 P2_HEADER = [
     'cups',          # str(22)
     'tipo_medida',   # str(2) (always '11')
