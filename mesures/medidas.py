@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import MEDIDAS_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -211,9 +211,9 @@ class MEDIDAS(object):
                 zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
                 uprs = list(self.file['uprs'].unique())
                 for upr in uprs:
-                    df = self.file[self.file['uprs'] == upr]
+                    df = self.file[self.file['uprs'] == upr].copy()
                     file_path = os.path.join('/tmp', self.cnmc_filename_by_upr(upr))
-                    df.to_csv(file_path, **kwargs)
+                    to_csv_compat(df, file_path, **kwargs)
                     zipped_file.write(file_path, arcname=os.path.basename(file_path))
                 zipped_file.close()
                 file_path = zipped_file.filename
@@ -222,17 +222,17 @@ class MEDIDAS(object):
                 zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
                 cils = list(self.file['cil'].unique())
                 for cil in cils:
-                    df = self.file[self.file['cil'] == cil]
+                    df = self.file[self.file['cil'] == cil].copy()
                     self.cil = cil
                     file_path = os.path.join('/tmp', self.cnmc_filename)
-                    df.to_csv(file_path, **kwargs)
+                    to_csv_compat(df, file_path, **kwargs)
                     zipped_file.write(file_path, arcname=os.path.basename(file_path))
                 zipped_file.close()
                 self.cil = first_cil
                 file_path = zipped_file.filename
             else:
                 file_path = os.path.join('/tmp', self.cnmc_filename)
-                self.file.to_csv(file_path, **kwargs)
+                to_csv_compat(self.file, file_path, **kwargs)
                 zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
                 zipped_file.write(file_path, arcname=os.path.basename(file_path))
                 zipped_file.close()
@@ -242,9 +242,9 @@ class MEDIDAS(object):
                 zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
                 uprs = list(self.file['uprs'].unique())
                 for upr in uprs:
-                    df = self.file[self.file['uprs'] == upr]
+                    df = self.file[self.file['uprs'] == upr].copy()
                     file_path = os.path.join('/tmp', self.filename_by_upr(upr))
-                    df.to_csv(file_path, **kwargs)
+                    to_csv_compat(df, file_path, **kwargs)
                     zipped_file.write(file_path, arcname=os.path.basename(file_path))
                 zipped_file.close()
                 file_path = zipped_file.filename
@@ -254,9 +254,9 @@ class MEDIDAS(object):
                 cils = list(self.file['cil'].unique())
                 for cil in cils:
                     self.cil = cil
-                    df = self.file[self.file['cil'] == cil]
+                    df = self.file[self.file['cil'] == cil].copy()
                     file_path = os.path.join('/tmp', self.filename)
-                    df.to_csv(file_path, **kwargs)
+                    to_csv_compat(df, file_path, **kwargs)
                     zipped_file.write(file_path, arcname=os.path.basename(file_path))
                 zipped_file.close()
                 self.cil = first_cil
@@ -264,6 +264,6 @@ class MEDIDAS(object):
             else:
                 file_path = os.path.join('/tmp', self.filename)
                 kwargs.update({'compression': self.default_compression})
-                self.file.to_csv(file_path, **kwargs)
+                to_csv_compat(self.file, file_path, **kwargs)
 
         return file_path

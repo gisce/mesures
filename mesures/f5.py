@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import F5_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -179,7 +179,7 @@ class F5(object):
             di = daymin
             df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
             self.measures_date = di
-            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)].copy()
             file_path = os.path.join('/tmp', self.filename)
             kwargs = {'sep': ';',
                       'header': False,
@@ -190,7 +190,7 @@ class F5(object):
             if self.default_compression:
                 kwargs.update({'compression': self.default_compression})
 
-            dataf.to_csv(file_path, **kwargs)
+            to_csv_compat(dataf, file_path, **kwargs)
             daymin = df
             zipped_file.write(file_path, arcname=os.path.basename(file_path))
         zipped_file.close()

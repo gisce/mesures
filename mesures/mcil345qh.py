@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import MCIL345_HEADER as COLUMNS
 from mesures.mcil345 import MCIL345
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -83,7 +83,7 @@ class MCIL345QH(MCIL345):
             di = daymin
             df = (datetime.strptime(daymin, DATETIME_HOUR_MASK) + timedelta(days=1)).strftime(DATETIME_HOUR_MASK)
             self.measures_date = di
-            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)].copy()
             # Avoid to generate file if dataframe is empty
             if len(dataf):
                 existing_files = os.listdir('/tmp')
@@ -102,7 +102,7 @@ class MCIL345QH(MCIL345):
                           }
                 if self.default_compression:
                     kwargs.update({'compression': self.default_compression})
-                dataf.to_csv(file_path, **kwargs)
+                to_csv_compat(dataf, file_path, **kwargs)
                 zipped_file.write(file_path, arcname=os.path.basename(file_path))
 
             daymin = df
