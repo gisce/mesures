@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from mesures.dates import *
 from mesures.p1 import P1
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from mesures.headers import P1REG_HEADER as COLUMNS
 from zipfile import ZipFile
 import pandas as pd
@@ -84,7 +84,7 @@ class P1REG(P1):
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
-        self.file.to_csv(file_path, **kwargs)
+        to_csv_compat(self.file, file_path, **kwargs)
 
         zip_path = os.path.join('/tmp', self.zip_filename)
         zipped_file = ZipFile(zip_path, 'w')

@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import ENELECTROAUT_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 import os
 import pandas as pd
 
@@ -87,6 +87,6 @@ class ENELECTROAUT(object):
         if self.default_compression:
             kwargs.update({'compression': self.default_compression})
 
-        self.file.to_csv(file_path, **kwargs)
+        to_csv_compat(self.file, file_path, **kwargs)
 
         return file_path

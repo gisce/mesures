@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import OBCIL_HEADER as COLUMNS
 from mesures.parsers.dummy_data import DummyCurve
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 import os
 import pandas as pd
 
@@ -94,7 +94,7 @@ class OBCIL(object):
             kwargs.update({'compression': self.default_compression})
 
         # Convert dict data to csv file and save it to the file path generated
-        self.file.to_csv(file_path, **kwargs)
+        to_csv_compat(self.file, file_path, **kwargs)
 
         # Return location tmp file
         return file_path

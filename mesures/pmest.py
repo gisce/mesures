@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import PMEST_HEADER as columns
 from mesures.parsers.dummy_data import DummyCurve
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -150,7 +150,7 @@ class PMEST(object):
             di = daymin
             df = daymin + timedelta(days=1)
             self.measures_date = di
-            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)]
+            dataf = self.file[(self.file['timestamp'] >= di) & (self.file['timestamp'] < df)].copy()
             # Avoid to generate file if dataframe is empty
             if len(dataf):
                 dataf['timestamp'] = dataf['timestamp'].dt.strftime(DATE_MASK)
@@ -170,7 +170,7 @@ class PMEST(object):
                           }
                 if self.default_compression:
                     kwargs.update({'compression': self.default_compression})
-                dataf.to_csv(file_path, **kwargs)
+                to_csv_compat(dataf, file_path, **kwargs)
                 zipped_file.write(file_path, arcname=os.path.basename(file_path))
 
             daymin = df

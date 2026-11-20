@@ -5,8 +5,8 @@
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml/badge.svg)
 ![](https://github.com/gisce/mesures/actions/workflows/python2.7-app.yml)
 
-![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml/badge.svg)
-![](https://github.com/gisce/mesures/actions/workflows/python3.11-app.yml)
+![](https://github.com/gisce/mesures/actions/workflows/python3.13-app.yml/badge.svg)
+![](https://github.com/gisce/mesures/actions/workflows/python3.13-app.yml)
 
 - Eina pel tractament de fitxers d'intercanvi de mesures entre [REE](https://www.ree.es) y participants del sector elèctric.
 - Aporta el coneixement i els formats necessaris per a crear fitxers amb el format unificat i establert per l'Operador del Sistema.
@@ -59,6 +59,8 @@
 - `OBCUPS`
 - `P1`
 - `P1D`
+- `P1REG`
+- `P1REGQH`
 - `P2`
 - `P2D`
 - `P5D`

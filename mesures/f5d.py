@@ -2,7 +2,7 @@
 from mesures.dates import *
 from mesures.headers import F5D_HEADER as COLUMNS
 from mesures.f5 import F5, DTYPES
-from mesures.utils import check_line_terminator_param
+from mesures.utils import check_line_terminator_param, to_csv_compat
 from zipfile import ZipFile
 import os
 import pandas as pd
@@ -151,9 +151,9 @@ class F5D(F5):
             zipped_file = ZipFile(os.path.join('/tmp', self.zip_filename), 'w')
             file_path = os.path.join('/tmp', self.filename)
             kwargs.pop('compression')
-            self.file.to_csv(file_path, **kwargs)
+            to_csv_compat(self.file, file_path, **kwargs)
             zipped_file.write(file_path, arcname=os.path.basename(file_path))
             file_path = zipped_file.filename
         else:
-            self.file.to_csv(file_path, **kwargs)
+            to_csv_compat(self.file, file_path, **kwargs)
         return file_path

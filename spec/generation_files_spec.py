@@ -28,6 +28,8 @@ from mesures.obcil import OBCIL
 from mesures.obcups import OBCUPS
 from mesures.p1 import P1
 from mesures.p1d import P1D
+from mesures.p1reg import P1REG
+from mesures.p1regqh import P1REGQH
 from mesures.p2d import P2D
 from mesures.p5d import P5D
 from mesures.pmest import PMEST
@@ -1120,6 +1122,40 @@ class SampleData:
             }
         ]
 
+    @staticmethod
+    def get_sample_data_p1reg():
+        basic_p1reg = {
+            'codigo_pm': 'DK029141',  # str(8)   - Número de Registradpr
+            'direccion': '1',  # str(5)   - Sempre 1
+            'tipo_medida': '11',  # str(2)   - Sempre 11
+            'timestamp_ita': '0000000000',  # str(10)  - 5*hex: data en format ITA IEC 870-5-102
+            'season': '0',  # str(1)   - Tag estiu/hivern ('0' o '1')
+            'day_of_week': '7',  # str(1)   - Dia de la setmana (1 = Dilluns... 7 = Diumenge)
+            'validez': 'VA',  # str(2)   - 'VA' (Vàlida) o 'IN' (Invàlida)
+            'ai': '4',  # str(10)
+            'calidad_ai': '0',  # str(3)
+            'ae': '0',  # str(10)
+            'calidad_ae': '0',  # str(3)
+            'r1': '0',  # str(10)
+            'calidad_r1': '0',  # str(3)
+            'r2': '0',  # str(10)
+            'calidad_r2': '0',  # str(3)
+            'r3': '0',  # str(10)
+            'calidad_r3': '0',  # str(3)
+            'r4': '0',  # str(10)
+            'calidad_r4': '0',  # str(3)
+            'res1': '0',  # str(10)
+            'calidad_res1': '0',  # str(3)
+            'res2': '0',  # str(10)
+            'calidad_res2': '0',  # str(3)
+            'fecha_firma': '',  # str(10)  - aaaa/mm/dd (buit si no hi ha signatura)
+            'firma_r': '0000000000',  # str(40)  - 20*hex (buit si no hi ha signatura)
+            'firma_s': '0000000000'  # str(40)  - 20*hex (buit si no hi ha signatura)
+        }
+
+        data_p1reg = [basic_p1reg.copy()]
+
+        return data_p1reg
 
 with description('A P5D'):
     with it('is instance of P5D Class'):
@@ -2169,4 +2205,56 @@ with description('An PMESTQH'):
         res = f.writer()
         # WARNING: timestamp is expressed as "yyyy/mm/dd HH" in file, but in dataframe is still ISO formatted
         expected = 'DK029141;11;2024-11-01 00:15:00;0;4;10;11;12;13;14;15'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+with description('An P1REG'):
+    with it('is instance of P1REG Class'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REG(data, '0000', '2026-11-01')
+        assert isinstance(f, P1REG)
+
+    with it('is a zip of raw files'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REG(data, '0000', '2026-11-01')
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REG(data, '0000', '2026-11-01')
+        res = f.writer()
+        assert isinstance(f.number_of_cups, (int, np.int64))
+        assert len(f.cups) == f.number_of_cups
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REG(data, '0000', '2026-11-01')
+        res = f.writer()
+        expected = 'DK029141;1;11;0000000000;0;7;VA;4;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;;0000000000;0000000000'
+        assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
+
+with description('An P1REGQH'):
+    with it('is instance of P1REGQH Class'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REGQH(data, '0000', '2026-11-01')
+        assert isinstance(f, P1REG)
+
+    with it('is a zip of raw files'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REGQH(data, '0000', '2026-11-01')
+        res = f.writer()
+        assert zipfile.is_zipfile(res)
+
+    with it('has its class methods'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REGQH(data, '0000', '2026-11-01')
+        res = f.writer()
+        assert isinstance(f.number_of_cups, (int, np.int64))
+        assert len(f.cups) == f.number_of_cups
+
+    with it('gets expected content'):
+        data = SampleData().get_sample_data_p1reg()
+        f = P1REGQH(data, '0000', '2026-11-01')
+        res = f.writer()
+        expected = 'DK029141;1;11;0000000000;0;7;VA;4;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;;0000000000;0000000000'
         assert f.file[f.columns].to_csv(sep=';', header=None, index=False).split('\n')[0] == expected
